@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.mail.Address;
@@ -18,7 +17,6 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 
 import com.sun.mail.pop3.POP3Store;
@@ -28,15 +26,9 @@ import com.sun.mail.pop3.POP3Store;
 public class SendMailTest extends AbstractMailTest
 {
 
-	private String user1Email;
-	private String user1Pop3User;
-	private String user1Pop3Password;
-	private String user2Email;
-	private String user2Pop3User;
-	private String user2Pop3Password;
-	private String user3Email;
-	private String user3Pop3User;
-	private String user3Pop3Password;
+	private Account user1;
+	private Account user2;
+	private Account user3;
 
 	private String fail;
 	
@@ -46,37 +38,15 @@ public class SendMailTest extends AbstractMailTest
 	{
 		super.setUp();
 
-		user1Email=       (String)properties.get("user1.email");
-		user1Pop3User=    (String)properties.get("user1.pop3.user");
-		user1Pop3Password=(String)properties.get("user1.pop3.password");
-		user2Email=       (String)properties.get("user2.email");
-		user2Pop3User=    (String)properties.get("user2.pop3.user");
-		user2Pop3Password=(String)properties.get("user2.pop3.password");
-		user3Email=       (String)properties.get("user3.email");
-		user3Pop3User=    (String)properties.get("user3.pop3.user");
-		user3Pop3Password=(String)properties.get("user3.pop3.password");
+		user1 = new Account("user1");
+		user2 = new Account("user2");
+		user3 = new Account("user3");
 		
 		fail=(String)properties.get("fail");
 		
-		cleanPOP3Account(user1Pop3User, user1Pop3Password);
-		cleanPOP3Account(user2Pop3User, user2Pop3Password);
-		cleanPOP3Account(user3Pop3User, user3Pop3Password);
-	}
-	
-	private Session getPOP3Session(final String pop3User)
-	{
-		final Properties properties = new Properties();
-		properties.put("mail.pop3.host", pop3Host);
-		properties.put("mail.pop3.user", pop3User);
-		final Session session = Session.getInstance(properties);
-		if(pop3Debug)
-			session.setDebug(true);
-		return session;
-	}
-	
-	private POP3Store getPOP3Store(final Session session, final String pop3User, final String pop3Password)
-	{
-		return new POP3Store(session, new URLName("pop3://"+pop3User+":"+pop3Password+"@"+pop3Host+"/INBOX"));
+		cleanPOP3Account(user1);
+		cleanPOP3Account(user2);
+		cleanPOP3Account(user3);
 	}
 	
 	private static class TestMail implements Mail
@@ -185,14 +155,14 @@ public class SendMailTest extends AbstractMailTest
 	{
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final TestMail m1 = new TestMail(from, user1Email, user2Email, user3Email, ts+SUBJECT1, TEXT1);
+		final TestMail m1 = new TestMail(from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
-		final TestMail m2 = new TestMail(from, new String[]{user2Email}, null, null, ts+SUBJECT2, TEXT2);
+		final TestMail m2 = new TestMail(from, new String[]{user2.email}, null, null, ts+SUBJECT2, TEXT2);
 		m2.html = true;
-		final TestMail x12 = new TestMail(from, new String[]{user1Email, user2Email}, null, null, ts+"subject 1+2", TEXT1);
-		final TestMail x13 = new TestMail(from, null, new String[]{user1Email, user3Email}, null, ts+"subject 1+3", TEXT1);
-		final TestMail x23 = new TestMail(from, null, null, new String[]{user2Email, user3Email}, ts+"subject 2+3", TEXT1);
+		final TestMail x12 = new TestMail(from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
+		final TestMail x13 = new TestMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
+		final TestMail x23 = new TestMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
 
 		final MailSource p = new MailSource()
 		{
@@ -241,9 +211,9 @@ public class SendMailTest extends AbstractMailTest
 				System.out.print("---------"+i+"--");
 			}
 			if(
-					(complete1 || (complete1=countPOP3(user1Pop3User, user1Pop3Password, 3))) &&
-					(complete2 || (complete2=countPOP3(user2Pop3User, user2Pop3Password, 4))) &&
-					(complete3 || (complete3=countPOP3(user3Pop3User, user3Pop3Password, 3))) )
+					(complete1 || (complete1=countPOP3(user1, 3))) &&
+					(complete2 || (complete2=countPOP3(user2, 4))) &&
+					(complete3 || (complete3=countPOP3(user3, 3))) )
 			{
 				break;
 			}
@@ -251,12 +221,12 @@ public class SendMailTest extends AbstractMailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1Pop3User, user1Pop3Password, new TestMail[]{m1, x12, x13});
-		assertPOP3(user2Pop3User, user2Pop3Password, new TestMail[]{m1, m2, x12, x23});
-		assertPOP3(user3Pop3User, user3Pop3Password, new TestMail[]{m1, x13, x23});
+		assertPOP3(user1, new TestMail[]{m1, x12, x13});
+		assertPOP3(user2, new TestMail[]{m1, m2, x12, x23});
+		assertPOP3(user3, new TestMail[]{m1, x13, x23});
 	}
 	
-	private void assertPOP3(final String pop3User, final String pop3Password, final TestMail[] expectedMails)
+	private void assertPOP3(final Account account, final TestMail[] expectedMails)
 	{
 		final TreeMap expectedMessages = new TreeMap();
 		for(int i = 0; i<expectedMails.length; i++)
@@ -270,9 +240,9 @@ public class SendMailTest extends AbstractMailTest
 		Folder inboxFolder = null;
 		try
 		{
-			final Session session = getPOP3Session(pop3User);
+			final Session session = getPOP3Session(account);
 	
-			store = getPOP3Store(session, pop3User, pop3Password);
+			store = getPOP3Store(session, account);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
 			assertEquals("", defaultFolder.getFullName());
@@ -294,7 +264,7 @@ public class SendMailTest extends AbstractMailTest
 				final String subject = (String)i.next();
 				final Message m = (Message)actualMessages.get(subject);
 				final TestMail expected = (TestMail)expectedMessages.get(subject);
-				final String message = pop3User + " - " + subject;
+				final String message = account.pop3User + " - " + subject;
 				
 				assertNotNull(message, m);
 				assertEquals(message, expected.getSubject(), m.getSubject());
@@ -305,7 +275,7 @@ public class SendMailTest extends AbstractMailTest
 				assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
 				assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
 			}
-			assertEquals(pop3User, expectedMails.length, inboxMessages.length);
+			assertEquals(account.pop3User, expectedMails.length, inboxMessages.length);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
@@ -343,15 +313,15 @@ public class SendMailTest extends AbstractMailTest
 		}
 	}
 
-	private boolean countPOP3(final String pop3User, final String pop3Password, final int expected)
+	private boolean countPOP3(final Account account, final int expected)
 	{
 		POP3Store store = null;
 		Folder inboxFolder = null;
 		try
 		{
-			final Session session = getPOP3Session(pop3User);
+			final Session session = getPOP3Session(account);
 	
-			store = getPOP3Store(session, pop3User, pop3Password);
+			store = getPOP3Store(session, account);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
 			assertEquals("", defaultFolder.getFullName());
@@ -361,7 +331,7 @@ public class SendMailTest extends AbstractMailTest
 			final int inboxMessages = inboxFolder.getMessageCount();
 			
 			if(countDebug)
-				System.out.print(" "+pop3User+":"+inboxMessages+"/"+expected);
+				System.out.print(" "+account.pop3User+":"+inboxMessages+"/"+expected);
 
 			inboxFolder.close(false);
 			inboxFolder = null;

@@ -11,9 +11,7 @@ import java.util.Date;
  */
 public class SmtpTerror extends AbstractMailTest
 {
-	private String userEmail;
-	private String userPop3User;
-	private String userPop3Password;
+	private Account user;
 
 	private String ts;
 	private int sent;
@@ -23,20 +21,18 @@ public class SmtpTerror extends AbstractMailTest
 	{
 		super.setUp();
 
-		userEmail=       (String)properties.get("user3.email");
-		userPop3User=    (String)properties.get("user3.pop3.user");
-		userPop3Password=(String)properties.get("user3.pop3.password");
+		user = new Account("user3");
 
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		ts = df.format(new Date());
 		sent = 0;
 		
-		cleanPOP3Account(userPop3User, userPop3Password);
+		cleanPOP3Account(user);
 	}
 	
 	public void tearDown() throws Exception
 	{
-		//cleanPOP3Account(userPop3User, userPop3Password);
+		//cleanPOP3Account(user);
 
 		super.tearDown();
 	}
@@ -56,7 +52,7 @@ public class SmtpTerror extends AbstractMailTest
 		
 		public Collection getMailsToSend(int maximumResultSize)
 		{
-			final String[] to = new String[]{userEmail};
+			final String[] to = new String[]{user.email};
 			final String subject = ts + "terror subject "+threadNumber+" - ";
 
 			final ArrayList result = new ArrayList();

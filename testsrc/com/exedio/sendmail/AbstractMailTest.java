@@ -45,30 +45,51 @@ public class AbstractMailTest extends TestCase
 		from=(String)properties.get("from");
 	}
 	
-	private Session getPOP3Session(final String pop3User)
+	protected class Account
+	{
+		final String email;
+		final String pop3User;
+		final String pop3Password;
+		
+		Account(final String name)
+		{
+			email=       (String)properties.get(name+".email");
+			pop3User=    (String)properties.get(name+".pop3.user");
+			pop3Password=(String)properties.get(name+".pop3.password");
+
+			if(email==null)
+				throw new RuntimeException(name);
+			if(pop3User==null)
+				throw new RuntimeException(name);
+			if(pop3Password==null)
+				throw new RuntimeException(name);
+		}
+	}
+	
+	protected final Session getPOP3Session(final Account account)
 	{
 		final Properties properties = new Properties();
 		properties.put("mail.pop3.host", pop3Host);
-		properties.put("mail.pop3.user", pop3User);
+		properties.put("mail.pop3.user", account.pop3User);
 		final Session session = Session.getInstance(properties);
 		if(pop3Debug)
 			session.setDebug(true);
 		return session;
 	}
 	
-	private POP3Store getPOP3Store(final Session session, final String pop3User, final String pop3Password)
+	protected final POP3Store getPOP3Store(final Session session, final Account account)
 	{
-		return new POP3Store(session, new URLName("pop3://"+pop3User+":"+pop3Password+"@"+pop3Host+"/INBOX"));
+		return new POP3Store(session, new URLName("pop3://"+account.pop3User+":"+account.pop3Password+"@"+pop3Host+"/INBOX"));
 	}
 	
-	protected void cleanPOP3Account(final String pop3User, final String pop3Password)
+	protected final void cleanPOP3Account(final Account account)
 	{
 		POP3Store store = null;
 		Folder inboxFolder = null;
 		try
 		{
-			final Session session = getPOP3Session(pop3User);
-			store = getPOP3Store(session, pop3User, pop3Password);
+			final Session session = getPOP3Session(account);
+			store = getPOP3Store(session, account);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
 			assertEquals("", defaultFolder.getFullName());
