@@ -14,7 +14,7 @@ public final class MailSender
 {
 	private static final String MAIL_SMTP_HOST = "mail.host";
 	
-	public static final void sendMails(final MailSource source, final String smtpHost, final int maximumResultSize)
+	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
 		final Collection mails = source.getMailsToSend(maximumResultSize);
 
@@ -24,7 +24,8 @@ public final class MailSender
 			properties.put(MAIL_SMTP_HOST, smtpHost);
 			properties.put("mail.transport.protocol", "smtp");
 			final Session session = Session.getInstance(properties);
-			session.setDebug(true);
+			if(smtpDebug)
+				session.setDebug(true);
 
 			for(Iterator i = mails.iterator(); i.hasNext(); )
 			{

@@ -31,6 +31,7 @@ public class SendMailTest extends TestCase
 	}
 	
 	private String smtp;
+	private boolean smtpDebug;
 	private String pop3Host;
 	private String pop3User;
 	private String pop3Password;
@@ -49,6 +50,7 @@ public class SendMailTest extends TestCase
 		properties.load(new FileInputStream("test.properties"));
 
 		smtp=(String)properties.get("smtp");
+		smtpDebug=properties.get("smtp.debug")!=null;
 		
 		pop3Host=(String)properties.get("pop3.host");
 		pop3User=(String)properties.get("pop3.user");
@@ -253,7 +255,7 @@ public class SendMailTest extends TestCase
 				return result;
 			}
 		};
-		MailSender.sendMails(p, smtp, MAXIMUM_RESULT_SIZE);
+		MailSender.sendMails(p, smtp, smtpDebug, MAXIMUM_RESULT_SIZE);
 
 		assertEquals(null, m1.failedException);
 		assertEquals(1, m1.sentCounter);
