@@ -21,7 +21,7 @@ public final class EmailRunner
 
 		if(!emails.isEmpty())
 		{
-			final Properties properties = System.getProperties();
+			final Properties properties = new Properties();
 			properties.put(MAIL_SMTP_HOST, provider.getSMTPHost());
 			properties.put("mail.transport.protocol", "smtp");
 			final Session session = Session.getInstance(properties);
