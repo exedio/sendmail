@@ -9,9 +9,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.TreeMap;
 
+import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -76,8 +79,8 @@ public class SendMailTest extends TestCase
 		fail=(String)properties.get("fail");
 		
 		cleanPOP3Account(pop3ToUser, pop3ToPassword);
-		//cleanPOP3Account(pop3CcUser, pop3CcPassword);
-		//cleanPOP3Account(pop3BccUser, pop3BccPassword);
+		cleanPOP3Account(pop3CcUser, pop3CcPassword);
+		cleanPOP3Account(pop3BccUser, pop3BccPassword);
 	}
 	
 	private Session getPOP3Session(final String pop3User)
@@ -245,8 +248,8 @@ public class SendMailTest extends TestCase
 	
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	private final static String SUBJECT1 = "subject for test mail";
-	private final static String SUBJECT2 = "subject for test mail with multiple recipients";
+	private final static String SUBJECT1 = "subject text";
+	private final static String SUBJECT2 = "subject html";
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
 	private final static String TEXT1 = "text for test mail";
 	private final static String TEXT2 =
@@ -260,9 +263,11 @@ public class SendMailTest extends TestCase
 		final TestMail m1 = new TestMail(from, to, cc, bcc, SUBJECT1+ts, TEXT1);
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
-		final TestMail m2 = new TestMail(from, new String[]{to,to}, new String[]{cc,cc}, new String[]{bcc,bcc},
-				SUBJECT2+ts, TEXT2);
+		final TestMail m2 = new TestMail(from, new String[]{cc}, null, null, SUBJECT2+ts, TEXT2);
 		m2.html = true;
+		final TestMail x12 = new TestMail(from, new String[]{to, cc},  null, null, "subject 1+2"+ts, TEXT1);
+		final TestMail x13 = new TestMail(from, null, new String[]{to, bcc}, null, "subject 1+3"+ts, TEXT1);
+		final TestMail x23 = new TestMail(from, null, null, new String[]{cc, bcc}, "subject 2+3"+ts, TEXT1);
 
 		final MailSource p = new MailSource()
 		{
@@ -274,6 +279,9 @@ public class SendMailTest extends TestCase
 				result.add(f1);
 				result.add(f2);
 				result.add(m2);
+				result.add(x12);
+				result.add(x13);
+				result.add(x23);
 				return result;
 			}
 		};
@@ -299,11 +307,21 @@ public class SendMailTest extends TestCase
 		// let the server do some processing before fetching the mails
 		Thread.sleep(10000);
 		
-		assertPOP3(pop3ToUser, pop3ToPassword, new TestMail[]{m1, m2});
+		assertPOP3(pop3ToUser, pop3ToPassword, new TestMail[]{m1, x12, x13});
+		assertPOP3(pop3CcUser, pop3CcPassword, new TestMail[]{m1, m2, x12, x23});
+		assertPOP3(pop3BccUser, pop3BccPassword, new TestMail[]{m1, x13, x23});
 	}
 	
 	private void assertPOP3(final String pop3User, final String pop3Password, final TestMail[] expectedMails)
 	{
+		final TreeMap expectedMessages = new TreeMap();
+		for(int i = 0; i<expectedMails.length; i++)
+		{
+			final TestMail m = expectedMails[i];
+			if(expectedMessages.put(m.getSubject(), m)!=null)
+				throw new RuntimeException(m.getSubject());
+		}
+
 		POP3Store store = null;
 		Folder inboxFolder = null;
 		try
@@ -318,18 +336,30 @@ public class SendMailTest extends TestCase
 			assertEquals("INBOX", inboxFolder.getFullName());
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
+			
+			final TreeMap actualMessages = new TreeMap();
 			for(int i = 0; i<inboxMessages.length; i++)
 			{
 				final Message m = inboxMessages[i];
-				final TestMail expected = expectedMails[i];
-
-				assertEquals(list(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
-				assertEquals(addressList(expected.getTo()), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
-				assertEquals(addressList(expected.getCarbonCopy()), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
-				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals(expected.getSubject(), m.getSubject());
-				assertEquals((expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
-				assertEquals(expected.getText() + TEXT_APPENDIX, m.getContent());
+				if(actualMessages.put(m.getSubject(), m)!=null)
+					throw new RuntimeException(m.getSubject());
+			}
+			
+			for(Iterator i = expectedMessages.keySet().iterator(); i.hasNext(); )
+			{
+				final String subject = (String)i.next();
+				final Message m = (Message)actualMessages.get(subject);
+				final TestMail expected = (TestMail)expectedMessages.get(subject);
+				final String message = pop3User + " - " + subject;
+				
+				assertNotNull(message, m);
+				assertEquals(message, expected.getSubject(), m.getSubject());
+				assertEquals(message, list(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
+				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
+				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
+				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
+				assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
+				assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
 			}
 			assertEquals(expectedMails.length, inboxMessages.length);
 
@@ -371,9 +401,23 @@ public class SendMailTest extends TestCase
 
 	protected final static ArrayList addressList(final String[] addresses) throws MessagingException
 	{
+		if(addresses==null)
+			return null;
+		
 		final ArrayList result = new ArrayList(addresses.length);
 		for(int i = 0; i<addresses.length; i++)
 			result.add(new InternetAddress(addresses[i]));
+		return result;
+	}
+
+	protected final static ArrayList addressList(final Address[] addresses) throws MessagingException
+	{
+		if(addresses==null)
+			return null;
+		
+		final ArrayList result = new ArrayList(addresses.length);
+		for(int i = 0; i<addresses.length; i++)
+			result.add(addresses[i]);
 		return result;
 	}
 
