@@ -1,4 +1,3 @@
-
 package com.exedio.sendmail;
 
 import java.util.Arrays;
@@ -8,7 +7,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 
-public class ErrorEmailTest extends TestCase
+public class ErrorMailSourceTest extends TestCase
 {
 	private ErrorMailSource ep;
 	
