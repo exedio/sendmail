@@ -17,7 +17,7 @@ public class PackageTest extends TestCase
 		TestSuite suite = new TestSuite();
 		suite.addTest(new TestSuite(SendMailTest.class));
 		suite.addTest(new TestSuite(ErrorEmailTest.class));
-		suite.addTest(new TestSuite(CascadingEmailProviderTest.class));
+		suite.addTest(new TestSuite(CompositeMailSourceTest.class));
 		return suite;
 	}
 }
