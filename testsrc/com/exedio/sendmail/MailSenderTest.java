@@ -234,11 +234,16 @@ public class MailSenderTest extends SendmailTest
 	private static final class TestURLDataSource extends URLDataSource
 	{
 		final String name;
+		final String contentType;
 		
-		TestURLDataSource(final String name)
+		TestURLDataSource(final String name, final String contentType)
 		{
 			super(MailSenderTest.class.getResource(name));
 			this.name = name;
+			this.contentType = contentType;
+			
+			if(this.contentType==null)
+				throw new RuntimeException();
 		}
 		
 		public String getName()
@@ -246,6 +251,10 @@ public class MailSenderTest extends SendmailTest
 			return name;
 		}
 		
+		public String getContentType()
+		{
+			return contentType;
+		}
 	}
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
@@ -271,11 +280,11 @@ public class MailSenderTest extends SendmailTest
 		final TestMail x13 = new TestMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
 		final TestMail x23 = new TestMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
 		final TestMail ma1 = new TestMail(from, user1.email, ts+"subject text attach", TEXT1,
-				new TestURLDataSource("MailSenderTest.class"));
+				new TestURLDataSource("MailSenderTest.class", "application/one"));
 				//new TestDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 		final TestMail ma2 = new TestMail(from, user1.email, ts+"subject html attach", TEXT2,
-				new TestURLDataSource("PackageTest.class"),
-				new TestURLDataSource("CompositeMailSourceTest.class"));
+				new TestURLDataSource("PackageTest.class", "application/twoone"),
+				new TestURLDataSource("CompositeMailSourceTest.class", "application/twotwo"));
 				//new TestDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new TestDataSource(CompositeMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 		ma2.html = true;
@@ -427,7 +436,7 @@ public class MailSenderTest extends SendmailTest
 					{
 						final BodyPart attachBody = multipart.getBodyPart(j+1);
 						assertEquals(message, attachements[j].getName(), attachBody.getFileName());
-						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith("application/java-vm"));
+						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith(attachements[j].getContentType()+";"));
 						assertEquals(message, bytes(attachements[j].getInputStream()), bytes((InputStream)attachBody.getContent()));
 					}
 				}
