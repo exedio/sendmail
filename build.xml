@@ -19,7 +19,7 @@
 	</target>
 	
 	<target name="jar" depends="compile">
-		<jar jarfile="build/cope-sendmail.jar" basedir="build/classes" />
+		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes" />
 	</target>
 	
 	<target name="clean">
