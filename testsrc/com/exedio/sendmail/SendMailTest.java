@@ -34,10 +34,16 @@ public class SendMailTest extends TestCase
 	
 	private String smtpHost;
 	private boolean smtpDebug;
+
 	private String pop3Host;
-	private String pop3User;
-	private String pop3Password;
+	private String pop3ToUser;
+	private String pop3ToPassword;
+	private String pop3CcUser;
+	private String pop3CcPassword;
+	private String pop3BccUser;
+	private String pop3BccPassword;
 	private boolean pop3Debug;
+
 	private String from;
 	private String to;
 	private String cc;
@@ -55,8 +61,12 @@ public class SendMailTest extends TestCase
 		smtpDebug=properties.get("smtp.debug")!=null;
 		
 		pop3Host=(String)properties.get("pop3.host");
-		pop3User=(String)properties.get("pop3.user");
-		pop3Password=(String)properties.get("pop3.password");
+		pop3ToUser=(String)properties.get("pop3.to.user");
+		pop3CcUser=(String)properties.get("pop3.cc.user");
+		pop3BccUser=(String)properties.get("pop3.bcc.user");
+		pop3ToPassword=(String)properties.get("pop3.to.password");
+		pop3CcPassword=(String)properties.get("pop3.cc.password");
+		pop3BccPassword=(String)properties.get("pop3.bcc.password");
 		pop3Debug=properties.get("pop3.debug")!=null;
 		
 		from=(String)properties.get("from");
@@ -65,10 +75,12 @@ public class SendMailTest extends TestCase
 		bcc=(String)properties.get("bcc");
 		fail=(String)properties.get("fail");
 		
-		cleanPOP3Account();
+		cleanPOP3Account(pop3ToUser, pop3ToPassword);
+		//cleanPOP3Account(pop3CcUser, pop3CcPassword);
+		//cleanPOP3Account(pop3BccUser, pop3BccPassword);
 	}
 	
-	private Session getPOP3Session()
+	private Session getPOP3Session(final String pop3User)
 	{
 		final Properties properties = new Properties();
 		properties.put("mail.pop3.host", pop3Host);
@@ -79,19 +91,19 @@ public class SendMailTest extends TestCase
 		return session;
 	}
 	
-	private POP3Store getPOP3Store(final Session session)
+	private POP3Store getPOP3Store(final Session session, final String pop3User, final String pop3Password)
 	{
 		return new POP3Store(session, new URLName("pop3://"+pop3User+":"+pop3Password+"@"+pop3Host+"/INBOX"));
 	}
 	
-	private void cleanPOP3Account()
+	private void cleanPOP3Account(final String pop3User, final String pop3Password)
 	{
 		POP3Store store = null;
 		Folder inboxFolder = null;
 		try
 		{
-			final Session session = getPOP3Session();
-			store = getPOP3Store(session);
+			final Session session = getPOP3Session(pop3User);
+			store = getPOP3Store(session, pop3User, pop3Password);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
 			assertEquals("", defaultFolder.getFullName());
@@ -285,15 +297,20 @@ public class SendMailTest extends TestCase
 		assertEquals(0, m2.failedCounter);
 		
 		// let the server do some processing before fetching the mails
-		Thread.sleep(500);
-
+		Thread.sleep(10000);
+		
+		assertPOP3(pop3ToUser, pop3ToPassword, new TestMail[]{m1, m2});
+	}
+	
+	private void assertPOP3(final String pop3User, final String pop3Password, final TestMail[] expectedMails)
+	{
 		POP3Store store = null;
 		Folder inboxFolder = null;
 		try
 		{
-			final Session session = getPOP3Session();
+			final Session session = getPOP3Session(pop3User);
 	
-			store = getPOP3Store(session);
+			store = getPOP3Store(session, pop3User, pop3Password);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
 			assertEquals("", defaultFolder.getFullName());
@@ -301,29 +318,20 @@ public class SendMailTest extends TestCase
 			assertEquals("INBOX", inboxFolder.getFullName());
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
+			for(int i = 0; i<inboxMessages.length; i++)
 			{
-				final Message m = inboxMessages[0];
-				assertEquals(list(new InternetAddress(from)), Arrays.asList(m.getFrom()));
-				assertEquals(list(new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
-				assertEquals(list(new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
+				final Message m = inboxMessages[i];
+				final TestMail expected = expectedMails[i];
+
+				assertEquals(list(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
+				assertEquals(addressList(expected.getTo()), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
+				assertEquals(addressList(expected.getCarbonCopy()), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals(SUBJECT1+ts, m.getSubject());
-				assertEquals(22, m.getSize());
-				assertEquals("text/plain; charset=us-ascii", m.getContentType());
-				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
+				assertEquals(expected.getSubject(), m.getSubject());
+				assertEquals((expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
+				assertEquals(expected.getText() + TEXT_APPENDIX, m.getContent());
 			}
-			{
-				final Message m = inboxMessages[1];
-				assertEquals(list(new InternetAddress(from)), Arrays.asList(m.getFrom()));
-				assertEquals(list(new InternetAddress(to), new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
-				assertEquals(list(new InternetAddress(cc), new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
-				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals(SUBJECT2+ts, m.getSubject());
-				assertEquals(174, m.getSize());
-				assertEquals("text/html; charset=us-ascii", m.getContentType());
-				assertEquals(TEXT2 + TEXT_APPENDIX, m.getContent());
-			}
-			assertEquals(2, inboxMessages.length);
+			assertEquals(expectedMails.length, inboxMessages.length);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
@@ -359,6 +367,14 @@ public class SendMailTest extends TestCase
 				{}
 			}
 		}
+	}
+
+	protected final static ArrayList addressList(final String[] addresses) throws MessagingException
+	{
+		final ArrayList result = new ArrayList(addresses.length);
+		for(int i = 0; i<addresses.length; i++)
+			result.add(new InternetAddress(addresses[i]));
+		return result;
 	}
 
 	protected final static List list()
