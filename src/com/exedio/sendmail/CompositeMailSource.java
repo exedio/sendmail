@@ -1,5 +1,6 @@
 package com.exedio.sendmail;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -21,15 +22,47 @@ public class CompositeMailSource implements MailSource
 		}
 	}
 	
-	public Collection getMailsToSend(final int maximumResultSize)
+	public Collection getMailsToSend(int maximumResultSize)
 	{
-		for(int i = 0; i<sources.length; i++)
+		Collection resultIfOne = null;
+		ArrayList resultIfMoreThanOne = null;
+		
+		for(int i = 0; i<sources.length && maximumResultSize>0; i++)
 		{
 			final Collection mails = sources[i].getMailsToSend(maximumResultSize);
-			if(!mails.isEmpty())
-				return mails;
+			final int mailsSize = mails.size();
+			
+			if(mailsSize>0)
+			{
+				maximumResultSize -= mailsSize;
+				
+				if(resultIfOne==null)
+					if(resultIfMoreThanOne==null)
+						resultIfOne = mails;
+					else
+						resultIfMoreThanOne.addAll(mails);
+				else
+					if(resultIfMoreThanOne==null)
+					{
+						resultIfMoreThanOne = new ArrayList(resultIfOne);
+						resultIfOne = null;
+						resultIfMoreThanOne.addAll(mails);
+					}
+					else
+						throw new RuntimeException();
+			}
 		}
-		return Collections.EMPTY_LIST;
+
+		if(resultIfOne==null)
+			if(resultIfMoreThanOne==null)
+				return Collections.EMPTY_LIST;
+			else
+				return resultIfMoreThanOne;
+		else
+			if(resultIfMoreThanOne==null)
+				return resultIfOne;
+			else
+				throw new RuntimeException();
 	}
 	
 }
