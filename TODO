@@ -1,0 +1,6 @@
+* send mails multithreaded for more throughput
+* send to multiple smtp servers for fail-over / load balancing
+* ErrorMail
+	- make it safe against mail storms with some upper limit
+	- immediately save to a log file as well to preserve errors in case of server crash
+	- accumulate multiple errors with equal message texts

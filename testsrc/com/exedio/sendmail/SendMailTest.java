@@ -54,6 +54,8 @@ public class SendMailTest extends TestCase
 	private String from;
 	private String fail;
 	
+	private static boolean countDebug = false;
+	
 	public void setUp() throws Exception
 	{
 		super.setUp();
@@ -306,8 +308,27 @@ public class SendMailTest extends TestCase
 		assertEquals(1, m2.sentCounter);
 		assertEquals(0, m2.failedCounter);
 		
-		// let the server do some processing before fetching the mails
-		Thread.sleep(10000);
+		boolean complete1 = false;
+		boolean complete2 = false;
+		boolean complete3 = false;
+		for(int i = 0; i<30; i++)
+		{
+			Thread.sleep(1000);
+			if(countDebug)
+			{
+				System.out.println();
+				System.out.print("---------"+i+"--");
+			}
+			if(
+					(complete1 || (complete1=countPOP3(user1Pop3User, user1Pop3Password, 3))) &&
+					(complete2 || (complete2=countPOP3(user2Pop3User, user2Pop3Password, 4))) &&
+					(complete3 || (complete3=countPOP3(user3Pop3User, user3Pop3Password, 3))) )
+			{
+				break;
+			}
+		}
+		if(countDebug)
+			System.out.println();
 		
 		assertPOP3(user1Pop3User, user1Pop3Password, new TestMail[]{m1, x12, x13});
 		assertPOP3(user2Pop3User, user2Pop3Password, new TestMail[]{m1, m2, x12, x23});
@@ -384,7 +405,61 @@ public class SendMailTest extends TestCase
 			{
 				try
 				{
-					inboxFolder.close(true); // expunge
+					inboxFolder.close(false);
+				}
+				catch(MessagingException e)
+				{}
+			}
+			if(store!=null)
+			{
+				try
+				{
+					store.close();
+				}
+				catch(MessagingException e)
+				{}
+			}
+		}
+	}
+
+	private boolean countPOP3(final String pop3User, final String pop3Password, final int expected)
+	{
+		POP3Store store = null;
+		Folder inboxFolder = null;
+		try
+		{
+			final Session session = getPOP3Session(pop3User);
+	
+			store = getPOP3Store(session, pop3User, pop3Password);
+			store.connect();
+			final Folder defaultFolder = store.getDefaultFolder();
+			assertEquals("", defaultFolder.getFullName());
+			inboxFolder = defaultFolder.getFolder("INBOX");
+			assertEquals("INBOX", inboxFolder.getFullName());
+			inboxFolder.open(Folder.READ_ONLY);
+			final int inboxMessages = inboxFolder.getMessageCount();
+			
+			if(countDebug)
+				System.out.print(" "+pop3User+":"+inboxMessages+"/"+expected);
+
+			inboxFolder.close(false);
+			inboxFolder = null;
+			store.close();
+			store = null;
+			
+			return inboxMessages>=expected;
+		}
+		catch(MessagingException e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			if(inboxFolder!=null)
+			{
+				try
+				{
+					inboxFolder.close(false);
 				}
 				catch(MessagingException e)
 				{}
