@@ -231,15 +231,21 @@ public class SendMailTest extends TestCase
 	
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
+	private final static String SUBJECT1 = "subject for test mail";
+	private final static String SUBJECT2 = "subject for test mail with multiple recipients";
+	private final static String TEXT_APPENDIX = "\r\n\r\n";
+	private final static String TEXT1 = "text for test mail";
+	private final static String TEXT2 =
+		"<html><body>text for test mail with multiple recipients and with html features " +
+		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text.</body></html>";
+	
 	public void testSendMail() throws InterruptedException
 	{
-		final TestMail m1 = new TestMail(from, to, cc, bcc, "subject for test mail", "text for test mail");
+		final TestMail m1 = new TestMail(from, to, cc, bcc, SUBJECT1, TEXT1);
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
 		final TestMail m2 = new TestMail(from, new String[]{to,to}, new String[]{cc,cc}, new String[]{bcc,bcc},
-				"subject for test mail with multiple recipients",
-				"<html><body>text for test mail with multiple recipients and with html features " +
-				"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text.</body></html>");
+				SUBJECT2, TEXT2);
 		m2.html = true;
 
 		final MailSource p = new MailSource()
@@ -297,10 +303,10 @@ public class SendMailTest extends TestCase
 				assertEquals(list(new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(list(new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals("subject for test mail", m.getSubject());
+				assertEquals(SUBJECT1, m.getSubject());
 				assertEquals(22, m.getSize());
 				assertEquals("text/plain; charset=us-ascii", m.getContentType());
-				assertEquals("text for test mail\r\n\r\n", m.getContent());
+				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
 			}
 			{
 				final Message m = inboxMessages[1];
@@ -308,13 +314,10 @@ public class SendMailTest extends TestCase
 				assertEquals(list(new InternetAddress(to), new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(list(new InternetAddress(cc), new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals("subject for test mail with multiple recipients", m.getSubject());
+				assertEquals(SUBJECT2, m.getSubject());
 				assertEquals(174, m.getSize());
 				assertEquals("text/html; charset=us-ascii", m.getContentType());
-				assertEquals(
-						"<html><body>text for test mail with multiple recipients and with html features " +
-						"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text.</body></html>" +
-						"\r\n\r\n", m.getContent());
+				assertEquals(TEXT2 + TEXT_APPENDIX, m.getContent());
 			}
 			assertEquals(2, inboxMessages.length);
 
