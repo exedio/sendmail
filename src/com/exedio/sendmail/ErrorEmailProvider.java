@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public final class ErrorEmailProvider implements EmailProvider
+public final class ErrorEmailProvider implements MailSource
 {
 	final String from;
 	final String to;

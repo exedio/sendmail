@@ -13,7 +13,7 @@ public class CascadingEmailProviderTest extends TestCase
 	public void testCascade() throws Exception
 	{
 		
-		final EmailProvider pe = new EmailProvider()
+		final MailSource pe = new MailSource()
 		{
 			public Collection getEmailsToBeSent(final int maximumResultSize)
 			{
@@ -23,7 +23,7 @@ public class CascadingEmailProviderTest extends TestCase
 
 		final EmailToBeSent a1 = new Mail("a1");
 		final EmailToBeSent a2 = new Mail("a2");
-		final EmailProvider pa = new EmailProvider()
+		final MailSource pa = new MailSource()
 		{
 			public Collection getEmailsToBeSent(final int maximumResultSize)
 			{
@@ -41,7 +41,7 @@ public class CascadingEmailProviderTest extends TestCase
 		
 		final EmailToBeSent b1 = new Mail("b1");
 		final EmailToBeSent b2 = new Mail("b2");
-		final EmailProvider pb = new EmailProvider()
+		final MailSource pb = new MailSource()
 		{
 			public Collection getEmailsToBeSent(final int maximumResultSize)
 			{
@@ -58,31 +58,31 @@ public class CascadingEmailProviderTest extends TestCase
 		};
 		
 		{
-			final CascadingEmailProvider p = new CascadingEmailProvider(new EmailProvider[]{pe, pa});
+			final CascadingEmailProvider p = new CascadingEmailProvider(new MailSource[]{pe, pa});
 			assertEquals(list(a1, a2), p.getEmailsToBeSent(2));
 			assertEquals(list(a1), p.getEmailsToBeSent(1));
 			assertEquals(list(), p.getEmailsToBeSent(0));
 		}
 		{
-			final CascadingEmailProvider p = new CascadingEmailProvider(new EmailProvider[]{pa, pe});
+			final CascadingEmailProvider p = new CascadingEmailProvider(new MailSource[]{pa, pe});
 			assertEquals(list(a1, a2), p.getEmailsToBeSent(2));
 			assertEquals(list(a1), p.getEmailsToBeSent(1));
 			assertEquals(list(), p.getEmailsToBeSent(0));
 		}
 		{
-			final CascadingEmailProvider p = new CascadingEmailProvider(new EmailProvider[]{pa, pb});
+			final CascadingEmailProvider p = new CascadingEmailProvider(new MailSource[]{pa, pb});
 			assertEquals(list(a1, a2), p.getEmailsToBeSent(2));
 			assertEquals(list(a1), p.getEmailsToBeSent(1));
 			assertEquals(list(), p.getEmailsToBeSent(0));
 		}
 		{
-			final CascadingEmailProvider p = new CascadingEmailProvider(new EmailProvider[]{pb, pa});
+			final CascadingEmailProvider p = new CascadingEmailProvider(new MailSource[]{pb, pa});
 			assertEquals(list(b1, b2), p.getEmailsToBeSent(2));
 			assertEquals(list(b1), p.getEmailsToBeSent(1));
 			assertEquals(list(), p.getEmailsToBeSent(0));
 		}
 		{
-			final CascadingEmailProvider p = new CascadingEmailProvider(new EmailProvider[]{pe, pe});
+			final CascadingEmailProvider p = new CascadingEmailProvider(new MailSource[]{pe, pe});
 			assertEquals(list(), p.getEmailsToBeSent(2));
 			assertEquals(list(), p.getEmailsToBeSent(1));
 			assertEquals(list(), p.getEmailsToBeSent(0));

@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 
-public class CascadingEmailProvider implements EmailProvider
+public class CascadingEmailProvider implements MailSource
 {
-	private final EmailProvider[] sources;
+	private final MailSource[] sources;
 	
-	public CascadingEmailProvider(final EmailProvider[] sources)
+	public CascadingEmailProvider(final MailSource[] sources)
 	{
 		this.sources = sources;
 

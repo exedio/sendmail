@@ -115,7 +115,7 @@ public class SendMailTest extends TestCase
 		final Email f1 = new Email(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
 		final Email f2 = new Email(from, null, null, null, null, null);
 
-		final EmailProvider p = new EmailProvider()
+		final MailSource p = new MailSource()
 		{
 			public Collection getEmailsToBeSent(final int maximumResultSize)
 			{

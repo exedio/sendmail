@@ -15,7 +15,7 @@ public final class EmailRunner
 {
 	private static final String MAIL_SMTP_HOST = "mail.host";
 	
-	public static final void sendMails(final EmailProvider provider, final String smtpHost, final int maximumResultSize)
+	public static final void sendMails(final MailSource provider, final String smtpHost, final int maximumResultSize)
 	{
 		final Collection emails = provider.getEmailsToBeSent(maximumResultSize);
 
