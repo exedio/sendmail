@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="cope.sendmail" default="compile" basedir=".">
+<project name="cope.sendmail" default="all" basedir=".">
 
 	<target name="properties">
 		<property file="../local.properties" />
@@ -45,5 +45,7 @@
 			<link href="${api.link.jdk}" />
 		</javadoc>
 	</target>
+
+	<target name="all" depends="compile, api" />
 
 </project>
