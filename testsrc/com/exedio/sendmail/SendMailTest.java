@@ -34,6 +34,7 @@ public class SendMailTest extends TestCase
 	private String pop3Host;
 	private String pop3User;
 	private String pop3Password;
+	private boolean pop3Debug;
 	private String from;
 	private String to;
 	private String cc;
@@ -52,6 +53,7 @@ public class SendMailTest extends TestCase
 		pop3Host=(String)properties.get("pop3.host");
 		pop3User=(String)properties.get("pop3.user");
 		pop3Password=(String)properties.get("pop3.password");
+		pop3Debug=properties.get("pop3.debug")!=null;
 		
 		from=(String)properties.get("from");
 		to=(String)properties.get("to");
@@ -68,7 +70,8 @@ public class SendMailTest extends TestCase
 		properties.put("mail.pop3.host", pop3Host);
 		properties.put("mail.pop3.user", pop3User);
 		final Session session = Session.getInstance(properties);
-		session.setDebug(true);
+		if(pop3Debug)
+			session.setDebug(true);
 		return session;
 	}
 	
