@@ -20,18 +20,18 @@ public final class ErrorMailSource implements MailSource
 		this.subject = subject;
 	}
 	
-	private final List emailsToBeSent = Collections.synchronizedList(new ArrayList());
+	private final List mailsToSend = Collections.synchronizedList(new ArrayList());
 	
 	public final Collection getMailsToSend(final int maximumResultSize)
 	{
-		final int size = emailsToBeSent.size();
+		final int size = mailsToSend.size();
 		
 		if(size==0)
 			return Collections.EMPTY_LIST;
 		else if(size<=maximumResultSize)
-			return new ArrayList(emailsToBeSent);
+			return new ArrayList(mailsToSend);
 		else
-			return new ArrayList(emailsToBeSent.subList(0, maximumResultSize));
+			return new ArrayList(mailsToSend.subList(0, maximumResultSize));
 	}
 	
 	public Mail createMail(final Exception exception)
@@ -55,7 +55,7 @@ public final class ErrorMailSource implements MailSource
 		private ErrorMail(final String text)
 		{
 			this.text = text;
-			emailsToBeSent.add(this);
+			mailsToSend.add(this);
 		}
 
 		public String getFrom()
@@ -90,13 +90,13 @@ public final class ErrorMailSource implements MailSource
 		
 		public void notifySent()
 		{
-			emailsToBeSent.remove(this);
+			mailsToSend.remove(this);
 		}
 
 		public void notifyFailed(final Exception exception)
 		{
 			exception.printStackTrace();
-			emailsToBeSent.remove(this);
+			mailsToSend.remove(this);
 		}
 		
 	}
