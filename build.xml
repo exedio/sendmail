@@ -17,4 +17,26 @@
 		<delete dir="build" />
 	</target>
 
+	<target name="api">
+
+		<delete dir="api" />
+		<mkdir  dir="api" />
+
+		<javadoc
+				sourcepath="src"
+				destdir="api"
+				maxmemory="60m"
+				private="on"
+				author="on"
+				use="on"
+				version="on"
+				windowtitle="Sendmail for COPE"
+				doctitle=   "Sendmail for COPE"
+				splitindex="on"
+				bottom='&amp;copy; Copyright 2004 &lt;a href="http://www.exedio.com/" target="_top">exedio&lt;/a> Gesellschaft f&amp;uuml;r Softwareentwicklung mbH'
+			>
+			<package name="com.*" />
+		</javadoc>
+	</target>
+
 </project>
