@@ -43,11 +43,11 @@ public class SmtpTerror extends SendmailTest
 	{
 		private final int threadNumber;
 		int number = 0;
+		long readyTimestamp = -1;
 		
 		TerrorMailSource(final int threadNumber)
 		{
 			this.threadNumber = threadNumber;
-			
 		}
 		
 		public Collection getMailsToSend(int maximumResultSize)
@@ -123,8 +123,11 @@ public class SmtpTerror extends SendmailTest
 	
 	private void doTest(final int threadCount) throws InterruptedException
 	{
-		final Thread[] t = new Thread[threadCount];
+		final TerrorMailSource[] tms = new TerrorMailSource[threadCount];
+		for(int i = 0; i<threadCount; i++)
+			tms[i] = new TerrorMailSource(i);
 
+		final Thread[] t = new Thread[threadCount];
 		for(int i = 0; i<threadCount; i++)
 		{
 			final int threadNumber = i;
@@ -132,8 +135,8 @@ public class SmtpTerror extends SendmailTest
 				{
 					public void run()
 					{
-						final MailSource p = new TerrorMailSource(threadNumber);
-						MailSender.sendMails(p, smtpHost, smtpDebug, SIZE);
+						MailSender.sendMails(tms[threadNumber], smtpHost, smtpDebug, SIZE);
+						tms[threadNumber].readyTimestamp = System.currentTimeMillis();
 					}
 				}
 			);
@@ -147,7 +150,11 @@ public class SmtpTerror extends SendmailTest
 		final long end = System.currentTimeMillis();
 
 		if(terrorDebug)
+		{
 			System.out.println("-----------------"+threadCount+": r="+((end-start)/threadCount)+"ms"+" a="+(end-start)+"ms");
+			for(int i = 0; i<threadCount; i++)
+				System.out.println("---------------------"+i+": r="+((tms[i].readyTimestamp-start))+"ms");
+		}
 	}
 	
 }
