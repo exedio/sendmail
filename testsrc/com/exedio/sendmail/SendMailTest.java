@@ -1,7 +1,6 @@
 
 package com.exedio.sendmail;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.mail.Address;
-import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -23,23 +21,11 @@ import javax.mail.Session;
 import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 
-import junit.framework.TestCase;
-
 import com.sun.mail.pop3.POP3Store;
 
 
-public class SendMailTest extends TestCase
+public class SendMailTest extends AbstractMailTest
 {
-	public SendMailTest(final String name)
-	{
-		super(name);
-	}
-	
-	private String smtpHost;
-	private boolean smtpDebug;
-
-	private String pop3Host;
-	private boolean pop3Debug;
 
 	private String user1Email;
 	private String user1Pop3User;
@@ -51,7 +37,6 @@ public class SendMailTest extends TestCase
 	private String user3Pop3User;
 	private String user3Pop3Password;
 
-	private String from;
 	private String fail;
 	
 	private static boolean countDebug = false;
@@ -59,15 +44,6 @@ public class SendMailTest extends TestCase
 	public void setUp() throws Exception
 	{
 		super.setUp();
-
-		final Properties properties = new Properties();
-		properties.load(new FileInputStream("test.properties"));
-
-		smtpHost=(String)properties.get("smtp.host");
-		smtpDebug=properties.get("smtp.debug")!=null;
-		
-		pop3Host=(String)properties.get("pop3.host");
-		pop3Debug=properties.get("pop3.debug")!=null;
 
 		user1Email=       (String)properties.get("user1.email");
 		user1Pop3User=    (String)properties.get("user1.pop3.user");
@@ -79,7 +55,6 @@ public class SendMailTest extends TestCase
 		user3Pop3User=    (String)properties.get("user3.pop3.user");
 		user3Pop3Password=(String)properties.get("user3.pop3.password");
 		
-		from=(String)properties.get("from");
 		fail=(String)properties.get("fail");
 		
 		cleanPOP3Account(user1Pop3User, user1Pop3Password);
@@ -101,61 +76,6 @@ public class SendMailTest extends TestCase
 	private POP3Store getPOP3Store(final Session session, final String pop3User, final String pop3Password)
 	{
 		return new POP3Store(session, new URLName("pop3://"+pop3User+":"+pop3Password+"@"+pop3Host+"/INBOX"));
-	}
-	
-	private void cleanPOP3Account(final String pop3User, final String pop3Password)
-	{
-		POP3Store store = null;
-		Folder inboxFolder = null;
-		try
-		{
-			final Session session = getPOP3Session(pop3User);
-			store = getPOP3Store(session, pop3User, pop3Password);
-			store.connect();
-			final Folder defaultFolder = store.getDefaultFolder();
-			assertEquals("", defaultFolder.getFullName());
-			inboxFolder = defaultFolder.getFolder("INBOX");
-			assertEquals("INBOX", inboxFolder.getFullName());
-			inboxFolder.open(Folder.READ_WRITE);
-			final Message[] inboxMessages = inboxFolder.getMessages();
-			//System.out.println("--------removing "+inboxMessages.length+" messages --------");
-			for(int i = 0; i<inboxMessages.length; i++)
-			{
-				final Message message = inboxMessages[i];
-				//System.out.println("-----------------removing message "+i);
-				message.setFlag(Flags.Flag.DELETED, true);
-			}
-
-			inboxFolder.close(true); // expunge
-			inboxFolder = null;
-			store.close();
-			store = null;
-		}
-		catch(MessagingException e)
-		{
-			throw new RuntimeException(e);
-		}
-		finally
-		{
-			if(inboxFolder!=null)
-			{
-				try
-				{
-					inboxFolder.close(false); // not expunge, just close and release the resources
-				}
-				catch(MessagingException e)
-				{}
-			}
-			if(store!=null)
-			{
-				try
-				{
-					store.close();
-				}
-				catch(MessagingException e)
-				{}
-			}
-		}
 	}
 	
 	private static class TestMail implements Mail
