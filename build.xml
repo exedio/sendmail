@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="cope.sendmail" default="all" basedir=".">
+<project name="sendmail" default="all" basedir=".">
 
 	<target name="properties">
 		<property file="../local.properties" />
@@ -39,10 +39,10 @@
 				author="on"
 				use="on"
 				version="on"
-				windowtitle="Sendmail for COPE"
-				doctitle=   "Sendmail for COPE&lt;br&gt;API Specification"
-				header=     "Sendmail&lt;br&gt;for COPE"
-				footer=     "Cope with&lt;br&gt;Object&lt;br&gt;Persistence"
+				windowtitle="exedio sendmail utility"
+				doctitle=   "exedio sendmail&lt;br&gt;API Specification"
+				header=     "exedio sendmail"
+				footer=     "exedio sendmail"
 				splitindex="on"
 				bottom='&lt;small&gt;&amp;copy; Copyright 2004 &lt;a href="http://www.exedio.com/" target="_top"&gt;exedio&lt;/a&gt; Gesellschaft f&amp;uuml;r Softwareentwicklung mbH. All rights reserved.&lt;small&gt;'
 			>
