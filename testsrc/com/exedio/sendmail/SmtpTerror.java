@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * BEWARE: thid puts a lot of mails on your smtp server.
  */
-public class SmtpTerror extends AbstractMailTest
+public class SmtpTerror extends SendmailTest
 {
 	private Account user;
 

@@ -21,7 +21,7 @@ import javax.mail.internet.InternetAddress;
 import com.sun.mail.pop3.POP3Store;
 
 
-public class MailSenderTest extends AbstractMailTest
+public class MailSenderTest extends SendmailTest
 {
 
 	private Account user1;
