@@ -16,6 +16,7 @@ import com.sun.mail.pop3.POP3Store;
 import junit.framework.TestCase;
 
 
+//TODO: rename to SendmailTest
 public class AbstractMailTest extends TestCase
 {
 	protected Properties properties;
