@@ -17,6 +17,10 @@
 				optimize="off" />
 	</target>
 	
+	<target name="jar" depends="compile">
+		<jar jarfile="build/cope-sendmail.jar" basedir="build/classes" />
+	</target>
+	
 	<target name="clean">
 		<delete dir="build" />
 	</target>
@@ -46,6 +50,6 @@
 		</javadoc>
 	</target>
 
-	<target name="all" depends="compile, api" />
+	<target name="all" depends="compile, jar, api" />
 
 </project>
