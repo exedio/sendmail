@@ -16,9 +16,9 @@ public final class MailSender
 	
 	public static final void sendMails(final MailSource source, final String smtpHost, final int maximumResultSize)
 	{
-		final Collection emails = source.getMailsToSend(maximumResultSize);
+		final Collection mails = source.getMailsToSend(maximumResultSize);
 
-		if(!emails.isEmpty())
+		if(!mails.isEmpty())
 		{
 			final Properties properties = new Properties();
 			properties.put(MAIL_SMTP_HOST, smtpHost);
@@ -26,7 +26,7 @@ public final class MailSender
 			final Session session = Session.getInstance(properties);
 			session.setDebug(true);
 
-			for(Iterator i = emails.iterator(); i.hasNext(); )
+			for(Iterator i = mails.iterator(); i.hasNext(); )
 			{
 				final Mail email = (Mail)i.next();
 				try
