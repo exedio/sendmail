@@ -129,6 +129,7 @@ public class SendMailTest extends TestCase
 		final TestMail m1 = new TestMail(from, to, cc, bcc, "subject for test mail", "text for test mail");
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
+		final TestMail m2 = new TestMail(from, new String[]{to,to}, new String[]{cc,cc}, new String[]{bcc,bcc}, "subject for test mail with multiple recipients", "text for test mail with multiple recipients");
 
 		final MailSource p = new MailSource()
 		{
@@ -139,6 +140,7 @@ public class SendMailTest extends TestCase
 				result.add(m1);
 				result.add(f1);
 				result.add(f2);
+				result.add(m2);
 				return result;
 			}
 		};
@@ -156,6 +158,10 @@ public class SendMailTest extends TestCase
 		assertEquals(NullPointerException.class, f2.failedException.getClass());
 		assertEquals(0, f2.sentCounter);
 		assertEquals(1, f2.failedCounter);
+
+		assertEquals(null, m2.failedException);
+		assertEquals(1, m2.sentCounter);
+		assertEquals(0, m2.failedCounter);
 	}
 
 }
