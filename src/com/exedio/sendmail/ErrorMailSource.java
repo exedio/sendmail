@@ -22,7 +22,7 @@ public final class ErrorMailSource implements MailSource
 	
 	private final List emailsToBeSent = Collections.synchronizedList(new ArrayList());
 	
-	public final Collection getEmailsToBeSent(final int maximumResultSize)
+	public final Collection getMailsToSend(final int maximumResultSize)
 	{
 		final int size = emailsToBeSent.size();
 		

@@ -15,7 +15,7 @@ public class CascadingEmailProviderTest extends TestCase
 		
 		final MailSource pe = new MailSource()
 		{
-			public Collection getEmailsToBeSent(final int maximumResultSize)
+			public Collection getMailsToSend(final int maximumResultSize)
 			{
 				return Collections.EMPTY_LIST;
 			}
@@ -25,7 +25,7 @@ public class CascadingEmailProviderTest extends TestCase
 		final TestMail a2 = new TestMail("a2");
 		final MailSource pa = new MailSource()
 		{
-			public Collection getEmailsToBeSent(final int maximumResultSize)
+			public Collection getMailsToSend(final int maximumResultSize)
 			{
 				switch(maximumResultSize)
 				{
@@ -43,7 +43,7 @@ public class CascadingEmailProviderTest extends TestCase
 		final TestMail b2 = new TestMail("b2");
 		final MailSource pb = new MailSource()
 		{
-			public Collection getEmailsToBeSent(final int maximumResultSize)
+			public Collection getMailsToSend(final int maximumResultSize)
 			{
 				switch(maximumResultSize)
 				{
@@ -59,33 +59,33 @@ public class CascadingEmailProviderTest extends TestCase
 		
 		{
 			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pe, pa});
-			assertEquals(list(a1, a2), p.getEmailsToBeSent(2));
-			assertEquals(list(a1), p.getEmailsToBeSent(1));
-			assertEquals(list(), p.getEmailsToBeSent(0));
+			assertEquals(list(a1, a2), p.getMailsToSend(2));
+			assertEquals(list(a1), p.getMailsToSend(1));
+			assertEquals(list(), p.getMailsToSend(0));
 		}
 		{
 			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pa, pe});
-			assertEquals(list(a1, a2), p.getEmailsToBeSent(2));
-			assertEquals(list(a1), p.getEmailsToBeSent(1));
-			assertEquals(list(), p.getEmailsToBeSent(0));
+			assertEquals(list(a1, a2), p.getMailsToSend(2));
+			assertEquals(list(a1), p.getMailsToSend(1));
+			assertEquals(list(), p.getMailsToSend(0));
 		}
 		{
 			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pa, pb});
-			assertEquals(list(a1, a2), p.getEmailsToBeSent(2));
-			assertEquals(list(a1), p.getEmailsToBeSent(1));
-			assertEquals(list(), p.getEmailsToBeSent(0));
+			assertEquals(list(a1, a2), p.getMailsToSend(2));
+			assertEquals(list(a1), p.getMailsToSend(1));
+			assertEquals(list(), p.getMailsToSend(0));
 		}
 		{
 			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pb, pa});
-			assertEquals(list(b1, b2), p.getEmailsToBeSent(2));
-			assertEquals(list(b1), p.getEmailsToBeSent(1));
-			assertEquals(list(), p.getEmailsToBeSent(0));
+			assertEquals(list(b1, b2), p.getMailsToSend(2));
+			assertEquals(list(b1), p.getMailsToSend(1));
+			assertEquals(list(), p.getMailsToSend(0));
 		}
 		{
 			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pe, pe});
-			assertEquals(list(), p.getEmailsToBeSent(2));
-			assertEquals(list(), p.getEmailsToBeSent(1));
-			assertEquals(list(), p.getEmailsToBeSent(0));
+			assertEquals(list(), p.getMailsToSend(2));
+			assertEquals(list(), p.getMailsToSend(1));
+			assertEquals(list(), p.getMailsToSend(0));
 		}
 	}
 

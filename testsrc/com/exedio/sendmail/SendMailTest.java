@@ -117,7 +117,7 @@ public class SendMailTest extends TestCase
 
 		final MailSource p = new MailSource()
 		{
-			public Collection getEmailsToBeSent(final int maximumResultSize)
+			public Collection getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
 				final ArrayList result = new ArrayList();

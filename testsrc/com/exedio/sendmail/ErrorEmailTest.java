@@ -20,7 +20,7 @@ public class ErrorEmailTest extends TestCase
 	
 	public void testErrorMail()
 	{
-		assertEquals(list(), ep.getEmailsToBeSent(10));
+		assertEquals(list(), ep.getMailsToSend(10));
 
 		final Mail m1 = ep.createMail("test-Text");
 		assertEquals("error-email-from@test.exedio.com", m1.getFrom());
@@ -39,14 +39,14 @@ public class ErrorEmailTest extends TestCase
 		final String m2text = m2.getText();
 		assertTrue("EXCEPTION_TEXT:"+m2text, m2text.startsWith("java.lang.NullPointerException: test-exception-message\n"));
 
-		assertEquals(list(m1, m2), ep.getEmailsToBeSent(10));
-		assertEquals(list(m1), ep.getEmailsToBeSent(1));
+		assertEquals(list(m1, m2), ep.getMailsToSend(10));
+		assertEquals(list(m1), ep.getMailsToSend(1));
 		
 		m2.notifySent();
-		assertEquals(list(m1), ep.getEmailsToBeSent(10));
+		assertEquals(list(m1), ep.getMailsToSend(10));
 		
 		m1.notifySent();
-		assertEquals(list(), ep.getEmailsToBeSent(10));
+		assertEquals(list(), ep.getMailsToSend(10));
 	}
 
 	protected final static List list()

@@ -4,6 +4,6 @@ import java.util.Collection;
 
 public interface MailSource
 {
-	public Collection getEmailsToBeSent(final int maximumResultSize);
+	public Collection getMailsToSend(final int maximumResultSize);
 	
 }

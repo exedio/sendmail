@@ -21,11 +21,11 @@ public class CompositeMailSource implements MailSource
 		}
 	}
 	
-	public Collection getEmailsToBeSent(final int maximumResultSize)
+	public Collection getMailsToSend(final int maximumResultSize)
 	{
 		for(int i = 0; i<sources.length; i++)
 		{
-			final Collection mails = sources[i].getEmailsToBeSent(maximumResultSize);
+			final Collection mails = sources[i].getMailsToSend(maximumResultSize);
 			if(!mails.isEmpty())
 				return mails;
 		}

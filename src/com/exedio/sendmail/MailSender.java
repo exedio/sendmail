@@ -16,7 +16,7 @@ public final class MailSender
 	
 	public static final void sendMails(final MailSource provider, final String smtpHost, final int maximumResultSize)
 	{
-		final Collection emails = provider.getEmailsToBeSent(maximumResultSize);
+		final Collection emails = provider.getMailsToSend(maximumResultSize);
 
 		if(!emails.isEmpty())
 		{
