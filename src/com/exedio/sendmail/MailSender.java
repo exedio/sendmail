@@ -28,34 +28,34 @@ public final class MailSender
 
 			for(Iterator i = mails.iterator(); i.hasNext(); )
 			{
-				final Mail email = (Mail)i.next();
+				final Mail mail = (Mail)i.next();
 				try
 				{
 					final MimeMessage message = new MimeMessage(session);
-					message.setFrom(new InternetAddress(email.getFrom()));
-					message.addRecipient(Message.RecipientType.TO, new InternetAddress(email.getTo()));
+					message.setFrom(new InternetAddress(mail.getFrom()));
+					message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
 					{
-						final String carbonCopy = email.getCarbonCopy();
+						final String carbonCopy = mail.getCarbonCopy();
 						if(carbonCopy!=null)
 							message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy));
 					}
 					{
-						final String blindCarbonCopy = email.getBlindCarbonCopy();
+						final String blindCarbonCopy = mail.getBlindCarbonCopy();
 						if(blindCarbonCopy!=null)
 							message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy));
 					}
 					{
-						final String subject = email.getSubject();
+						final String subject = mail.getSubject();
 						if(subject!=null)
 							message.setSubject(subject);
 					}
-					message.setText(email.getText());
+					message.setText(mail.getText());
 					Transport.send(message);
-					email.notifySent();
+					mail.notifySent();
 				}
 				catch(Exception e)
 				{
-					email.notifyFailed(e);
+					mail.notifyFailed(e);
 				}
 			}
 		}
