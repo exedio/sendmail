@@ -7,13 +7,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public final class ErrorEmailProvider implements MailSource
+public final class ErrorMailSource implements MailSource
 {
 	final String from;
 	final String to;
 	final String subject;
 	
-	public ErrorEmailProvider(final String from, final String to, final String subject)
+	public ErrorMailSource(final String from, final String to, final String subject)
 	{
 		this.from = from;
 		this.to = to;

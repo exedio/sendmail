@@ -10,12 +10,12 @@ import junit.framework.TestCase;
 
 public class ErrorEmailTest extends TestCase
 {
-	private ErrorEmailProvider ep;
+	private ErrorMailSource ep;
 	
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		ep = new ErrorEmailProvider("error-email-from@test.exedio.com", "error-email-to@test.exedio.com", "error-subject");
+		ep = new ErrorMailSource("error-email-from@test.exedio.com", "error-email-to@test.exedio.com", "error-subject");
 	}
 	
 	public void testErrorMail()
