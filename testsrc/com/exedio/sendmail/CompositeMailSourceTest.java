@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 public class CompositeMailSourceTest extends TestCase
 {
-	public void testCascade() throws Exception
+	public void testComposite() throws Exception
 	{
 		
 		final MailSource pe = new MailSource()
