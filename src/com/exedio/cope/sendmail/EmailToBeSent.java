@@ -11,4 +11,6 @@ public interface EmailToBeSent
 	
 	public String getBlindCarbonCopy();
 	
+	public String getText();
+	
 }
