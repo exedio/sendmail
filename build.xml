@@ -4,6 +4,7 @@
 
 	<target name="properties">
 		<property file="../local.properties" />
+		<property name="api.private" value="off" />
 		<property name="api.link.jdk" value="http://java.sun.com/j2se/1.4.2/docs/api" />
 	</target>
 
@@ -31,7 +32,7 @@
 				sourcepath="src"
 				destdir="api"
 				maxmemory="60m"
-				private="on"
+				private="${api.private}"
 				author="on"
 				use="on"
 				version="on"
