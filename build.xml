@@ -93,6 +93,7 @@
 			<link href="${api.link.jdk}" />
 			<classpath>
 				<pathelement location="../lib/mail.jar" />
+				<pathelement location="../lib/activation.jar" />
 			</classpath>
 		</javadoc>
 	</target>
