@@ -260,16 +260,16 @@ public class SendMailTest extends TestCase
 	
 	public void testSendMail() throws InterruptedException
 	{
-		final SimpleDateFormat df = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss.S");
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final TestMail m1 = new TestMail(from, user1Email, user2Email, user3Email, SUBJECT1+ts, TEXT1);
+		final TestMail m1 = new TestMail(from, user1Email, user2Email, user3Email, ts+SUBJECT1, TEXT1);
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
-		final TestMail m2 = new TestMail(from, new String[]{user2Email}, null, null, SUBJECT2+ts, TEXT2);
+		final TestMail m2 = new TestMail(from, new String[]{user2Email}, null, null, ts+SUBJECT2, TEXT2);
 		m2.html = true;
-		final TestMail x12 = new TestMail(from, new String[]{user1Email, user2Email},  null, null, "subject 1+2"+ts, TEXT1);
-		final TestMail x13 = new TestMail(from, null, new String[]{user1Email, user3Email}, null, "subject 1+3"+ts, TEXT1);
-		final TestMail x23 = new TestMail(from, null, null, new String[]{user2Email, user3Email}, "subject 2+3"+ts, TEXT1);
+		final TestMail x12 = new TestMail(from, new String[]{user1Email, user2Email}, null, null, ts+"subject 1+2", TEXT1);
+		final TestMail x13 = new TestMail(from, null, new String[]{user1Email, user3Email}, null, ts+"subject 1+3", TEXT1);
+		final TestMail x23 = new TestMail(from, null, null, new String[]{user2Email, user3Email}, ts+"subject 2+3", TEXT1);
 
 		final MailSource p = new MailSource()
 		{
