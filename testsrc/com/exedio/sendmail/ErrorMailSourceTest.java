@@ -14,7 +14,7 @@ public class ErrorMailSourceTest extends TestCase
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		ep = new ErrorMailSource("error-email-from@test.exedio.com", "error-email-to@test.exedio.com", "error-subject");
+		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject");
 	}
 	
 	public void testErrorMail()
@@ -22,16 +22,16 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(list(), ep.getMailsToSend(10));
 
 		final Mail m1 = ep.createMail("test-Text");
-		assertEquals("error-email-from@test.exedio.com", m1.getFrom());
-		assertEquals("error-email-to@test.exedio.com", m1.getTo());
+		assertEquals("error-mail-from@test.exedio.com", m1.getFrom());
+		assertEquals("error-mail-to@test.exedio.com", m1.getTo());
 		assertEquals(null, m1.getCarbonCopy());
 		assertEquals(null, m1.getBlindCarbonCopy());
 		assertEquals("error-subject", m1.getSubject());
 		assertEquals("test-Text", m1.getText());
 
 		final Mail m2 = ep.createMail(new NullPointerException("test-exception-message"));
-		assertEquals("error-email-from@test.exedio.com", m2.getFrom());
-		assertEquals("error-email-to@test.exedio.com", m2.getTo());
+		assertEquals("error-mail-from@test.exedio.com", m2.getFrom());
+		assertEquals("error-mail-to@test.exedio.com", m2.getTo());
 		assertEquals(null, m2.getCarbonCopy());
 		assertEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
