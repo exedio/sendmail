@@ -39,18 +39,19 @@ public class SendMailTest extends TestCase
 	private boolean smtpDebug;
 
 	private String pop3Host;
-	private String pop3ToUser;
-	private String pop3ToPassword;
-	private String pop3CcUser;
-	private String pop3CcPassword;
-	private String pop3BccUser;
-	private String pop3BccPassword;
 	private boolean pop3Debug;
 
+	private String user1Email;
+	private String user1Pop3User;
+	private String user1Pop3Password;
+	private String user2Email;
+	private String user2Pop3User;
+	private String user2Pop3Password;
+	private String user3Email;
+	private String user3Pop3User;
+	private String user3Pop3Password;
+
 	private String from;
-	private String to;
-	private String cc;
-	private String bcc;
 	private String fail;
 	
 	public void setUp() throws Exception
@@ -64,23 +65,24 @@ public class SendMailTest extends TestCase
 		smtpDebug=properties.get("smtp.debug")!=null;
 		
 		pop3Host=(String)properties.get("pop3.host");
-		pop3ToUser=(String)properties.get("pop3.to.user");
-		pop3CcUser=(String)properties.get("pop3.cc.user");
-		pop3BccUser=(String)properties.get("pop3.bcc.user");
-		pop3ToPassword=(String)properties.get("pop3.to.password");
-		pop3CcPassword=(String)properties.get("pop3.cc.password");
-		pop3BccPassword=(String)properties.get("pop3.bcc.password");
 		pop3Debug=properties.get("pop3.debug")!=null;
+
+		user1Email=       (String)properties.get("user1.email");
+		user1Pop3User=    (String)properties.get("user1.pop3.user");
+		user1Pop3Password=(String)properties.get("user1.pop3.password");
+		user2Email=       (String)properties.get("user2.email");
+		user2Pop3User=    (String)properties.get("user2.pop3.user");
+		user2Pop3Password=(String)properties.get("user2.pop3.password");
+		user3Email=       (String)properties.get("user3.email");
+		user3Pop3User=    (String)properties.get("user3.pop3.user");
+		user3Pop3Password=(String)properties.get("user3.pop3.password");
 		
 		from=(String)properties.get("from");
-		to=(String)properties.get("to");
-		cc=(String)properties.get("cc");
-		bcc=(String)properties.get("bcc");
 		fail=(String)properties.get("fail");
 		
-		cleanPOP3Account(pop3ToUser, pop3ToPassword);
-		cleanPOP3Account(pop3CcUser, pop3CcPassword);
-		cleanPOP3Account(pop3BccUser, pop3BccPassword);
+		cleanPOP3Account(user1Pop3User, user1Pop3Password);
+		cleanPOP3Account(user2Pop3User, user2Pop3Password);
+		cleanPOP3Account(user3Pop3User, user3Pop3Password);
 	}
 	
 	private Session getPOP3Session(final String pop3User)
@@ -260,14 +262,14 @@ public class SendMailTest extends TestCase
 	{
 		final SimpleDateFormat df = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss.S");
 		final String ts = df.format(new Date());
-		final TestMail m1 = new TestMail(from, to, cc, bcc, SUBJECT1+ts, TEXT1);
+		final TestMail m1 = new TestMail(from, user1Email, user2Email, user3Email, SUBJECT1+ts, TEXT1);
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
-		final TestMail m2 = new TestMail(from, new String[]{cc}, null, null, SUBJECT2+ts, TEXT2);
+		final TestMail m2 = new TestMail(from, new String[]{user2Email}, null, null, SUBJECT2+ts, TEXT2);
 		m2.html = true;
-		final TestMail x12 = new TestMail(from, new String[]{to, cc},  null, null, "subject 1+2"+ts, TEXT1);
-		final TestMail x13 = new TestMail(from, null, new String[]{to, bcc}, null, "subject 1+3"+ts, TEXT1);
-		final TestMail x23 = new TestMail(from, null, null, new String[]{cc, bcc}, "subject 2+3"+ts, TEXT1);
+		final TestMail x12 = new TestMail(from, new String[]{user1Email, user2Email},  null, null, "subject 1+2"+ts, TEXT1);
+		final TestMail x13 = new TestMail(from, null, new String[]{user1Email, user3Email}, null, "subject 1+3"+ts, TEXT1);
+		final TestMail x23 = new TestMail(from, null, null, new String[]{user2Email, user3Email}, "subject 2+3"+ts, TEXT1);
 
 		final MailSource p = new MailSource()
 		{
@@ -307,9 +309,9 @@ public class SendMailTest extends TestCase
 		// let the server do some processing before fetching the mails
 		Thread.sleep(10000);
 		
-		assertPOP3(pop3ToUser, pop3ToPassword, new TestMail[]{m1, x12, x13});
-		assertPOP3(pop3CcUser, pop3CcPassword, new TestMail[]{m1, m2, x12, x23});
-		assertPOP3(pop3BccUser, pop3BccPassword, new TestMail[]{m1, x13, x23});
+		assertPOP3(user1Pop3User, user1Pop3Password, new TestMail[]{m1, x12, x13});
+		assertPOP3(user2Pop3User, user2Pop3Password, new TestMail[]{m1, m2, x12, x23});
+		assertPOP3(user3Pop3User, user3Pop3Password, new TestMail[]{m1, x13, x23});
 	}
 	
 	private void assertPOP3(final String pop3User, final String pop3Password, final TestMail[] expectedMails)
@@ -361,7 +363,7 @@ public class SendMailTest extends TestCase
 				assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
 				assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
 			}
-			assertEquals(expectedMails.length, inboxMessages.length);
+			assertEquals(pop3User, expectedMails.length, inboxMessages.length);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
