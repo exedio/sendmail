@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.activation.DataSource;
+
 public final class ErrorMailSource implements MailSource
 {
 	final String from;
@@ -98,6 +100,11 @@ public final class ErrorMailSource implements MailSource
 		public String getText()
 		{
 			return text;
+		}
+		
+		public DataSource[] getAttachements()
+		{
+			return null;
 		}
 		
 		public void notifySent()

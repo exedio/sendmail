@@ -1,6 +1,7 @@
 package com.exedio.sendmail;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,12 +12,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
+import javax.activation.DataSource;
+import javax.activation.URLDataSource;
 import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMultipart;
 
 import com.sun.mail.pop3.POP3Store;
 
@@ -47,15 +52,16 @@ public class MailSenderTest extends SendmailTest
 		cleanPOP3Account(user3);
 	}
 	
-	private static class TestMail implements Mail
+	private static final class TestMail implements Mail
 	{
 		private final String from;
 		private final String[] to;
 		private final String[] cc;
 		private final String[] bcc;
 		private final String subject;
-		private boolean html;
+		private boolean html = false;
 		private final String text;
+		private final DataSource[] attachements;
 
 		int sentCounter = 0;
 		int failedCounter = 0;
@@ -83,12 +89,51 @@ public class MailSenderTest extends SendmailTest
 				final String subject,
 				final String text)
 		{
+			this(from, to, cc, bcc, subject, text, null);
+		}
+		
+		TestMail(final String from,
+				final String to,
+				final String subject,
+				final String text)
+		{
+			this(from, ta(to), null, null, subject, text, (DataSource[])null);
+		}
+		
+		TestMail(final String from,
+				final String to,
+				final String subject,
+				final String text,
+				final DataSource attachement)
+		{
+			this(from, ta(to), null, null, subject, text, new DataSource[]{attachement});
+		}
+		
+		TestMail(final String from,
+				final String to,
+				final String subject,
+				final String text,
+				final DataSource attachement1,
+				final DataSource attachement2)
+		{
+			this(from, ta(to), null, null, subject, text, new DataSource[]{attachement1, attachement2});
+		}
+		
+		TestMail(final String from,
+				final String[] to,
+				final String[] cc,
+				final String[] bcc,
+				final String subject,
+				final String text,
+				final DataSource[] attachements)
+		{
 			this.from = from;
 			this.to = to;
 			this.cc = cc;
 			this.bcc = bcc;
 			this.subject = subject;
 			this.text = text;
+			this.attachements = attachements;
 		}
 		
 		public String getFrom()
@@ -126,6 +171,11 @@ public class MailSenderTest extends SendmailTest
 			return text;
 		}
 		
+		public DataSource[] getAttachements()
+		{
+			return attachements;
+		}
+		
 		public void notifySent()
 		{
 			sentCounter++;
@@ -138,6 +188,48 @@ public class MailSenderTest extends SendmailTest
 		}
 		
 	}
+	
+	/*private static final class TestDataSource implements DataSource
+	{
+		final String resource;
+		final String name;
+		final String contentType;
+		
+		TestDataSource(final Class resource, final String name, final String contentType)
+		{
+			final String resourceName = resource.getName();
+			this.resource = resourceName.substring(resourceName.lastIndexOf('.'));
+			this.name = name;
+			this.contentType = contentType;
+			
+			if(this.resource==null)
+				throw new RuntimeException();
+			if(this.name==null)
+				throw new RuntimeException();
+			if(this.contentType==null)
+				throw new RuntimeException();
+		}
+		
+		public String getContentType()
+		{
+			return contentType;
+		}
+		
+		public String getName()
+		{
+			return name;
+		}
+		
+		public InputStream getInputStream()
+		{
+			return getClass().getResourceAsStream(resource);
+		}
+		
+		public OutputStream getOutputStream()
+		{
+			throw new RuntimeException(name);
+		}
+	}*/
 	
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
@@ -155,12 +247,21 @@ public class MailSenderTest extends SendmailTest
 		final String ts = df.format(new Date());
 		final TestMail m1 = new TestMail(from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
-		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
-		final TestMail m2 = new TestMail(from, new String[]{user2.email}, null, null, ts+SUBJECT2, TEXT2);
+		final TestMail f2 = new TestMail(from, (String)null, null, null);
+		final TestMail m2 = new TestMail(from, user2.email, null, null, ts+SUBJECT2, TEXT2);
 		m2.html = true;
 		final TestMail x12 = new TestMail(from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
 		final TestMail x13 = new TestMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
 		final TestMail x23 = new TestMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
+		final TestMail ma1 = new TestMail(from, user1.email, ts+"subject text attach", TEXT1,
+				new URLDataSource(getClass().getResource("MailSenderTest.class")));
+				//new TestDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
+		final TestMail ma2 = new TestMail(from, user1.email, ts+"subject html attach", TEXT2,
+				new URLDataSource(getClass().getResource("PackageTest.class")),
+				new URLDataSource(getClass().getResource("CompositeMailSourceTest.class")));
+				//new TestDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
+				//new TestDataSource(CompositeMailSourceTest.class, "hallo22.zock", "application/java-vm"));
+		ma2.html = true;
 
 		final MailSource p = new MailSource()
 		{
@@ -175,6 +276,8 @@ public class MailSenderTest extends SendmailTest
 				result.add(x12);
 				result.add(x13);
 				result.add(x23);
+				result.add(ma1);
+				result.add(ma2);
 				return result;
 			}
 		};
@@ -197,6 +300,26 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(1, m2.sentCounter);
 		assertEquals(0, m2.failedCounter);
 		
+		assertEquals(null, x12.failedException);
+		assertEquals(1, x12.sentCounter);
+		assertEquals(0, x12.failedCounter);
+		
+		assertEquals(null, x13.failedException);
+		assertEquals(1, x13.sentCounter);
+		assertEquals(0, x13.failedCounter);
+		
+		assertEquals(null, x23.failedException);
+		assertEquals(1, x23.sentCounter);
+		assertEquals(0, x23.failedCounter);
+		
+		assertEquals(null, ma1.failedException);
+		assertEquals(1, ma1.sentCounter);
+		assertEquals(0, ma1.failedCounter);
+		
+		assertEquals(null, ma2.failedException);
+		assertEquals(1, ma2.sentCounter);
+		assertEquals(0, ma2.failedCounter);
+
 		boolean complete1 = false;
 		boolean complete2 = false;
 		boolean complete3 = false;
@@ -209,7 +332,7 @@ public class MailSenderTest extends SendmailTest
 				System.out.print("---------"+i+"--");
 			}
 			if(
-					(complete1 || (complete1=countPOP3(user1, 3))) &&
+					(complete1 || (complete1=countPOP3(user1, 5))) &&
 					(complete2 || (complete2=countPOP3(user2, 4))) &&
 					(complete3 || (complete3=countPOP3(user3, 3))) )
 			{
@@ -219,7 +342,7 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1, new TestMail[]{m1, x12, x13});
+		assertPOP3(user1, new TestMail[]{m1, x12, x13, ma1, ma2});
 		assertPOP3(user2, new TestMail[]{m1, m2, x12, x23});
 		assertPOP3(user3, new TestMail[]{m1, x13, x23});
 	}
@@ -270,8 +393,26 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
-				assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
-				assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
+				final DataSource[] attachements = expected.getAttachements();
+				if(attachements==null)
+				{
+					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
+					assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
+				}
+				else
+				{
+					assertTrue(message+"-"+m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+					final MimeMultipart multipart = (MimeMultipart)m.getContent();
+					final BodyPart mainBody = multipart.getBodyPart(0);
+					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", mainBody.getContentType());
+					assertEquals(message, expected.getText(), mainBody.getContent());
+					for(int j = 0; j<attachements.length; j++)
+					{
+						final BodyPart attachBody = multipart.getBodyPart(j+1);
+						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith("application/java-vm"));
+						assertEquals(message, bytes(attachements[j].getInputStream()), bytes((InputStream)attachBody.getContent()));
+					}
+				}
 			}
 			assertEquals(account.pop3User, expectedMails.length, inboxMessages.length);
 
@@ -363,6 +504,27 @@ public class MailSenderTest extends SendmailTest
 				{}
 			}
 		}
+	}
+	
+	protected final static byte[] bytes(final InputStream in)
+	{
+		try
+		{
+			final byte[] buf = new byte[1024];
+			in.read(buf);
+			return buf;
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	void assertEquals(String message, byte[] expected, byte[] actual)
+	{
+		assertEquals(message, expected.length, actual.length);
+		for(int i = 0; i<expected.length; i++)
+			assertEquals(message+'-'+i, expected[i], actual[i]);
 	}
 
 	protected final static ArrayList addressList(final String[] addresses) throws MessagingException

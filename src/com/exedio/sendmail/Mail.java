@@ -1,5 +1,7 @@
 package com.exedio.sendmail;
 
+import javax.activation.DataSource;
+
 
 public interface Mail
 {
@@ -16,6 +18,8 @@ public interface Mail
 	public String getText();
 
 	public String getSubject();
+	
+	public DataSource[] getAttachements();
 	
 	public void notifySent();
 

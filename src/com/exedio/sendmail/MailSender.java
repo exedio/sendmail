@@ -4,11 +4,16 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public final class MailSender
 {
@@ -59,10 +64,36 @@ public final class MailSender
 					}
 
 					final String text = mail.getText();
-					if(mail.isHTML())
-						message.setContent(text, "text/html");
+					final DataSource[] attachements = mail.getAttachements();
+					if(attachements==null || attachements.length==0)
+					{
+						if(mail.isHTML())
+							message.setContent(text, "text/html");
+						else
+							message.setText(text);
+					}
 					else
-						message.setText(text);
+					{
+						final MimeMultipart multipart = new MimeMultipart("alternative");
+						{
+							final MimeBodyPart mainPart = new MimeBodyPart();
+							if(mail.isHTML())
+								mainPart.setContent(text, "text/html");
+							else
+								mainPart.setText(text);
+							mainPart.setDisposition(BodyPart.INLINE);
+							multipart.addBodyPart(mainPart);
+						}
+						for(int j = 0; j<attachements.length; j++)
+						{
+							final MimeBodyPart attachPart = new MimeBodyPart();
+							attachPart.setDataHandler(new DataHandler(attachements[j]));
+							attachPart.setDisposition(BodyPart.ATTACHMENT);
+							attachPart.setFileName(attachements[j].getName());
+							multipart.addBodyPart(attachPart);
+						}
+						message.setContent(multipart);
+					}
 					
 					Transport.send(message);
 					mail.notifySent();

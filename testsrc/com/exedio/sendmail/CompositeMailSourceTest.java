@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.activation.DataSource;
+
 import junit.framework.TestCase;
 
 public class CompositeMailSourceTest extends TestCase
@@ -169,6 +171,11 @@ public class CompositeMailSourceTest extends TestCase
 		}
 		
 		public String getText()
+		{
+			throw new RuntimeException(code);
+		}
+		
+		public DataSource[] getAttachements()
 		{
 			throw new RuntimeException(code);
 		}

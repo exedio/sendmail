@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.activation.DataSource;
+
 /**
  * BEWARE: thid puts a lot of mails on your smtp server.
  */
@@ -95,6 +97,11 @@ public class SmtpTerror extends SendmailTest
 					public String getText()
 					{
 						return "terror mail";
+					}
+					
+					public DataSource[] getAttachements()
+					{
+						return null;
 					}
 					
 					public void notifySent()

@@ -18,6 +18,7 @@
 				optimize="off">
 			<classpath>
 				<pathelement location="../lib/mail.jar" />
+				<pathelement location="../lib/activation.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -46,6 +47,7 @@
 				<pathelement location="build/classes" />
 				<pathelement location="../lib/junit.jar" />
 				<pathelement location="../lib/mail.jar" />
+				<pathelement location="../lib/activation.jar" />
 			</classpath>
 		</javac>
 	</target>
