@@ -33,9 +33,4 @@ public class CascadingEmailProvider implements EmailProvider
 		return Collections.EMPTY_LIST;
 	}
 	
-	public String getSMTPHost()
-	{
-		return sources[0].getSMTPHost();
-	}
-
 }

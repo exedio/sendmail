@@ -126,14 +126,8 @@ public class SendMailTest extends TestCase
 				result.add(f2);
 				return result;
 			}
-			
-			public String getSMTPHost()
-			{
-				return smtp;
-			}
-			
 		};
-		EmailRunner.sendMails(p, MAXIMUM_RESULT_SIZE);
+		EmailRunner.sendMails(p, smtp, MAXIMUM_RESULT_SIZE);
 
 		assertEquals(null, m1.failedException);
 		assertEquals(1, m1.sentCounter);

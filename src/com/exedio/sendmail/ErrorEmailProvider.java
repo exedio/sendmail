@@ -34,11 +34,6 @@ public final class ErrorEmailProvider implements EmailProvider
 			return new ArrayList(emailsToBeSent.subList(0, maximumResultSize));
 	}
 	
-	public String getSMTPHost()
-	{
-		throw new RuntimeException();
-	}
-
 	public EmailToBeSent createMail(final Exception exception)
 	{
 		final StringWriter sw = new StringWriter();

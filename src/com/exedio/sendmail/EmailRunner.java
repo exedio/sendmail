@@ -15,14 +15,14 @@ public final class EmailRunner
 {
 	private static final String MAIL_SMTP_HOST = "mail.host";
 	
-	public static final void sendMails(final EmailProvider provider, final int maximumResultSize)
+	public static final void sendMails(final EmailProvider provider, final String smtpHost, final int maximumResultSize)
 	{
 		final Collection emails = provider.getEmailsToBeSent(maximumResultSize);
 
 		if(!emails.isEmpty())
 		{
 			final Properties properties = new Properties();
-			properties.put(MAIL_SMTP_HOST, provider.getSMTPHost());
+			properties.put(MAIL_SMTP_HOST, smtpHost);
 			properties.put("mail.transport.protocol", "smtp");
 			final Session session = Session.getInstance(properties);
 			session.setDebug(true);

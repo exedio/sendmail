@@ -19,11 +19,6 @@ public class CascadingEmailProviderTest extends TestCase
 			{
 				return Collections.EMPTY_LIST;
 			}
-			
-			public String getSMTPHost()
-			{
-				return "nix";
-			}
 		};
 
 		final EmailToBeSent a1 = new Mail("a1");
@@ -42,11 +37,6 @@ public class CascadingEmailProviderTest extends TestCase
 						return list(a1, a2);
 				}
 			}
-			
-			public String getSMTPHost()
-			{
-				return "nix";
-			}
 		};
 		
 		final EmailToBeSent b1 = new Mail("b1");
@@ -64,11 +54,6 @@ public class CascadingEmailProviderTest extends TestCase
 					default:
 						return list(b1, b2);
 				}
-			}
-			
-			public String getSMTPHost()
-			{
-				return "nix";
 			}
 		};
 		
