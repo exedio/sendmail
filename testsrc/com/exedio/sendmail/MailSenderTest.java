@@ -231,6 +231,23 @@ public class MailSenderTest extends SendmailTest
 		}
 	}*/
 	
+	private static final class TestURLDataSource extends URLDataSource
+	{
+		final String name;
+		
+		TestURLDataSource(final String name)
+		{
+			super(MailSenderTest.class.getResource(name));
+			this.name = name;
+		}
+		
+		public String getName()
+		{
+			return name;
+		}
+		
+	}
+
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
 	private final static String SUBJECT1 = "subject text";
@@ -254,11 +271,11 @@ public class MailSenderTest extends SendmailTest
 		final TestMail x13 = new TestMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
 		final TestMail x23 = new TestMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
 		final TestMail ma1 = new TestMail(from, user1.email, ts+"subject text attach", TEXT1,
-				new URLDataSource(getClass().getResource("MailSenderTest.class")));
+				new TestURLDataSource("MailSenderTest.class"));
 				//new TestDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 		final TestMail ma2 = new TestMail(from, user1.email, ts+"subject html attach", TEXT2,
-				new URLDataSource(getClass().getResource("PackageTest.class")),
-				new URLDataSource(getClass().getResource("CompositeMailSourceTest.class")));
+				new TestURLDataSource("PackageTest.class"),
+				new TestURLDataSource("CompositeMailSourceTest.class"));
 				//new TestDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new TestDataSource(CompositeMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 		ma2.html = true;
@@ -410,6 +427,7 @@ public class MailSenderTest extends SendmailTest
 					{
 						final BodyPart attachBody = multipart.getBodyPart(j+1);
 						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith("application/java-vm"));
+						assertEquals(message, attachements[j].getName(), attachBody.getFileName());
 						assertEquals(message, bytes(attachements[j].getInputStream()), bytes((InputStream)attachBody.getContent()));
 					}
 				}
