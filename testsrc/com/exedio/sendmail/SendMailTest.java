@@ -99,11 +99,11 @@ public class SendMailTest extends TestCase
 			assertEquals("INBOX", inboxFolder.getFullName());
 			inboxFolder.open(Folder.READ_WRITE);
 			final Message[] inboxMessages = inboxFolder.getMessages();
-			System.out.println("--------removing "+inboxMessages.length+" messages --------");
+			//System.out.println("--------removing "+inboxMessages.length+" messages --------");
 			for(int i = 0; i<inboxMessages.length; i++)
 			{
 				final Message message = inboxMessages[i];
-				System.out.println("-----------------removing message "+i);
+				//System.out.println("-----------------removing message "+i);
 				message.setFlag(Flags.Flag.DELETED, true);
 			}
 
