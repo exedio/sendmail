@@ -29,7 +29,7 @@ public final class EmailRunner
 
 			for(Iterator i = emails.iterator(); i.hasNext(); )
 			{
-				final EmailToBeSent email = (EmailToBeSent)i.next();
+				final Mail email = (Mail)i.next();
 				try
 				{
 					final MimeMessage message = new MimeMessage(session);

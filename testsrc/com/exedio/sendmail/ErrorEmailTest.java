@@ -22,7 +22,7 @@ public class ErrorEmailTest extends TestCase
 	{
 		assertEquals(list(), ep.getEmailsToBeSent(10));
 
-		final EmailToBeSent m1 = ep.createMail("test-Text");
+		final Mail m1 = ep.createMail("test-Text");
 		assertEquals("error-email-from@test.exedio.com", m1.getFrom());
 		assertEquals("error-email-to@test.exedio.com", m1.getTo());
 		assertEquals(null, m1.getCarbonCopy());
@@ -30,7 +30,7 @@ public class ErrorEmailTest extends TestCase
 		assertEquals("error-subject", m1.getSubject());
 		assertEquals("test-Text", m1.getText());
 
-		final EmailToBeSent m2 = ep.createMail(new NullPointerException("test-exception-message"));
+		final Mail m2 = ep.createMail(new NullPointerException("test-exception-message"));
 		assertEquals("error-email-from@test.exedio.com", m2.getFrom());
 		assertEquals("error-email-to@test.exedio.com", m2.getTo());
 		assertEquals(null, m2.getCarbonCopy());

@@ -34,25 +34,25 @@ public final class ErrorMailSource implements MailSource
 			return new ArrayList(emailsToBeSent.subList(0, maximumResultSize));
 	}
 	
-	public EmailToBeSent createMail(final Exception exception)
+	public Mail createMail(final Exception exception)
 	{
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
 		pw.flush();
-		return new Mail(sw.getBuffer().toString());
+		return new ErrorMail(sw.getBuffer().toString());
 	}
 	
-	public EmailToBeSent createMail(final String text)
+	public Mail createMail(final String text)
 	{
-		return new Mail(text);
+		return new ErrorMail(text);
 	}
 	
-	private final class Mail implements EmailToBeSent
+	private final class ErrorMail implements Mail
 	{
 		final String text;
 		
-		private Mail(final String text)
+		private ErrorMail(final String text)
 		{
 			this.text = text;
 			emailsToBeSent.add(this);

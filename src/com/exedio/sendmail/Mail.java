@@ -1,7 +1,7 @@
 package com.exedio.sendmail;
 
 
-public interface EmailToBeSent
+public interface Mail
 {
 	public String getFrom();
 	

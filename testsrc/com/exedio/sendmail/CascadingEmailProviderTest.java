@@ -21,8 +21,8 @@ public class CascadingEmailProviderTest extends TestCase
 			}
 		};
 
-		final EmailToBeSent a1 = new Mail("a1");
-		final EmailToBeSent a2 = new Mail("a2");
+		final TestMail a1 = new TestMail("a1");
+		final TestMail a2 = new TestMail("a2");
 		final MailSource pa = new MailSource()
 		{
 			public Collection getEmailsToBeSent(final int maximumResultSize)
@@ -39,8 +39,8 @@ public class CascadingEmailProviderTest extends TestCase
 			}
 		};
 		
-		final EmailToBeSent b1 = new Mail("b1");
-		final EmailToBeSent b2 = new Mail("b2");
+		final TestMail b1 = new TestMail("b1");
+		final TestMail b2 = new TestMail("b2");
 		final MailSource pb = new MailSource()
 		{
 			public Collection getEmailsToBeSent(final int maximumResultSize)
@@ -89,11 +89,11 @@ public class CascadingEmailProviderTest extends TestCase
 		}
 	}
 
-	private static class Mail implements EmailToBeSent
+	private static class TestMail implements Mail
 	{
 		final String code;
 		
-		Mail(final String code)
+		TestMail(final String code)
 		{
 			this.code = code;
 		}

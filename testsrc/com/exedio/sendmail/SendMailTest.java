@@ -36,7 +36,7 @@ public class SendMailTest extends TestCase
 		fail=(String)properties.get("fail");
 	}
 	
-	private static class Email implements EmailToBeSent
+	private static class Email implements Mail
 	{
 		private final String from;
 		private final String to;
