@@ -1,5 +1,5 @@
 
-package mail;
+package com.exedio.cope.sendmail;
 
 public interface EmailToBeSent
 {
