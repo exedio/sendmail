@@ -127,7 +127,7 @@ public class SendMailTest extends TestCase
 				return result;
 			}
 		};
-		EmailRunner.sendMails(p, smtp, MAXIMUM_RESULT_SIZE);
+		MailSender.sendMails(p, smtp, MAXIMUM_RESULT_SIZE);
 
 		assertEquals(null, m1.failedException);
 		assertEquals(1, m1.sentCounter);

@@ -1,4 +1,3 @@
-
 package com.exedio.sendmail;
 
 import java.util.Collection;
@@ -11,7 +10,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public final class EmailRunner
+public final class MailSender
 {
 	private static final String MAIL_SMTP_HOST = "mail.host";
 	
