@@ -1,5 +1,4 @@
-
-package com.exedio.cope.sendmail;
+package com.exedio.sendmail;
 
 import java.util.Collection;
 
