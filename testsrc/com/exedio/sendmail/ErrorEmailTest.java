@@ -29,13 +29,14 @@ public class ErrorEmailTest extends TestCase
 		assertEquals("error-subject", m1.getSubject());
 		assertEquals("test-Text", m1.getText());
 
-		final EmailToBeSent m2 = ep.createMail(new NullPointerException());
+		final EmailToBeSent m2 = ep.createMail(new NullPointerException("test-exception-message"));
 		assertEquals("error-email-from@test.exedio.com", m2.getFrom());
 		assertEquals("error-email-to@test.exedio.com", m2.getTo());
 		assertEquals(null, m2.getCarbonCopy());
 		assertEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
-		assertEquals("java.lang.NullPointerException", m2.getText());
+		final String m2text = m2.getText();
+		assertTrue("EXCEPTION_TEXT:"+m2text, m2text.startsWith("java.lang.NullPointerException: test-exception-message\n"));
 
 		assertEquals(list(m1, m2), ep.getEmailsToBeSent(10));
 		assertEquals(list(m1, m2/*TODO*/), ep.getEmailsToBeSent(1));

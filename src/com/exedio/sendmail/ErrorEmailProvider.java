@@ -1,5 +1,7 @@
 package com.exedio.sendmail;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +37,11 @@ public final class ErrorEmailProvider implements EmailProvider
 
 	public EmailToBeSent createMail(final Exception exception)
 	{
-		return new Mail(exception.toString());
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
+		exception.printStackTrace(pw);
+		pw.flush();
+		return new Mail(sw.getBuffer().toString());
 	}
 	
 	public EmailToBeSent createMail(final String text)
