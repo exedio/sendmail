@@ -2,11 +2,25 @@
 package com.exedio.sendmail;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.URLName;
+import javax.mail.internet.InternetAddress;
+
 import junit.framework.TestCase;
+
+import com.sun.mail.pop3.POP3Store;
 
 
 public class SendMailTest extends TestCase
@@ -17,6 +31,9 @@ public class SendMailTest extends TestCase
 	}
 	
 	private String smtp;
+	private String pop3Host;
+	private String pop3User;
+	private String pop3Password;
 	private String from;
 	private String to;
 	private String cc;
@@ -26,14 +43,93 @@ public class SendMailTest extends TestCase
 	public void setUp() throws Exception
 	{
 		super.setUp();
+
 		final Properties properties = new Properties();
 		properties.load(new FileInputStream("test.properties"));
+
 		smtp=(String)properties.get("smtp");
+		
+		pop3Host=(String)properties.get("pop3.host");
+		pop3User=(String)properties.get("pop3.user");
+		pop3Password=(String)properties.get("pop3.password");
+		
 		from=(String)properties.get("from");
 		to=(String)properties.get("to");
 		cc=(String)properties.get("cc");
 		bcc=(String)properties.get("bcc");
 		fail=(String)properties.get("fail");
+		
+		cleanPOP3Account();
+	}
+	
+	private Session getPOP3Session()
+	{
+		final Properties properties = new Properties();
+		properties.put("mail.pop3.host", pop3Host);
+		properties.put("mail.pop3.user", pop3User);
+		final Session session = Session.getInstance(properties);
+		session.setDebug(true);
+		return session;
+	}
+	
+	private POP3Store getPOP3Store(final Session session)
+	{
+		return new POP3Store(session, new URLName("pop3://"+pop3User+":"+pop3Password+"@"+pop3Host+"/INBOX"));
+	}
+	
+	private void cleanPOP3Account()
+	{
+		POP3Store store = null;
+		Folder inboxFolder = null;
+		try
+		{
+			final Session session = getPOP3Session();
+			store = getPOP3Store(session);
+			store.connect();
+			final Folder defaultFolder = store.getDefaultFolder();
+			assertEquals("", defaultFolder.getFullName());
+			inboxFolder = defaultFolder.getFolder("INBOX");
+			assertEquals("INBOX", inboxFolder.getFullName());
+			inboxFolder.open(Folder.READ_WRITE);
+			final Message[] inboxMessages = inboxFolder.getMessages();
+			System.out.println("--------removing "+inboxMessages.length+" messages --------");
+			for(int i = 0; i<inboxMessages.length; i++)
+			{
+				final Message message = inboxMessages[i];
+				System.out.println("-----------------removing message "+i);
+				message.setFlag(Flags.Flag.DELETED, true);
+			}
+
+			inboxFolder.close(true); // expunge
+			inboxFolder = null;
+			store.close();
+			store = null;
+		}
+		catch(MessagingException e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			if(inboxFolder!=null)
+			{
+				try
+				{
+					inboxFolder.close(false); // not expunge, just close and release the resources
+				}
+				catch(MessagingException e)
+				{}
+			}
+			if(store!=null)
+			{
+				try
+				{
+					store.close();
+				}
+				catch(MessagingException e)
+				{}
+			}
+		}
 	}
 	
 	private static class TestMail implements Mail
@@ -130,7 +226,7 @@ public class SendMailTest extends TestCase
 	
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	public void testSendMail()
+	public void testSendMail() throws InterruptedException
 	{
 		final TestMail m1 = new TestMail(from, to, cc, bcc, "subject for test mail", "text for test mail");
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
@@ -172,6 +268,110 @@ public class SendMailTest extends TestCase
 		assertEquals(null, m2.failedException);
 		assertEquals(1, m2.sentCounter);
 		assertEquals(0, m2.failedCounter);
+		
+		// let the server do some processing before fetching the mails
+		Thread.sleep(500);
+
+		POP3Store store = null;
+		Folder inboxFolder = null;
+		try
+		{
+			final Session session = getPOP3Session();
+	
+			store = getPOP3Store(session);
+			store.connect();
+			final Folder defaultFolder = store.getDefaultFolder();
+			assertEquals("", defaultFolder.getFullName());
+			inboxFolder = defaultFolder.getFolder("INBOX");
+			assertEquals("INBOX", inboxFolder.getFullName());
+			inboxFolder.open(Folder.READ_ONLY);
+			final Message[] inboxMessages = inboxFolder.getMessages();
+			{
+				final Message m = inboxMessages[0];
+				assertEquals(list(new InternetAddress(from)), Arrays.asList(m.getFrom()));
+				assertEquals(list(new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
+				assertEquals(list(new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
+				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
+				assertEquals("subject for test mail", m.getSubject());
+				assertEquals(22, m.getSize());
+				assertEquals("text/plain; charset=us-ascii", m.getContentType());
+				assertEquals("text for test mail\r\n\r\n", m.getContent());
+			}
+			{
+				final Message m = inboxMessages[1];
+				assertEquals(list(new InternetAddress(from)), Arrays.asList(m.getFrom()));
+				assertEquals(list(new InternetAddress(to), new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
+				assertEquals(list(new InternetAddress(cc), new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
+				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
+				assertEquals("subject for test mail with multiple recipients", m.getSubject());
+				assertEquals(174, m.getSize());
+				assertEquals("text/html; charset=us-ascii", m.getContentType());
+				assertEquals(
+						"<html><body>text for test mail with multiple recipients and with html features " +
+						"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text.</body></html>" +
+						"\r\n\r\n", m.getContent());
+			}
+			assertEquals(2, inboxMessages.length);
+
+			inboxFolder.close(false);
+			inboxFolder = null;
+			store.close();
+			store = null;
+		}
+		catch(MessagingException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			if(inboxFolder!=null)
+			{
+				try
+				{
+					inboxFolder.close(true); // expunge
+				}
+				catch(MessagingException e)
+				{}
+			}
+			if(store!=null)
+			{
+				try
+				{
+					store.close();
+				}
+				catch(MessagingException e)
+				{}
+			}
+		}
 	}
 
+	protected final static List list()
+	{
+		return Collections.EMPTY_LIST;
+	}
+
+	protected final static List list(final Object o)
+	{
+		return Collections.singletonList(o);
+	}
+	
+	protected final static List list(final Object o1, final Object o2)
+	{
+		return Arrays.asList(new Object[]{o1, o2});
+	}
+	
+	protected final static List list(final Object o1, final Object o2, final Object o3)
+	{
+		return Arrays.asList(new Object[]{o1, o2, o3});
+	}
+	
+	protected final static List list(final Object o1, final Object o2, final Object o3, final Object o4)
+	{
+		return Arrays.asList(new Object[]{o1, o2, o3, o4});
+	}
+	
 }

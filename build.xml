@@ -45,6 +45,7 @@
 			<classpath>
 				<pathelement location="build/classes" />
 				<pathelement location="../lib/junit.jar" />
+				<pathelement location="../lib/mail.jar" />
 			</classpath>
 		</javac>
 	</target>
