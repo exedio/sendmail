@@ -39,7 +39,7 @@ public class ErrorEmailTest extends TestCase
 		assertTrue("EXCEPTION_TEXT:"+m2text, m2text.startsWith("java.lang.NullPointerException: test-exception-message\n"));
 
 		assertEquals(list(m1, m2), ep.getEmailsToBeSent(10));
-		assertEquals(list(m1, m2/*TODO*/), ep.getEmailsToBeSent(1));
+		assertEquals(list(m1), ep.getEmailsToBeSent(1));
 		
 		m2.notifySent();
 		assertEquals(list(m1), ep.getEmailsToBeSent(10));

@@ -24,10 +24,14 @@ public final class ErrorEmailProvider implements EmailProvider
 	
 	public final Collection getEmailsToBeSent(final int maximumResultSize)
 	{
-		if(emailsToBeSent.isEmpty())
+		final int size = emailsToBeSent.size();
+		
+		if(size==0)
 			return Collections.EMPTY_LIST;
-		else
+		else if(size<=maximumResultSize)
 			return new ArrayList(emailsToBeSent);
+		else
+			return new ArrayList(emailsToBeSent.subList(0, maximumResultSize));
 	}
 	
 	public String getSMTPHost()
