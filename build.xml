@@ -23,7 +23,16 @@
 	</target>
 	
 	<target name="jar" depends="compile">
-		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes" />
+		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Specification-Title" value="exedio sendmail"/>
+				<attribute name="Specification-Version" value="cruisecontrol ${label} ${cvstimestamp}"/>
+				<attribute name="Specification-Vendor" value="exedio GmbH"/>
+				<attribute name="Implementation-Title" value="exedio sendmail"/>
+				<attribute name="Implementation-Version" value="cruisecontrol ${label} ${cvstimestamp}"/> 
+				<attribute name="Implementation-Vendor" value="exedio GmbH"/>
+			</manifest>
+		</jar>
 	</target>
 	
 	<target name="test.compile" depends="compile">
