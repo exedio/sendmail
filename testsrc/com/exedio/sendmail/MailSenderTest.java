@@ -426,8 +426,8 @@ public class MailSenderTest extends SendmailTest
 					for(int j = 0; j<attachements.length; j++)
 					{
 						final BodyPart attachBody = multipart.getBodyPart(j+1);
-						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith("application/java-vm"));
 						assertEquals(message, attachements[j].getName(), attachBody.getFileName());
+						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith("application/java-vm"));
 						assertEquals(message, bytes(attachements[j].getInputStream()), bytes((InputStream)attachBody.getContent()));
 					}
 				}
