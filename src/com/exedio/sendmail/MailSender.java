@@ -33,16 +33,23 @@ public final class MailSender
 				{
 					final MimeMessage message = new MimeMessage(session);
 					message.setFrom(new InternetAddress(mail.getFrom()));
-					message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
 					{
-						final String carbonCopy = mail.getCarbonCopy();
-						if(carbonCopy!=null)
-							message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy));
+						final String[] to = mail.getTo();
+						if(to!=null)
+							for(int j = 0; j<to.length; j++)
+								message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[j]));
 					}
 					{
-						final String blindCarbonCopy = mail.getBlindCarbonCopy();
+						final String[] carbonCopy = mail.getCarbonCopy();
+						if(carbonCopy!=null)
+							for(int j = 0; j<carbonCopy.length; j++)
+								message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy[j]));
+					}
+					{
+						final String[] blindCarbonCopy = mail.getBlindCarbonCopy();
 						if(blindCarbonCopy!=null)
-							message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy));
+							for(int j = 0; j<blindCarbonCopy.length; j++)
+								message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy[j]));
 					}
 					{
 						final String subject = mail.getSubject();

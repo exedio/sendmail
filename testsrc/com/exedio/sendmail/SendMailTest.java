@@ -39,9 +39,9 @@ public class SendMailTest extends TestCase
 	private static class TestMail implements Mail
 	{
 		private final String from;
-		private final String to;
-		private final String cc;
-		private final String bcc;
+		private final String[] to;
+		private final String[] cc;
+		private final String[] bcc;
 		private final String subject;
 		private final String text;
 
@@ -49,10 +49,25 @@ public class SendMailTest extends TestCase
 		int failedCounter = 0;
 		Exception failedException = null;
 		
+		public static final String[] ta(final String s)
+		{
+			return s==null ? null : new String[]{s};
+		}
+		
 		TestMail(final String from,
 				final String to,
 				final String cc,
 				final String bcc,
+				final String subject,
+				final String text)
+		{
+			this(from, ta(to), ta(cc), ta(bcc), subject, text);
+		}
+		
+		TestMail(final String from,
+				final String[] to,
+				final String[] cc,
+				final String[] bcc,
 				final String subject,
 				final String text)
 		{
@@ -69,17 +84,17 @@ public class SendMailTest extends TestCase
 			return from;
 		}
 		
-		public String getTo()
+		public String[] getTo()
 		{
 			return to;
 		}
 		
-		public String getCarbonCopy()
+		public String[] getCarbonCopy()
 		{
 			return cc;
 		}
 		
-		public String getBlindCarbonCopy()
+		public String[] getBlindCarbonCopy()
 		{
 			return bcc;
 		}
@@ -113,7 +128,7 @@ public class SendMailTest extends TestCase
 	{
 		final TestMail m1 = new TestMail(from, to, cc, bcc, "subject for test mail", "text for test mail");
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
-		final TestMail f2 = new TestMail(from, null, null, null, null, null);
+		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
 
 		final MailSource p = new MailSource()
 		{

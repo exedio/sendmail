@@ -107,17 +107,17 @@ public class CompositeMailSourceTest extends TestCase
 			throw new RuntimeException(code);
 		}
 		
-		public String getTo()
+		public String[] getTo()
 		{
 			throw new RuntimeException(code);
 		}
 		
-		public String getCarbonCopy()
+		public String[] getCarbonCopy()
 		{
 			throw new RuntimeException(code);
 		}
 		
-		public String getBlindCarbonCopy()
+		public String[] getBlindCarbonCopy()
 		{
 			throw new RuntimeException(code);
 		}

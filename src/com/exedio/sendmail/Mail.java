@@ -5,11 +5,11 @@ public interface Mail
 {
 	public String getFrom();
 	
-	public String getTo();
+	public String[] getTo();
 	
-	public String getCarbonCopy();
+	public String[] getCarbonCopy();
 	
-	public String getBlindCarbonCopy();
+	public String[] getBlindCarbonCopy();
 	
 	public String getText();
 

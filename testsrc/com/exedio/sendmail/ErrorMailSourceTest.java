@@ -23,7 +23,7 @@ public class ErrorMailSourceTest extends TestCase
 
 		final Mail m1 = ep.createMail("test-Text");
 		assertEquals("error-mail-from@test.exedio.com", m1.getFrom());
-		assertEquals("error-mail-to@test.exedio.com", m1.getTo());
+		assertEquals(new String[]{"error-mail-to@test.exedio.com"}, m1.getTo());
 		assertEquals(null, m1.getCarbonCopy());
 		assertEquals(null, m1.getBlindCarbonCopy());
 		assertEquals("error-subject", m1.getSubject());
@@ -31,7 +31,7 @@ public class ErrorMailSourceTest extends TestCase
 
 		final Mail m2 = ep.createMail(new NullPointerException("test-exception-message"));
 		assertEquals("error-mail-from@test.exedio.com", m2.getFrom());
-		assertEquals("error-mail-to@test.exedio.com", m2.getTo());
+		assertEquals(new String[]{"error-mail-to@test.exedio.com"}, m2.getTo());
 		assertEquals(null, m2.getCarbonCopy());
 		assertEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
@@ -61,6 +61,16 @@ public class ErrorMailSourceTest extends TestCase
 	protected final static List list(final Object o1, final Object o2)
 	{
 		return Arrays.asList(new Object[]{o1, o2});
+	}
+	
+	protected void assertEquals(final Object[] expected, final Object[] actual)
+	{
+		if(expected==null && actual==null)
+			return;
+		
+		assertEquals(expected.length, actual.length);
+		for(int i = 0; i<expected.length; i++)
+			assertEquals(expected[i], actual[i]);
 	}
 	
 }

@@ -10,10 +10,17 @@ import java.util.List;
 public final class ErrorMailSource implements MailSource
 {
 	final String from;
-	final String to;
+	final String[] to;
 	final String subject;
 	
 	public ErrorMailSource(final String from, final String to, final String subject)
+	{
+		this.from = from;
+		this.to = new String[]{to};
+		this.subject = subject;
+	}
+	
+	public ErrorMailSource(final String from, final String[] to, final String subject)
 	{
 		this.from = from;
 		this.to = to;
@@ -63,17 +70,17 @@ public final class ErrorMailSource implements MailSource
 			return from;
 		}
 		
-		public String getTo()
+		public String[] getTo()
 		{
 			return to;
 		}
 		
-		public String getCarbonCopy()
+		public String[] getCarbonCopy()
 		{
 			return null;
 		}
 		
-		public String getBlindCarbonCopy()
+		public String[] getBlindCarbonCopy()
 		{
 			return null;
 		}
