@@ -6,4 +6,6 @@ public interface EmailProvider
 {
 	public Collection getEmailsToBeSent(final int maximumResultSize);
 	
+	public String getSMTPHost();
+	
 }

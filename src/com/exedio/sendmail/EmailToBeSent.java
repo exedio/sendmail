@@ -1,5 +1,7 @@
 package com.exedio.sendmail;
 
+import javax.mail.MessagingException;
+
 public interface EmailToBeSent
 {
 	public String getFrom();
@@ -13,5 +15,7 @@ public interface EmailToBeSent
 	public String getText();
 	
 	public void notifySent();
+
+	public void notifyFailed(final MessagingException exception);
 	
 }

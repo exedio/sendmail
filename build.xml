@@ -11,11 +11,15 @@
 
 	<target name="compile">
 		<mkdir dir="build/classes" />
-		<javac srcdir= "src"
+		<javac srcdir="src"
 				destdir="build/classes"
 				deprecation="on"
 				debug="on"
-				optimize="off" />
+				optimize="off">
+			<classpath>
+				<pathelement location="../lib/mail.jar" />
+			</classpath>
+		</javac>
 	</target>
 	
 	<target name="jar" depends="compile">
@@ -48,6 +52,9 @@
 			>
 			<package name="com.*" />
 			<link href="${api.link.jdk}" />
+			<classpath>
+				<pathelement location="../lib/mail.jar" />
+			</classpath>
 		</javadoc>
 	</target>
 

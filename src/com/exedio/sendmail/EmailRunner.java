@@ -1,0 +1,55 @@
+
+package com.exedio.sendmail;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+public final class EmailRunner
+{
+	private static final String MAIL_SMTP_HOST = "";
+	
+	public static final void sendMails(final EmailProvider provider, final int maximumResultSize)
+	{
+		final Properties properties = System.getProperties();
+		properties.put(MAIL_SMTP_HOST, provider.getSMTPHost());
+		final Session session = Session.getInstance(properties);
+
+		final Collection emails = provider.getEmailsToBeSent(maximumResultSize);
+		for(Iterator i = emails.iterator(); i.hasNext(); )
+		{
+			final EmailToBeSent email = (EmailToBeSent)i.next();
+			try
+			{
+				final MimeMessage message = new MimeMessage(session);
+				message.setFrom(new InternetAddress(email.getFrom()));
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(email.getTo()));
+				{
+					final String carbonCopy = email.getCarbonCopy();
+					if(carbonCopy!=null)
+						message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy));
+				}
+				{
+					final String blindCarbonCopy = email.getBlindCarbonCopy();
+					if(blindCarbonCopy!=null)
+						message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy));
+				}
+				message.setText(email.getText());
+				Transport.send(message);
+				email.notifySent();
+			}
+			catch(MessagingException e)
+			{
+				email.notifyFailed(e);
+			}
+		}
+	}
+
+}
