@@ -13,4 +13,6 @@ public interface EmailToBeSent
 	
 	public String getText();
 	
+	public void notifySent();
+	
 }
