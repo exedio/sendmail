@@ -49,7 +49,7 @@ public class SendMailTest extends TestCase
 		final Properties properties = new Properties();
 		properties.load(new FileInputStream("test.properties"));
 
-		smtp=(String)properties.get("smtp");
+		smtp=(String)properties.get("smtp.host");
 		smtpDebug=properties.get("smtp.debug")!=null;
 		
 		pop3Host=(String)properties.get("pop3.host");
