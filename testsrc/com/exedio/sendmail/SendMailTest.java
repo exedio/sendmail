@@ -3,10 +3,12 @@ package com.exedio.sendmail;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -241,11 +243,13 @@ public class SendMailTest extends TestCase
 	
 	public void testSendMail() throws InterruptedException
 	{
-		final TestMail m1 = new TestMail(from, to, cc, bcc, SUBJECT1, TEXT1);
-		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
+		final SimpleDateFormat df = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss.S");
+		final String ts = df.format(new Date());
+		final TestMail m1 = new TestMail(from, to, cc, bcc, SUBJECT1+ts, TEXT1);
+		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
 		final TestMail m2 = new TestMail(from, new String[]{to,to}, new String[]{cc,cc}, new String[]{bcc,bcc},
-				SUBJECT2, TEXT2);
+				SUBJECT2+ts, TEXT2);
 		m2.html = true;
 
 		final MailSource p = new MailSource()
@@ -303,7 +307,7 @@ public class SendMailTest extends TestCase
 				assertEquals(list(new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(list(new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals(SUBJECT1, m.getSubject());
+				assertEquals(SUBJECT1+ts, m.getSubject());
 				assertEquals(22, m.getSize());
 				assertEquals("text/plain; charset=us-ascii", m.getContentType());
 				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
@@ -314,7 +318,7 @@ public class SendMailTest extends TestCase
 				assertEquals(list(new InternetAddress(to), new InternetAddress(to)), Arrays.asList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(list(new InternetAddress(cc), new InternetAddress(cc)), Arrays.asList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(null, m.getRecipients(Message.RecipientType.BCC));
-				assertEquals(SUBJECT2, m.getSubject());
+				assertEquals(SUBJECT2+ts, m.getSubject());
 				assertEquals(174, m.getSize());
 				assertEquals("text/html; charset=us-ascii", m.getContentType());
 				assertEquals(TEXT2 + TEXT_APPENDIX, m.getContent());
