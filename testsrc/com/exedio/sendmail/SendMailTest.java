@@ -42,6 +42,7 @@ public class SendMailTest extends TestCase
 		private final String to;
 		private final String cc;
 		private final String bcc;
+		private final String subject;
 		private final String text;
 
 		int sentCounter = 0;
@@ -52,12 +53,14 @@ public class SendMailTest extends TestCase
 				final String to,
 				final String cc,
 				final String bcc,
+				final String subject,
 				final String text)
 		{
 			this.from = from;
 			this.to = to;
 			this.cc = cc;
 			this.bcc = bcc;
+			this.subject = subject;
 			this.text = text;
 		}
 		
@@ -79,6 +82,11 @@ public class SendMailTest extends TestCase
 		public String getBlindCarbonCopy()
 		{
 			return bcc;
+		}
+		
+		public String getSubject()
+		{
+			return subject;
 		}
 		
 		public String getText()
@@ -103,7 +111,7 @@ public class SendMailTest extends TestCase
 	
 	public void testSendMail()
 	{
-		final Email m1 = new Email(from, to, cc, bcc, "text for test mail");
+		final Email m1 = new Email(from, to, cc, bcc, "subject for test mail", "text for test mail");
 
 		final EmailProvider p = new EmailProvider()
 		{

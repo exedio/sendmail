@@ -43,6 +43,11 @@ public final class EmailRunner
 					if(blindCarbonCopy!=null)
 						message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy));
 				}
+				{
+					final String subject = email.getSubject();
+					if(subject!=null)
+						message.setSubject(subject);
+				}
 				message.setText(email.getText());
 				Transport.send(message);
 				email.notifySent();

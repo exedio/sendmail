@@ -13,6 +13,8 @@ public interface EmailToBeSent
 	public String getBlindCarbonCopy();
 	
 	public String getText();
+
+	public String getSubject();
 	
 	public void notifySent();
 
