@@ -14,9 +14,7 @@
 				destdir="build/classes"
 				deprecation="on"
 				debug="on"
-				optimize="off">
-			<include name="com/**" />
-		</javac>
+				optimize="off" />
 	</target>
 	
 	<target name="clean">
