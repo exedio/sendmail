@@ -23,6 +23,7 @@ public class SendMailTest extends TestCase
 	private String to;
 	private String cc;
 	private String bcc;
+	private String fail;
 	
 	public void setUp() throws Exception
 	{
@@ -34,6 +35,7 @@ public class SendMailTest extends TestCase
 		to=(String)properties.get("to");
 		cc=(String)properties.get("cc");
 		bcc=(String)properties.get("bcc");
+		fail=(String)properties.get("fail");
 	}
 	
 	private static class Email implements EmailToBeSent
@@ -112,6 +114,7 @@ public class SendMailTest extends TestCase
 	public void testSendMail()
 	{
 		final Email m1 = new Email(from, to, cc, bcc, "subject for test mail", "text for test mail");
+		final Email f1 = new Email(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
 
 		final EmailProvider p = new EmailProvider()
 		{
@@ -120,6 +123,7 @@ public class SendMailTest extends TestCase
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
 				final ArrayList result = new ArrayList();
 				result.add(m1);
+				result.add(f1);
 				return result;
 			}
 			
@@ -134,6 +138,11 @@ public class SendMailTest extends TestCase
 		assertEquals(null, m1.failedException);
 		assertEquals(1, m1.sentCounter);
 		assertEquals(0, m1.failedCounter);
+
+		final String fm1 = f1.failedException.getMessage();
+		assertTrue(fm1+"--------"+fail, fm1.indexOf(fail)>=0);
+		assertEquals(0, f1.sentCounter);
+		assertEquals(1, f1.failedCounter);
 	}
 
 }
