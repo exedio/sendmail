@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-import javax.mail.MessagingException;
-
 import junit.framework.TestCase;
 
 
@@ -101,7 +99,7 @@ public class SendMailTest extends TestCase
 			sentCounter++;
 		}
 
-		public void notifyFailed(final MessagingException exception)
+		public void notifyFailed(final Exception exception)
 		{
 			failedCounter++;
 			failedException = exception;
@@ -115,6 +113,7 @@ public class SendMailTest extends TestCase
 	{
 		final Email m1 = new Email(from, to, cc, bcc, "subject for test mail", "text for test mail");
 		final Email f1 = new Email(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
+		final Email f2 = new Email(from, null, null, null, null, null);
 
 		final EmailProvider p = new EmailProvider()
 		{
@@ -124,6 +123,7 @@ public class SendMailTest extends TestCase
 				final ArrayList result = new ArrayList();
 				result.add(m1);
 				result.add(f1);
+				result.add(f2);
 				return result;
 			}
 			
@@ -143,6 +143,10 @@ public class SendMailTest extends TestCase
 		assertTrue(fm1+"--------"+fail, fm1.indexOf(fail)>=0);
 		assertEquals(0, f1.sentCounter);
 		assertEquals(1, f1.failedCounter);
+
+		assertEquals(NullPointerException.class, f2.failedException.getClass());
+		assertEquals(0, f2.sentCounter);
+		assertEquals(1, f2.failedCounter);
 	}
 
 }

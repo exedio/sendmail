@@ -35,7 +35,6 @@
 				optimize="off">
 			<classpath>
 				<pathelement location="build/classes" />
-				<pathelement location="../lib/mail.jar" />
 				<pathelement location="../lib/junit.jar" />
 			</classpath>
 		</javac>
