@@ -2,6 +2,11 @@
 
 <project name="cope.sendmail" default="compile" basedir=".">
 
+	<target name="properties">
+		<property file="../local.properties" />
+		<property name="api.link.jdk" value="http://java.sun.com/j2se/1.4.2/docs/api" />
+	</target>
+
 	<target name="compile">
 		<mkdir dir="build/classes" />
 		<javac srcdir= "src"
@@ -17,7 +22,7 @@
 		<delete dir="build" />
 	</target>
 
-	<target name="api">
+	<target name="api" depends="properties">
 
 		<delete dir="api" />
 		<mkdir  dir="api" />
@@ -38,7 +43,7 @@
 				bottom='&lt;small&gt;&amp;copy; Copyright 2004 &lt;a href="http://www.exedio.com/" target="_top"&gt;exedio&lt;/a&gt; Gesellschaft f&amp;uuml;r Softwareentwicklung mbH. All rights reserved.&lt;small&gt;'
 			>
 			<package name="com.*" />
-			<link href="http://java.sun.com/j2se/1.4.2/docs/api" />
+			<link href="${api.link.jdk}" />
 		</javadoc>
 	</target>
 
