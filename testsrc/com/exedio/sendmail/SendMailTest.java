@@ -36,7 +36,7 @@ public class SendMailTest extends TestCase
 		fail=(String)properties.get("fail");
 	}
 	
-	private static class Email implements Mail
+	private static class TestMail implements Mail
 	{
 		private final String from;
 		private final String to;
@@ -49,7 +49,7 @@ public class SendMailTest extends TestCase
 		int failedCounter = 0;
 		Exception failedException = null;
 		
-		Email(final String from,
+		TestMail(final String from,
 				final String to,
 				final String cc,
 				final String bcc,
@@ -111,9 +111,9 @@ public class SendMailTest extends TestCase
 	
 	public void testSendMail()
 	{
-		final Email m1 = new Email(from, to, cc, bcc, "subject for test mail", "text for test mail");
-		final Email f1 = new Email(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
-		final Email f2 = new Email(from, null, null, null, null, null);
+		final TestMail m1 = new TestMail(from, to, cc, bcc, "subject for test mail", "text for test mail");
+		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
+		final TestMail f2 = new TestMail(from, null, null, null, null, null);
 
 		final MailSource p = new MailSource()
 		{
