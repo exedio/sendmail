@@ -56,7 +56,13 @@ public final class MailSender
 						if(subject!=null)
 							message.setSubject(subject);
 					}
-					message.setText(mail.getText());
+
+					final String text = mail.getText();
+					if(mail.isHTML())
+						message.setContent(text, "text/html");
+					else
+						message.setText(text);
+					
 					Transport.send(message);
 					mail.notifySent();
 				}

@@ -163,6 +163,11 @@ public class CompositeMailSourceTest extends TestCase
 			throw new RuntimeException(code);
 		}
 		
+		public boolean isHTML()
+		{
+			throw new RuntimeException(code);
+		}
+		
 		public String getText()
 		{
 			throw new RuntimeException(code);

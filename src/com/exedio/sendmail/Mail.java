@@ -11,6 +11,8 @@ public interface Mail
 	
 	public String[] getBlindCarbonCopy();
 	
+	public boolean isHTML();
+	
 	public String getText();
 
 	public String getSubject();

@@ -43,6 +43,7 @@ public class SendMailTest extends TestCase
 		private final String[] cc;
 		private final String[] bcc;
 		private final String subject;
+		private boolean html;
 		private final String text;
 
 		int sentCounter = 0;
@@ -104,6 +105,11 @@ public class SendMailTest extends TestCase
 			return subject;
 		}
 		
+		public boolean isHTML()
+		{
+			return html;
+		}
+		
 		public String getText()
 		{
 			return text;
@@ -129,7 +135,11 @@ public class SendMailTest extends TestCase
 		final TestMail m1 = new TestMail(from, to, cc, bcc, "subject for test mail", "text for test mail");
 		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail", "text for failure test mail");
 		final TestMail f2 = new TestMail(from, (String)null, null, null, null, null);
-		final TestMail m2 = new TestMail(from, new String[]{to,to}, new String[]{cc,cc}, new String[]{bcc,bcc}, "subject for test mail with multiple recipients", "text for test mail with multiple recipients");
+		final TestMail m2 = new TestMail(from, new String[]{to,to}, new String[]{cc,cc}, new String[]{bcc,bcc},
+				"subject for test mail with multiple recipients",
+				"<html><body>text for test mail with multiple recipients and with html features " +
+				"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text.</body></html>");
+		m2.html = true;
 
 		final MailSource p = new MailSource()
 		{

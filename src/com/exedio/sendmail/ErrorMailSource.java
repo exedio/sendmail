@@ -90,6 +90,11 @@ public final class ErrorMailSource implements MailSource
 			return subject;
 		}
 		
+		public boolean isHTML()
+		{
+			return false;
+		}
+		
 		public String getText()
 		{
 			return text;
