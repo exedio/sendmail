@@ -14,6 +14,7 @@ public class ErrorEmailTest extends TestCase
 	
 	protected void setUp() throws Exception
 	{
+		super.setUp();
 		ep = new ErrorEmailProvider("error-email-from@test.exedio.com", "error-email-to@test.exedio.com", "error-subject");
 	}
 	
