@@ -18,6 +18,8 @@ public class PackageTest extends TestCase
 		suite.addTest(new TestSuite(SendMailTest.class));
 		suite.addTest(new TestSuite(ErrorMailSourceTest.class));
 		suite.addTest(new TestSuite(CompositeMailSourceTest.class));
+		// normally disabled
+		//suite.addTest(new TestSuite(SmtpTerror.class));
 		return suite;
 	}
 }
