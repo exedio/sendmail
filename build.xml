@@ -26,6 +26,34 @@
 		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes" />
 	</target>
 	
+	<target name="test.compile" depends="compile">
+		<mkdir dir="build/testclasses" />
+		<javac srcdir="testsrc"
+				destdir="build/testclasses"
+				deprecation="on"
+				debug="on"
+				optimize="off">
+			<classpath>
+				<pathelement location="build/classes" />
+				<pathelement location="../lib/mail.jar" />
+				<pathelement location="../lib/junit.jar" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="test" depends="test.compile">
+		<java classname="junit.textui.TestRunner" taskname="junit" fork="yes" failonerror="yes">
+			<classpath>
+				<pathelement location="build/classes" />
+				<pathelement location="build/testclasses" />
+				<pathelement location="../lib/mail.jar" />
+				<pathelement location="../lib/activation.jar" />
+				<pathelement location="../lib/junit.jar" />
+			</classpath>
+			<arg value="com.exedio.sendmail.PackageTest" />
+		</java>
+	</target>
+	
 	<target name="clean">
 		<delete dir="build" />
 	</target>
@@ -58,6 +86,6 @@
 		</javadoc>
 	</target>
 
-	<target name="all" depends="compile, jar, api" />
+	<target name="all" depends="compile, test, jar, api" />
 
 </project>
