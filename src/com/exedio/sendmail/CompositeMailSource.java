@@ -1,15 +1,14 @@
-
 package com.exedio.sendmail;
 
 import java.util.Collection;
 import java.util.Collections;
 
 
-public class CascadingEmailProvider implements MailSource
+public class CompositeMailSource implements MailSource
 {
 	private final MailSource[] sources;
 	
-	public CascadingEmailProvider(final MailSource[] sources)
+	public CompositeMailSource(final MailSource[] sources)
 	{
 		this.sources = sources;
 
