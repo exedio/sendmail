@@ -52,7 +52,7 @@ public class MailSenderTest extends SendmailTest
 		cleanPOP3Account(user3);
 	}
 	
-	private static final class TestMail implements Mail
+	private static final class MockMail implements Mail
 	{
 		private final String from;
 		private final String[] to;
@@ -72,7 +72,7 @@ public class MailSenderTest extends SendmailTest
 			return s==null ? null : new String[]{s};
 		}
 		
-		TestMail(final String from,
+		MockMail(final String from,
 				final String to,
 				final String cc,
 				final String bcc,
@@ -82,7 +82,7 @@ public class MailSenderTest extends SendmailTest
 			this(from, ta(to), ta(cc), ta(bcc), subject, text);
 		}
 		
-		TestMail(final String from,
+		MockMail(final String from,
 				final String[] to,
 				final String[] cc,
 				final String[] bcc,
@@ -92,7 +92,7 @@ public class MailSenderTest extends SendmailTest
 			this(from, to, cc, bcc, subject, text, null);
 		}
 		
-		TestMail(final String from,
+		MockMail(final String from,
 				final String to,
 				final String subject,
 				final String text)
@@ -100,7 +100,7 @@ public class MailSenderTest extends SendmailTest
 			this(from, ta(to), null, null, subject, text, (DataSource[])null);
 		}
 		
-		TestMail(final String from,
+		MockMail(final String from,
 				final String to,
 				final String subject,
 				final String text,
@@ -109,7 +109,7 @@ public class MailSenderTest extends SendmailTest
 			this(from, ta(to), null, null, subject, text, new DataSource[]{attachement});
 		}
 		
-		TestMail(final String from,
+		MockMail(final String from,
 				final String to,
 				final String subject,
 				final String text,
@@ -119,7 +119,7 @@ public class MailSenderTest extends SendmailTest
 			this(from, ta(to), null, null, subject, text, new DataSource[]{attachement1, attachement2});
 		}
 		
-		TestMail(final String from,
+		MockMail(final String from,
 				final String[] to,
 				final String[] cc,
 				final String[] bcc,
@@ -189,7 +189,7 @@ public class MailSenderTest extends SendmailTest
 		
 	}
 	
-	/*private static final class TestDataSource implements DataSource
+	/*private static final class MockURLDataSource implements DataSource
 	{
 		final String resource;
 		final String name;
@@ -231,12 +231,12 @@ public class MailSenderTest extends SendmailTest
 		}
 	}*/
 	
-	private static final class TestURLDataSource extends URLDataSource
+	private static final class MockURLDataSource extends URLDataSource
 	{
 		final String name;
 		final String contentType;
 		
-		TestURLDataSource(final String name, final String contentType)
+		MockURLDataSource(final String name, final String contentType)
 		{
 			super(MailSenderTest.class.getResource(name));
 			this.name = name;
@@ -271,22 +271,22 @@ public class MailSenderTest extends SendmailTest
 	{
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final TestMail m1 = new TestMail(from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
-		final TestMail f1 = new TestMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
-		final TestMail f2 = new TestMail(from, (String)null, null, null);
-		final TestMail m2 = new TestMail(from, user2.email, null, null, ts+SUBJECT2, TEXT2);
+		final MockMail m1 = new MockMail(from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
+		final MockMail f1 = new MockMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
+		final MockMail f2 = new MockMail(from, (String)null, null, null);
+		final MockMail m2 = new MockMail(from, user2.email, null, null, ts+SUBJECT2, TEXT2);
 		m2.html = true;
-		final TestMail x12 = new TestMail(from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
-		final TestMail x13 = new TestMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
-		final TestMail x23 = new TestMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
-		final TestMail ma1 = new TestMail(from, user1.email, ts+"subject text attach", TEXT1,
-				new TestURLDataSource("MailSenderTest.class", "application/one"));
-				//new TestDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
-		final TestMail ma2 = new TestMail(from, user1.email, ts+"subject html attach", TEXT2,
-				new TestURLDataSource("PackageTest.class", "application/twoone"),
-				new TestURLDataSource("CompositeMailSourceTest.class", "application/twotwo"));
-				//new TestDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
-				//new TestDataSource(CompositeMailSourceTest.class, "hallo22.zock", "application/java-vm"));
+		final MockMail x12 = new MockMail(from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
+		final MockMail x13 = new MockMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
+		final MockMail x23 = new MockMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
+		final MockMail ma1 = new MockMail(from, user1.email, ts+"subject text attach", TEXT1,
+				new MockURLDataSource("MailSenderTest.class", "application/one"));
+				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
+		final MockMail ma2 = new MockMail(from, user1.email, ts+"subject html attach", TEXT2,
+				new MockURLDataSource("PackageTest.class", "application/twoone"),
+				new MockURLDataSource("CompositeMailSourceTest.class", "application/twotwo"));
+				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
+				//new MockDataSource(CompositeMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 		ma2.html = true;
 
 		final MailSource p = new MailSource()
@@ -368,17 +368,17 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1, new TestMail[]{m1, x12, x13, ma1, ma2});
-		assertPOP3(user2, new TestMail[]{m1, m2, x12, x23});
-		assertPOP3(user3, new TestMail[]{m1, x13, x23});
+		assertPOP3(user1, new MockMail[]{m1, x12, x13, ma1, ma2});
+		assertPOP3(user2, new MockMail[]{m1, m2, x12, x23});
+		assertPOP3(user3, new MockMail[]{m1, x13, x23});
 	}
 	
-	private void assertPOP3(final Account account, final TestMail[] expectedMails)
+	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
 		final TreeMap expectedMessages = new TreeMap();
 		for(int i = 0; i<expectedMails.length; i++)
 		{
-			final TestMail m = expectedMails[i];
+			final MockMail m = expectedMails[i];
 			if(expectedMessages.put(m.getSubject(), m)!=null)
 				throw new RuntimeException(m.getSubject());
 		}
@@ -410,7 +410,7 @@ public class MailSenderTest extends SendmailTest
 			{
 				final String subject = (String)i.next();
 				final Message m = (Message)actualMessages.get(subject);
-				final TestMail expected = (TestMail)expectedMessages.get(subject);
+				final MockMail expected = (MockMail)expectedMessages.get(subject);
 				final String message = account.pop3User + " - " + subject;
 				
 				assertNotNull(message, m);

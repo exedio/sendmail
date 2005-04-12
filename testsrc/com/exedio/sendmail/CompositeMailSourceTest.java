@@ -33,8 +33,8 @@ public class CompositeMailSourceTest extends TestCase
 			}
 		};
 
-		final TestMail a1 = new TestMail("a1");
-		final TestMail a2 = new TestMail("a2");
+		final MockMail a1 = new MockMail("a1");
+		final MockMail a2 = new MockMail("a2");
 		final MailSource pa = new MailSource()
 		{
 			public Collection getMailsToSend(final int maximumResultSize)
@@ -53,8 +53,8 @@ public class CompositeMailSourceTest extends TestCase
 			}
 		};
 		
-		final TestMail b1 = new TestMail("b1");
-		final TestMail b2 = new TestMail("b2");
+		final MockMail b1 = new MockMail("b1");
+		final MockMail b2 = new MockMail("b2");
 		final MailSource pb = new MailSource()
 		{
 			public Collection getMailsToSend(final int maximumResultSize)
@@ -126,11 +126,11 @@ public class CompositeMailSourceTest extends TestCase
 		maximumResultSizeB = -1;
 	}
 
-	private static class TestMail implements Mail
+	private static class MockMail implements Mail
 	{
 		final String code;
 		
-		TestMail(final String code)
+		MockMail(final String code)
 		{
 			this.code = code;
 		}

@@ -41,13 +41,13 @@ public class SmtpTerror extends SendmailTest
 	
 	private static final int SIZE = 300;
 	
-	private class TerrorMailSource implements MailSource
+	private class MockMailSource implements MailSource
 	{
 		private final int threadNumber;
 		int number = 0;
 		long readyTimestamp = -1;
 		
-		TerrorMailSource(final int threadNumber)
+		MockMailSource(final int threadNumber)
 		{
 			this.threadNumber = threadNumber;
 		}
@@ -130,9 +130,9 @@ public class SmtpTerror extends SendmailTest
 	
 	private void doTest(final int threadCount) throws InterruptedException
 	{
-		final TerrorMailSource[] tms = new TerrorMailSource[threadCount];
+		final MockMailSource[] tms = new MockMailSource[threadCount];
 		for(int i = 0; i<threadCount; i++)
-			tms[i] = new TerrorMailSource(i);
+			tms[i] = new MockMailSource(i);
 
 		final Thread[] t = new Thread[threadCount];
 		for(int i = 0; i<threadCount; i++)
