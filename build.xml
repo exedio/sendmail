@@ -3,7 +3,6 @@
 <project name="sendmail" default="all" basedir=".">
 
 	<target name="properties">
-		<property file="../local.properties" />
 		<property name="api.private" value="off" />
 		<property name="api.link.jdk" value="http://java.sun.com/j2se/1.4.2/docs/api" />
 		<property name="api.link.activation" value="http://java.sun.com/j2ee/sdk_1.3/techdocs/api" />
@@ -17,8 +16,8 @@
 				debug="on"
 				optimize="off">
 			<classpath>
-				<pathelement location="../lib/mail.jar" />
-				<pathelement location="../lib/activation.jar" />
+				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/activation.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -45,9 +44,9 @@
 				optimize="off">
 			<classpath>
 				<pathelement location="build/classes" />
-				<pathelement location="../lib/junit.jar" />
-				<pathelement location="../lib/mail.jar" />
-				<pathelement location="../lib/activation.jar" />
+				<pathelement location="lib/junit.jar" />
+				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/activation.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -57,12 +56,41 @@
 			<classpath>
 				<pathelement location="build/classes" />
 				<pathelement location="build/testclasses" />
-				<pathelement location="../lib/mail.jar" />
-				<pathelement location="../lib/activation.jar" />
-				<pathelement location="../lib/junit.jar" />
+				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/activation.jar" />
+				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<arg value="com.exedio.sendmail.PackageTest" />
 		</java>
+	</target>
+	
+	
+	<target name="dist.tar">
+		<mkdir dir="build" />
+		<tar destfile="build/exedio-sendmail-src.tar.gz"
+				compression="gzip">
+			<tarfileset dir="${basedir}">
+				<exclude name="build/**" />
+				<exclude name="api/**" />
+				<exclude name="test.properties" />
+			</tarfileset>
+		</tar>
+	</target>
+	
+	<target name="dist.test" depends="dist.tar">
+		<delete dir="build/dist-test" />
+		<mkdir dir="build/dist-test" />
+		<untar src="build/exedio-sendmail-src.tar.gz"
+				dest="build/dist-test"
+				compression="gzip" />
+		<copy file="test.properties" todir="build/dist-test" />
+		<ant dir="build/dist-test" target="all.but.dist.test" />
+	</target>
+	
+	<target name="dist" depends="dist.tar, dist.test" />
+	
+	<target name="clean">
+		<delete dir="build" />
 	</target>
 	
 	<target name="clean">
@@ -93,12 +121,13 @@
 			<link href="${api.link.jdk}" />
 			<link href="${api.link.activation}" />
 			<classpath>
-				<pathelement location="../lib/mail.jar" />
-				<pathelement location="../lib/activation.jar" />
+				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/activation.jar" />
 			</classpath>
 		</javadoc>
 	</target>
 
-	<target name="all" depends="compile, test, jar, api" />
+	<target name="all"               depends="compile, jar, test, api, dist" />
+	<target name="all.but.dist.test" depends="compile, jar, test, api, dist.tar" />
 
 </project>
