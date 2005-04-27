@@ -93,10 +93,6 @@
 		<delete dir="build" />
 	</target>
 	
-	<target name="clean">
-		<delete dir="build" />
-	</target>
-
 	<target name="api" depends="properties">
 
 		<delete dir="api" />
