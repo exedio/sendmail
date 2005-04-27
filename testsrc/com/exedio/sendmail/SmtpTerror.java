@@ -26,7 +26,8 @@ import java.util.Date;
 import javax.activation.DataSource;
 
 /**
- * BEWARE: thid puts a lot of mails on your smtp server.
+ * BEWARE: this puts a lot of mails on your smtp server.
+ * @author ralf.wiebicke@exedio.com
  */
 public class SmtpTerror extends SendmailTest
 {
