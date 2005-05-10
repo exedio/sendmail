@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="sendmail" default="all" basedir=".">
+<project name="sendmail" default="build" basedir=".">
 
 	<target name="properties">
 		<property name="api.private" value="off" />
@@ -84,7 +84,7 @@
 				dest="build/dist-test"
 				compression="gzip" />
 		<copy file="test.properties" todir="build/dist-test" />
-		<ant dir="build/dist-test" target="all.but.dist.test" />
+		<ant dir="build/dist-test" target="build" />
 	</target>
 	
 	<target name="dist" depends="dist.tar, dist.test" />
@@ -123,7 +123,7 @@
 		</javadoc>
 	</target>
 
-	<target name="all"               depends="compile, jar, test, api, dist" />
-	<target name="all.but.dist.test" depends="compile, jar, test, api, dist.tar" />
+	<target name="build" depends="compile, jar, test, api" />
+	<target name="all" depends="build, dist" />
 
 </project>
