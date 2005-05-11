@@ -5,7 +5,7 @@
 	<target name="properties">
 		<property name="api.private" value="off" />
 		<property name="api.link.jdk" value="http://java.sun.com/j2se/1.4.2/docs/api" />
-		<property name="api.link.activation" value="http://java.sun.com/j2ee/sdk_1.3/techdocs/api" />
+		<property name="api.link.j2ee" value="http://java.sun.com/j2ee/1.4/docs/api" />
 	</target>
 
 	<target name="compile">
@@ -115,7 +115,7 @@
 			>
 			<package name="com.*" />
 			<link href="${api.link.jdk}" />
-			<link href="${api.link.activation}" />
+			<link href="${api.link.j2ee}" />
 			<classpath>
 				<pathelement location="lib/mail.jar" />
 				<pathelement location="lib/activation.jar" />
