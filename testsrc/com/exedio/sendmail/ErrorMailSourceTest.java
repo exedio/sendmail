@@ -53,7 +53,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
 		final String m2text = m2.getText();
-		assertTrue("EXCEPTION_TEXT:"+m2text, m2text.startsWith("java.lang.NullPointerException: test-exception-message\n"));
+		assertTrue("EXCEPTION_TEXT:"+m2text, m2text.startsWith("java.lang.NullPointerException: test-exception-message"+System.getProperty("line.separator")));
 
 		assertEquals(list(m1, m2), ep.getMailsToSend(10));
 		assertEquals(list(m1), ep.getMailsToSend(1));
