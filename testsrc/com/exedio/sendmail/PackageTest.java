@@ -24,14 +24,10 @@ import junit.framework.TestSuite;
 
 public class PackageTest extends TestCase
 {
-	public PackageTest(String name)
-	{
-		super(name);
-	}
 
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite();
+		final TestSuite suite = new TestSuite();
 		suite.addTest(new TestSuite(MailSenderTest.class));
 		suite.addTest(new TestSuite(ErrorMailSourceTest.class));
 		suite.addTest(new TestSuite(CompositeMailSourceTest.class));
