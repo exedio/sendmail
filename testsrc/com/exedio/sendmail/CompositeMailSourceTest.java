@@ -192,7 +192,7 @@ public class CompositeMailSourceTest extends TestCase
 			throw new RuntimeException(code);
 		}
 		
-		public DataSource[] getAttachements()
+		public DataSource[] getAttachments()
 		{
 			throw new RuntimeException(code);
 		}

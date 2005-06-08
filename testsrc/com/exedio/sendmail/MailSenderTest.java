@@ -188,7 +188,7 @@ public class MailSenderTest extends SendmailTest
 			return text;
 		}
 		
-		public DataSource[] getAttachements()
+		public DataSource[] getAttachments()
 		{
 			return attachements;
 		}
@@ -436,7 +436,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
-				final DataSource[] attachements = expected.getAttachements();
+				final DataSource[] attachements = expected.getAttachments();
 				if(attachements==null)
 				{
 					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());

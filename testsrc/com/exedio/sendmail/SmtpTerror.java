@@ -117,7 +117,7 @@ public class SmtpTerror extends SendmailTest
 						return "terror mail";
 					}
 					
-					public DataSource[] getAttachements()
+					public DataSource[] getAttachments()
 					{
 						return null;
 					}

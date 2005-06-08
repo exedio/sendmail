@@ -119,7 +119,7 @@ public final class ErrorMailSource implements MailSource
 			return text;
 		}
 		
-		public DataSource[] getAttachements()
+		public DataSource[] getAttachments()
 		{
 			return null;
 		}

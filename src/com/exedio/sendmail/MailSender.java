@@ -81,7 +81,7 @@ public final class MailSender
 					}
 
 					final String text = mail.getText();
-					final DataSource[] attachements = mail.getAttachements();
+					final DataSource[] attachements = mail.getAttachments();
 					if(attachements==null || attachements.length==0)
 					{
 						if(mail.isHTML())

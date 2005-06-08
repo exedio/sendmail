@@ -36,7 +36,7 @@ public interface Mail
 
 	public String getSubject();
 	
-	public DataSource[] getAttachements();
+	public DataSource[] getAttachments();
 	
 	public void notifySent();
 
