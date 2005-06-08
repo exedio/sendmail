@@ -78,7 +78,7 @@ public class MailSenderTest extends SendmailTest
 		private final String subject;
 		private boolean html = false;
 		private final String text;
-		private final DataSource[] attachements;
+		private final DataSource[] attachments;
 
 		int sentCounter = 0;
 		int failedCounter = 0;
@@ -142,7 +142,7 @@ public class MailSenderTest extends SendmailTest
 				final String[] bcc,
 				final String subject,
 				final String text,
-				final DataSource[] attachements)
+				final DataSource[] attachments)
 		{
 			this.from = from;
 			this.to = to;
@@ -150,7 +150,7 @@ public class MailSenderTest extends SendmailTest
 			this.bcc = bcc;
 			this.subject = subject;
 			this.text = text;
-			this.attachements = attachements;
+			this.attachments = attachments;
 		}
 		
 		public String getFrom()
@@ -190,7 +190,7 @@ public class MailSenderTest extends SendmailTest
 		
 		public DataSource[] getAttachments()
 		{
-			return attachements;
+			return attachments;
 		}
 		
 		public void notifySent()

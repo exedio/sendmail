@@ -81,8 +81,8 @@ public final class MailSender
 					}
 
 					final String text = mail.getText();
-					final DataSource[] attachements = mail.getAttachments();
-					if(attachements==null || attachements.length==0)
+					final DataSource[] attachments = mail.getAttachments();
+					if(attachments==null || attachments.length==0)
 					{
 						if(mail.isHTML())
 							message.setContent(text, "text/html");
@@ -101,12 +101,12 @@ public final class MailSender
 							mainPart.setDisposition(BodyPart.INLINE);
 							multipart.addBodyPart(mainPart);
 						}
-						for(int j = 0; j<attachements.length; j++)
+						for(int j = 0; j<attachments.length; j++)
 						{
 							final MimeBodyPart attachPart = new MimeBodyPart();
-							attachPart.setDataHandler(new DataHandler(attachements[j]));
+							attachPart.setDataHandler(new DataHandler(attachments[j]));
 							attachPart.setDisposition(BodyPart.ATTACHMENT);
-							attachPart.setFileName(attachements[j].getName());
+							attachPart.setFileName(attachments[j].getName());
 							multipart.addBodyPart(attachPart);
 						}
 						message.setContent(multipart);
