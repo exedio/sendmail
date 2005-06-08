@@ -436,8 +436,8 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
-				final DataSource[] attachements = expected.getAttachments();
-				if(attachements==null)
+				final DataSource[] attachments = expected.getAttachments();
+				if(attachments==null)
 				{
 					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
 					assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
@@ -449,12 +449,12 @@ public class MailSenderTest extends SendmailTest
 					final BodyPart mainBody = multipart.getBodyPart(0);
 					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", mainBody.getContentType());
 					assertEquals(message, expected.getText(), mainBody.getContent());
-					for(int j = 0; j<attachements.length; j++)
+					for(int j = 0; j<attachments.length; j++)
 					{
 						final BodyPart attachBody = multipart.getBodyPart(j+1);
-						assertEquals(message, attachements[j].getName(), attachBody.getFileName());
-						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith(attachements[j].getContentType()+";"));
-						assertEquals(message, bytes(attachements[j].getInputStream()), bytes((InputStream)attachBody.getContent()));
+						assertEquals(message, attachments[j].getName(), attachBody.getFileName());
+						assertTrue(message+"-"+attachBody.getContentType(), attachBody.getContentType().startsWith(attachments[j].getContentType()+";"));
+						assertEquals(message, bytes(attachments[j].getInputStream()), bytes((InputStream)attachBody.getContent()));
 					}
 				}
 			}
