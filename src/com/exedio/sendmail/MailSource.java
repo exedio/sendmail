@@ -21,6 +21,9 @@ import java.util.Collection;
 
 public interface MailSource
 {
+	/**
+	 * @return a collection of {@link Mail}s.
+	 */
 	public Collection getMailsToSend(final int maximumResultSize);
 	
 }
