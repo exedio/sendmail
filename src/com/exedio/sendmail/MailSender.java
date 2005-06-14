@@ -36,6 +36,9 @@ public final class MailSender
 {
 	private static final String MAIL_SMTP_HOST = "mail.host";
 	
+	private static final String CHARSET = "UTF-8";
+	private static final String HTML_CONTENT_TYPE = "text/html; charset=" + CHARSET;
+	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
 		final Collection mails = source.getMailsToSend(maximumResultSize);
@@ -77,7 +80,7 @@ public final class MailSender
 					{
 						final String subject = mail.getSubject();
 						if(subject!=null)
-							message.setSubject(subject);
+							message.setSubject(subject, CHARSET);
 					}
 
 					final String text = mail.getText();
@@ -85,9 +88,9 @@ public final class MailSender
 					if(attachments==null || attachments.length==0)
 					{
 						if(mail.isHTML())
-							message.setContent(text, "text/html");
+							message.setContent(text, HTML_CONTENT_TYPE);
 						else
-							message.setText(text);
+							message.setText(text, CHARSET);
 					}
 					else
 					{
@@ -95,9 +98,9 @@ public final class MailSender
 						{
 							final MimeBodyPart mainPart = new MimeBodyPart();
 							if(mail.isHTML())
-								mainPart.setContent(text, "text/html");
+								mainPart.setContent(text, HTML_CONTENT_TYPE);
 							else
-								mainPart.setText(text);
+								mainPart.setText(text, CHARSET);
 							mainPart.setDisposition(BodyPart.INLINE);
 							multipart.addBodyPart(mainPart);
 						}

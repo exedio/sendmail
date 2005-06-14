@@ -391,7 +391,7 @@ public class MailSenderTest extends SendmailTest
 		assertPOP3(user3, new MockMail[]{m1, x13, x23});
 	}
 	
-	private static final String CHARSET = "ISO-8859-1";
+	private static final String CHARSET = "UTF-8";
 	
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
