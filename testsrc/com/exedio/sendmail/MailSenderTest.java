@@ -276,13 +276,14 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	private final static String SUBJECT1 = "subject text";
-	private final static String SUBJECT2 = "subject html";
+	private final static String NON_ASCII = " (\u00e4\u00f6\u00fc\u00df)";
+	private final static String SUBJECT1 = "subject text" + NON_ASCII;
+	private final static String SUBJECT2 = "subject html" + NON_ASCII;
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
-	private final static String TEXT1 = "text for test mail";
+	private final static String TEXT1 = "text for test mail" + NON_ASCII;
 	private final static String TEXT2 =
 		"<html><body>text for test mail with multiple recipients and with html features " +
-		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text.</body></html>";
+		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text and special characters" + NON_ASCII + ".</body></html>";
 	
 	public void testSendMail() throws InterruptedException
 	{
@@ -390,6 +391,8 @@ public class MailSenderTest extends SendmailTest
 		assertPOP3(user3, new MockMail[]{m1, x13, x23});
 	}
 	
+	private static final String CHARSET = "ISO-8859-1";
+	
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
 		final TreeMap expectedMessages = new TreeMap();
@@ -439,7 +442,7 @@ public class MailSenderTest extends SendmailTest
 				final DataSource[] attachments = expected.getAttachments();
 				if(attachments==null)
 				{
-					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", m.getContentType());
+					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset="+CHARSET, m.getContentType());
 					assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
 				}
 				else
@@ -447,7 +450,7 @@ public class MailSenderTest extends SendmailTest
 					assertTrue(message+"-"+m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
 					final MimeMultipart multipart = (MimeMultipart)m.getContent();
 					final BodyPart mainBody = multipart.getBodyPart(0);
-					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset=us-ascii", mainBody.getContentType());
+					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset="+CHARSET, mainBody.getContentType());
 					assertEquals(message, expected.getText(), mainBody.getContent());
 					for(int j = 0; j<attachments.length; j++)
 					{
