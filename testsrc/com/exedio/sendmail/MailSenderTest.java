@@ -276,8 +276,8 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	private final static String NON_ASCII_SUBJECT = " (\u00e4\u00f6\u00fc\u00df\u0102\u05d8)";
-	private final static String NON_ASCII_TEXT = " (auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8)";
+	private final static String NON_ASCII_SUBJECT = " (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)";
+	private final static String NON_ASCII_TEXT = " (auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac)";
 	private final static String SUBJECT1 = "subject text" + NON_ASCII_SUBJECT;
 	private final static String SUBJECT2 = "subject html" + NON_ASCII_SUBJECT;
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
