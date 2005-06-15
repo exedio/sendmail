@@ -283,8 +283,16 @@ public class MailSenderTest extends SendmailTest
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
 	private final static String TEXT1 = "text for test mail" + NON_ASCII_TEXT;
 	private final static String TEXT2 =
-		"<html><body>text for test mail with multiple recipients and with html features " +
-		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text and special characters" + NON_ASCII_TEXT + ".</body></html>";
+		"<html>" +
+		"<head>" +
+		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
+		"</head>" +
+		"<body>" +
+		"text for test mail with multiple recipients and with html features " +
+		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
+		"and special characters" + NON_ASCII_TEXT + "." +
+		"</body>" +
+		"</html>";
 	
 	public void testSendMail() throws InterruptedException
 	{
