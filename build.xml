@@ -123,7 +123,15 @@
 		</javadoc>
 	</target>
 
+	<target name="api.zip" depends="api">
+		<mkdir dir="build" />
+		<tar destfile="build/exedio-sendmail-api.tar.gz"
+			  compression="gzip">
+			<tarfileset dir="${basedir}/api" />
+		</tar>
+	</target>
+	
 	<target name="build" depends="compile, jar, test, api" />
-	<target name="all" depends="build, dist" />
+	<target name="all" depends="build, api.zip, dist" />
 
 </project>
