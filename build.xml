@@ -111,7 +111,7 @@
 				header=     "exedio sendmail"
 				footer=     "exedio sendmail"
 				splitindex="on"
-				bottom='&lt;small&gt;Copyright &amp;copy; 2004-2005 &lt;a href="http://www.exedio.com/" target="_top"&gt;exedio&lt;/a&gt; Gesellschaft f&amp;uuml;r Softwareentwicklung mbH. All rights reserved.&lt;/small&gt;'
+				bottom='&lt;small&gt;Copyright &amp;copy; 2004-2005 &lt;a href="http://www.exedio.com/" target="_top"&gt;exedio&lt;/a&gt; Gesellschaft f&amp;uuml;r Softwareentwicklung mbH. All rights reserved.&lt;/small&gt;&lt;!--${label}-${cvstimestamp}--&gt;'
 			>
 			<package name="com.*" />
 			<link href="${api.link.jdk}" />
