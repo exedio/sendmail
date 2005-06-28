@@ -67,8 +67,11 @@
 	
 	<target name="dist.tar">
 		<mkdir dir="build" />
+		<echo file="build/build.number"
+				message="cruisecontrol ${label} ${cvstimestamp}" />
 		<tar destfile="build/exedio-sendmail-src.tar.gz"
 				compression="gzip">
+			<tarfileset file="${basedir}/build/build.number" />
 			<tarfileset dir="${basedir}">
 				<exclude name="build/**" />
 				<exclude name="api/**" />
