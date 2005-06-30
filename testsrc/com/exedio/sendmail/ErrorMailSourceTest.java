@@ -31,7 +31,7 @@ public class ErrorMailSourceTest extends TestCase
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject");
+		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject", 3);
 	}
 	
 	public void testErrorMail()
@@ -64,6 +64,29 @@ public class ErrorMailSourceTest extends TestCase
 		m1.notifySent();
 		assertEquals(list(), ep.getMailsToSend(10));
 	}
+	
+	public void testOverflow()
+	{
+		assertEquals(list(), ep.getMailsToSend(10));
+
+		final Mail m1 = ep.createMail("test overflow 1");
+		assertEquals("test overflow 1", m1.getText());
+		assertEquals(list(m1), ep.getMailsToSend(10));
+
+		final Mail m2 = ep.createMail("test overflow 2");
+		assertEquals("test overflow 2", m2.getText());
+		assertEquals(list(m1, m2), ep.getMailsToSend(10));
+
+		final Mail m3 = ep.createMail("test overflow 3");
+		assertEquals("test overflow 3", m3.getText());
+		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
+
+		assertEquals(null, ep.createMail("test overflow 4"));
+		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
+
+		assertEquals(null, ep.createMail(new NullPointerException("test overflow 5")));
+		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
+	}
 
 	protected final static List list()
 	{
@@ -78,6 +101,11 @@ public class ErrorMailSourceTest extends TestCase
 	protected final static List list(final Object o1, final Object o2)
 	{
 		return Arrays.asList(new Object[]{o1, o2});
+	}
+	
+	protected final static List list(final Object o1, final Object o2, final Object o3)
+	{
+		return Arrays.asList(new Object[]{o1, o2, o3});
 	}
 	
 	protected void assertEquals(final Object[] expected, final Object[] actual)

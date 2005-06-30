@@ -28,40 +28,61 @@ import javax.activation.DataSource;
 
 public final class ErrorMailSource implements MailSource
 {
+	private static final int DEFAULT_OVERFLOW_THRESHOLD = 100;
+
 	private final String from;
 	private final String[] to;
 	private final String subject;
+	private final int overflowThreshold;
 	
 	public ErrorMailSource(final String from, final String to, final String subject)
 	{
-		this.from = from;
-		this.to = new String[]{to};
-		this.subject = subject;
+		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
+	}
+	
+	public ErrorMailSource(final String from, final String to, final String subject, final int overflowThreshold)
+	{
+		this(from, new String[]{to}, subject, overflowThreshold);
 	}
 	
 	public ErrorMailSource(final String from, final String[] to, final String subject)
 	{
+		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
+	}
+
+	public ErrorMailSource(final String from, final String[] to, final String subject, final int overflowThreshold)
+	{
 		this.from = from;
 		this.to = to;
 		this.subject = subject;
+		this.overflowThreshold = overflowThreshold;
 	}
 	
-	private final List mailsToSend = Collections.synchronizedList(new ArrayList());
+	private final List mailsToSend = new ArrayList();
 	
 	public final Collection getMailsToSend(final int maximumResultSize)
 	{
-		final int size = mailsToSend.size();
-		
-		if(size==0)
-			return Collections.EMPTY_LIST;
-		else if(size<=maximumResultSize)
-			return new ArrayList(mailsToSend);
-		else
-			return new ArrayList(mailsToSend.subList(0, maximumResultSize));
+		synchronized(mailsToSend)
+		{
+			final int size = mailsToSend.size();
+			
+			if(size==0)
+				return Collections.EMPTY_LIST;
+			else if(size<=maximumResultSize)
+				return new ArrayList(mailsToSend);
+			else
+				return new ArrayList(mailsToSend.subList(0, maximumResultSize));
+		}
 	}
 	
 	public Mail createMail(final Exception exception)
 	{
+		synchronized(mailsToSend)
+		{
+			if(mailsToSend.size()>=overflowThreshold)
+				return null;
+		}
+
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
@@ -71,6 +92,12 @@ public final class ErrorMailSource implements MailSource
 	
 	public Mail createMail(final String text)
 	{
+		synchronized(mailsToSend)
+		{
+			if(mailsToSend.size()>=overflowThreshold)
+				return null;
+		}
+
 		return new ErrorMail(text);
 	}
 	
@@ -81,7 +108,11 @@ public final class ErrorMailSource implements MailSource
 		private ErrorMail(final String text)
 		{
 			this.text = text;
-			mailsToSend.add(this);
+			
+			synchronized(mailsToSend)
+			{
+				mailsToSend.add(this);
+			}
 		}
 
 		public String getFrom()
@@ -133,6 +164,11 @@ public final class ErrorMailSource implements MailSource
 		{
 			exception.printStackTrace();
 			mailsToSend.remove(this);
+		}
+		
+		public String toString()
+		{
+			return text;
 		}
 		
 	}
