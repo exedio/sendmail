@@ -28,9 +28,9 @@ import javax.activation.DataSource;
 
 public final class ErrorMailSource implements MailSource
 {
-	final String from;
-	final String[] to;
-	final String subject;
+	private final String from;
+	private final String[] to;
+	private final String subject;
 	
 	public ErrorMailSource(final String from, final String to, final String subject)
 	{
