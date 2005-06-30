@@ -77,17 +77,11 @@ public final class ErrorMailSource implements MailSource
 	
 	public Mail createMail(final Exception exception)
 	{
-		synchronized(mailsToSend)
-		{
-			if(mailsToSend.size()>=overflowThreshold)
-				return null;
-		}
-
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
 		pw.flush();
-		return new ErrorMail(sw.getBuffer().toString());
+		return createMail(sw.getBuffer().toString());
 	}
 	
 	public Mail createMail(final String text)
