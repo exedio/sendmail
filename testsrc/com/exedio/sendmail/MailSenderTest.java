@@ -311,7 +311,7 @@ public class MailSenderTest extends SendmailTest
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 		final MockMail ma2 = new MockMail(from, user1.email, ts+"subject html attach", TEXT2,
 				new MockURLDataSource("PackageTest.class", "application/twoone"),
-				new MockURLDataSource("CompositeMailSourceTest.class", "application/twotwo"));
+				new MockURLDataSource("CascadingMailSourceTest.class", "application/twotwo"));
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CompositeMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 		ma2.html = true;
