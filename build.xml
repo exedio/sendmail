@@ -110,12 +110,12 @@
 				use="on"
 				version="on"
 				windowtitle="exedio sendmail utility"
-				doctitle=   "exedio sendmail&lt;br&gt;API Specification"
-				header=     "exedio sendmail"
-				footer=     "exedio sendmail"
 				splitindex="on"
-				bottom='&lt;small&gt;Copyright &amp;copy; 2004-2005 &lt;a href="http://www.exedio.com/" target="_top"&gt;exedio&lt;/a&gt; Gesellschaft f&amp;uuml;r Softwareentwicklung mbH. All rights reserved.&lt;/small&gt;&lt;!--${label}-${cvstimestamp}--&gt;'
 			>
+			<doctitle><![CDATA[exedio sendmail<br>API Specification]]></doctitle>
+			<header>exedio sendmail</header>
+			<footer>exedio sendmail</footer>
+			<bottom><![CDATA[<small>Copyright &copy; 2004-2005 <a href="http://www.exedio.com/" target="_top">exedio</a> Gesellschaft f&uuml;r Softwareentwicklung mbH. All rights reserved.</small><!--${label}-${cvstimestamp}-->]]></bottom>
 			<package name="com.*" />
 			<link href="${api.link.jdk}" />
 			<link href="${api.link.j2ee}" />
