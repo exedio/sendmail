@@ -22,11 +22,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 
-public class CompositeMailSource implements MailSource
+public class CascadingMailSource implements MailSource
 {
 	private final MailSource[] sources;
 	
-	public CompositeMailSource(final MailSource[] sources)
+	public CascadingMailSource(final MailSource[] sources)
 	{
 		this.sources = sources;
 

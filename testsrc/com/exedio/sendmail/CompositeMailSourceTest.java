@@ -91,21 +91,21 @@ public class CompositeMailSourceTest extends TestCase
 		};
 		
 		{
-			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pe, pa});
+			final CascadingMailSource p = new CascadingMailSource(new MailSource[]{pe, pa});
 			assertMails(list(a1, a2), p.getMailsToSend(3), 3, 3,-1);
 			assertMails(list(a1, a2), p.getMailsToSend(2), 2, 2,-1);
 			assertMails(list(a1), p.getMailsToSend(1),     1, 1,-1);
 			assertMails(list(), p.getMailsToSend(0),      -1,-1,-1);
 		}
 		{
-			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pa, pe});
+			final CascadingMailSource p = new CascadingMailSource(new MailSource[]{pa, pe});
 			assertMails(list(a1, a2), p.getMailsToSend(3), 1, 3,-1);
 			assertMails(list(a1, a2), p.getMailsToSend(2),-1, 2,-1);
 			assertMails(list(a1), p.getMailsToSend(1),    -1, 1,-1);
 			assertMails(list(), p.getMailsToSend(0),      -1,-1,-1);
 		}
 		{
-			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pa, pb});
+			final CascadingMailSource p = new CascadingMailSource(new MailSource[]{pa, pb});
 			assertMails(list(a1, a2, b1, b2), p.getMailsToSend(5),-1, 5, 3);
 			assertMails(list(a1, a2, b1, b2), p.getMailsToSend(4),-1, 4, 2);
 			assertMails(list(a1, a2, b1), p.getMailsToSend(3)    ,-1, 3, 1);
@@ -114,7 +114,7 @@ public class CompositeMailSourceTest extends TestCase
 			assertMails(list(), p.getMailsToSend(0)              ,-1,-1,-1);
 		}
 		{
-			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pb, pa});
+			final CascadingMailSource p = new CascadingMailSource(new MailSource[]{pb, pa});
 			assertMails(list(b1, b2, a1, a2), p.getMailsToSend(5),-1, 3, 5);
 			assertMails(list(b1, b2, a1, a2), p.getMailsToSend(4),-1, 2, 4);
 			assertMails(list(b1, b2, a1), p.getMailsToSend(3)    ,-1, 1, 3);
@@ -123,7 +123,7 @@ public class CompositeMailSourceTest extends TestCase
 			assertMails(list(), p.getMailsToSend(0)              ,-1,-1,-1);
 		}
 		{
-			final CompositeMailSource p = new CompositeMailSource(new MailSource[]{pe, pe});
+			final CascadingMailSource p = new CascadingMailSource(new MailSource[]{pe, pe});
 			assertMails(list(), p.getMailsToSend(2), 2,-1,-1);
 			assertMails(list(), p.getMailsToSend(1), 1,-1,-1);
 			assertMails(list(), p.getMailsToSend(0),-1,-1,-1);
