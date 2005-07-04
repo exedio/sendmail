@@ -26,7 +26,7 @@ import javax.activation.DataSource;
 
 import junit.framework.TestCase;
 
-public class CompositeMailSourceTest extends TestCase
+public class CascadingMailSourceTest extends TestCase
 {
 	int maximumResultSizeE;
 	int maximumResultSizeA;
