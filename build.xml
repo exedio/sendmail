@@ -111,6 +111,7 @@
 				version="on"
 				windowtitle="exedio sendmail utility"
 				splitindex="on"
+				failonerror="true"
 			>
 			<doctitle><![CDATA[exedio sendmail<br>API Specification]]></doctitle>
 			<header>exedio sendmail</header>
