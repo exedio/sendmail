@@ -34,6 +34,12 @@ public class ErrorMailSourceTest extends TestCase
 		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject", 3);
 	}
 	
+	private static final void assertText(final String expectedText, final Mail actualMail)
+	{
+		final String actualText = actualMail.getText();
+		assertTrue("TEXT:"+actualText, actualText.indexOf(expectedText)>0);
+	}
+	
 	public void testErrorMail()
 	{
 		assertEquals(list(), ep.getMailsToSend(10));
@@ -44,7 +50,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, m1.getCarbonCopy());
 		assertEquals(null, m1.getBlindCarbonCopy());
 		assertEquals("error-subject", m1.getSubject());
-		assertEquals("test-Text", m1.getText());
+		assertText("test-Text", m1);
 
 		final Mail m2 = ep.createMail(new NullPointerException("test-exception-message"));
 		assertEquals("error-mail-from@test.exedio.com", m2.getFrom());
@@ -52,8 +58,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, m2.getCarbonCopy());
 		assertEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
-		final String m2text = m2.getText();
-		assertTrue("EXCEPTION_TEXT:"+m2text, m2text.startsWith("java.lang.NullPointerException: test-exception-message"+System.getProperty("line.separator")));
+		assertText("java.lang.NullPointerException: test-exception-message"+System.getProperty("line.separator"), m2);
 
 		assertEquals(list(m1, m2), ep.getMailsToSend(10));
 		assertEquals(list(m1), ep.getMailsToSend(1));
@@ -70,15 +75,15 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(list(), ep.getMailsToSend(10));
 
 		final Mail m1 = ep.createMail("test overflow 1");
-		assertEquals("test overflow 1", m1.getText());
+		assertText("test overflow 1", m1);
 		assertEquals(list(m1), ep.getMailsToSend(10));
 
 		final Mail m2 = ep.createMail("test overflow 2");
-		assertEquals("test overflow 2", m2.getText());
+		assertText("test overflow 2", m2);
 		assertEquals(list(m1, m2), ep.getMailsToSend(10));
 
 		final Mail m3 = ep.createMail("test overflow 3");
-		assertEquals("test overflow 3", m3.getText());
+		assertText("test overflow 3", m3);
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 
 		assertEquals(null, ep.createMail("test overflow 4"));

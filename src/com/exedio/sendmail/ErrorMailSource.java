@@ -19,9 +19,11 @@ package com.exedio.sendmail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataSource;
@@ -97,10 +99,12 @@ public final class ErrorMailSource implements MailSource
 	
 	private final class ErrorMail implements Mail
 	{
+		final long timestamp;
 		final String text;
 		
 		private ErrorMail(final String text)
 		{
+			this.timestamp = System.currentTimeMillis();
 			this.text = text;
 			
 			synchronized(mailsToSend)
@@ -141,7 +145,8 @@ public final class ErrorMailSource implements MailSource
 		
 		public String getText()
 		{
-			return text;
+			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+			return df.format(new Date(timestamp)) + '\n' + text;
 		}
 		
 		public DataSource[] getAttachments()
