@@ -28,11 +28,11 @@ public class PackageTest extends TestCase
 	public static Test suite()
 	{
 		final TestSuite suite = new TestSuite();
-		suite.addTest(new TestSuite(MailSenderTest.class));
-		suite.addTest(new TestSuite(ErrorMailSourceTest.class));
-		suite.addTest(new TestSuite(CascadingMailSourceTest.class));
+		suite.addTestSuite(MailSenderTest.class);
+		suite.addTestSuite(ErrorMailSourceTest.class);
+		suite.addTestSuite(CascadingMailSourceTest.class);
 		// normally disabled
-		//suite.addTest(new TestSuite(SmtpTerror.class));
+		//suite.addTestSuite(SmtpTerror.class));
 		return suite;
 	}
 }
