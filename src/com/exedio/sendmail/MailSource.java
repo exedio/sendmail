@@ -22,7 +22,9 @@ import java.util.Collection;
 public interface MailSource
 {
 	/**
+	 * Returns a new packet of mails to send from this mail source.
 	 * @return a collection of {@link Mail}s.
+	 *         An implementation may return an unmodifiable collection.
 	 */
 	public Collection getMailsToSend(final int maximumResultSize);
 	
