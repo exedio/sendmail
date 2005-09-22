@@ -118,8 +118,8 @@
 			<footer>exedio sendmail</footer>
 			<bottom><![CDATA[<small>Copyright &copy; 2004-2005 <a href="http://www.exedio.com/" target="_top">exedio</a> Gesellschaft f&uuml;r Softwareentwicklung mbH. All rights reserved.</small><!--${label}-${cvstimestamp}-->]]></bottom>
 			<package name="com.*" />
-			<link href="${api.link.jdk}" />
-			<link href="${api.link.j2ee}" />
+			<link href="${api.link.jdk}"  packagelistLoc="package-list/jdk"  offline="true" />
+			<link href="${api.link.j2ee}" packagelistLoc="package-list/j2ee" offline="true" />
 			<classpath>
 				<pathelement location="lib/mail.jar" />
 				<pathelement location="lib/activation.jar" />
