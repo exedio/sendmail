@@ -26,6 +26,6 @@ public interface MailSource
 	 * @return a collection of {@link Mail}s.
 	 *         An implementation may return an unmodifiable collection.
 	 */
-	public Collection getMailsToSend(final int maximumResultSize);
+	Collection getMailsToSend(int maximumResultSize);
 	
 }

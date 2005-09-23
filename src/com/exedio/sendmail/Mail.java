@@ -22,24 +22,24 @@ import javax.activation.DataSource;
 
 public interface Mail
 {
-	public String getFrom();
+	String getFrom();
 	
-	public String[] getTo();
+	String[] getTo();
 	
-	public String[] getCarbonCopy();
+	String[] getCarbonCopy();
 	
-	public String[] getBlindCarbonCopy();
+	String[] getBlindCarbonCopy();
 	
-	public boolean isHTML();
+	boolean isHTML();
 	
-	public String getText();
+	String getText();
 
-	public String getSubject();
+	String getSubject();
 	
-	public DataSource[] getAttachments();
+	DataSource[] getAttachments();
 	
-	public void notifySent();
+	void notifySent();
 
-	public void notifyFailed(final Exception exception);
+	void notifyFailed(Exception exception);
 	
 }
