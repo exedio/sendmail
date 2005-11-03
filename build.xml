@@ -12,6 +12,7 @@
 		<mkdir dir="build/classes" />
 		<javac srcdir="src"
 				destdir="build/classes"
+				includeAntRuntime="false"
 				deprecation="on"
 				debug="on"
 				optimize="off">
