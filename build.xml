@@ -109,7 +109,7 @@
 				author="on"
 				use="on"
 				version="on"
-				windowtitle="exedio sendmail utility"
+				windowtitle="exedio sendmail"
 				splitindex="on"
 				failonerror="true"
 			>
