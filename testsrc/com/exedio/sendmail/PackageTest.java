@@ -28,7 +28,7 @@ public class PackageTest extends TestCase
 	public static Test suite()
 	{
 		final TestSuite suite = new TestSuite();
-		//suite.addTestSuite(MailSenderTest.class);
+		suite.addTestSuite(MailSenderTest.class);
 		suite.addTestSuite(ErrorMailSourceTest.class);
 		suite.addTestSuite(CascadingMailSourceTest.class);
 		// normally disabled
