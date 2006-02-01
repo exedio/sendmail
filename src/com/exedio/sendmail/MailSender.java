@@ -26,6 +26,8 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -52,7 +54,27 @@ public final class MailSender
 			final Session session = Session.getInstance(properties);
 			if(smtpDebug)
 				session.setDebug(true);
-
+			
+			final Transport transport;
+			try
+			{
+				transport = session.getTransport("smtp");
+			}
+			catch(NoSuchProviderException e)
+			{
+				throw new RuntimeException(e);
+			}
+			try
+			{
+				//final long start = System.currentTimeMillis();
+				transport.connect();
+				//System.out.println("Mailsender connected. ("+(System.currentTimeMillis()-start)+"ms)");
+			}
+			catch(MessagingException e)
+			{
+				throw new RuntimeException(e);
+			}
+			
 			for(Iterator i = mails.iterator(); i.hasNext(); )
 			{
 				final Mail mail = (Mail)i.next();
@@ -116,13 +138,27 @@ public final class MailSender
 						message.setContent(multipart);
 					}
 					
-					Transport.send(message);
+					//final long start = System.currentTimeMillis();
+					transport.sendMessage(message, message.getAllRecipients());
+					//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
+					
 					mail.notifySent();
 				}
 				catch(Exception e)
 				{
 					mail.notifyFailed(e);
 				}
+			}
+			
+			try
+			{
+				//final long start = System.currentTimeMillis();
+				transport.close();
+				//System.out.println("Mailsender closed. ("+(System.currentTimeMillis()-start)+"ms)");
+			}
+			catch(MessagingException e)
+			{
+				throw new RuntimeException(e);
 			}
 		}
 	}
