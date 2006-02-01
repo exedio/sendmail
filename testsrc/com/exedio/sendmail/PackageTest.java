@@ -32,7 +32,7 @@ public class PackageTest extends TestCase
 		suite.addTestSuite(ErrorMailSourceTest.class);
 		suite.addTestSuite(CascadingMailSourceTest.class);
 		// normally disabled
-		//suite.addTestSuite(SmtpTerror.class));
+		//suite.addTestSuite(SmtpTerror.class);
 		return suite;
 	}
 }
