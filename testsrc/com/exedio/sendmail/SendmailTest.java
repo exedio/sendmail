@@ -18,6 +18,7 @@
 
 package com.exedio.sendmail;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
@@ -28,12 +29,13 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.URLName;
 
-import com.sun.mail.pop3.POP3Store;
-
 import junit.framework.TestCase;
+
+import com.sun.mail.pop3.POP3Store;
 
 public class SendmailTest extends TestCase
 {
+	protected boolean skipTest;
 	protected Properties properties;
 
 	protected String smtpHost;
@@ -48,8 +50,19 @@ public class SendmailTest extends TestCase
 	{
 		super.setUp();
 
+		final String fileName = "test.properties";
+		final File file = new File(fileName);
+		if(!file.exists())
+		{
+			skipTest = true;
+			properties = null;
+			System.out.println("Skipping test " + getClass().getName() + " because not " + fileName + " does not exist.");
+			return;
+		}
+		
+		skipTest = false;
 		properties = new Properties();
-		properties.load(new FileInputStream("test.properties"));
+		properties.load(new FileInputStream(file));
 
 		smtpHost=(String)properties.get("smtp.host");
 		smtpDebug=properties.get("smtp.debug")!=null;

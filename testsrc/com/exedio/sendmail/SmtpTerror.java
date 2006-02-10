@@ -41,6 +41,9 @@ public class SmtpTerror extends SendmailTest
 	{
 		super.setUp();
 
+		if(skipTest)
+			return;
+		
 		user = new Account("user3");
 
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
@@ -48,13 +51,6 @@ public class SmtpTerror extends SendmailTest
 		sent = 0;
 		
 		cleanPOP3Account(user);
-	}
-	
-	public void tearDown() throws Exception
-	{
-		//cleanPOP3Account(user);
-
-		super.tearDown();
 	}
 	
 	private static final int SIZE = 300;
@@ -139,6 +135,9 @@ public class SmtpTerror extends SendmailTest
 
 	public void testTerror() throws InterruptedException
 	{
+		if(skipTest)
+			return;
+		
 		if(terrorDebug)
 			System.out.println();
 

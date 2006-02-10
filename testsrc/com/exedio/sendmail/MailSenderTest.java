@@ -58,6 +58,9 @@ public class MailSenderTest extends SendmailTest
 	public void setUp() throws Exception
 	{
 		super.setUp();
+		
+		if(skipTest)
+			return;
 
 		user1 = new Account("user1");
 		user2 = new Account("user2");
@@ -297,6 +300,9 @@ public class MailSenderTest extends SendmailTest
 	
 	public void testSendMail() throws InterruptedException
 	{
+		if(skipTest)
+			return;
+		
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
 		final MockMail m1 = new MockMail(from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
