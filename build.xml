@@ -129,8 +129,8 @@
 
 	<target name="api.zip" depends="api">
 		<mkdir dir="build" />
-		<tar destfile="build/exedio-sendmail-api.tar.gz"
-			  compression="gzip">
+		<tar destfile="build/exedio-sendmail-api.tar.bz2"
+			  compression="bzip2">
 			<tarfileset dir="${basedir}/api" />
 		</tar>
 	</target>
