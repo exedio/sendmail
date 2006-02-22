@@ -87,7 +87,7 @@
 				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<arg value="com.exedio.sendmail.PackageTest" />
-			<filter includes="com.exedio.*" excludes="com.exedio.csvtools.*Test*" />
+			<filter includes="com.exedio.*" excludes="com.exedio.sendmail.*Test*" />
 			<html outfile="build/emma/index.html" />
 		</emmajava>
 	</target>
