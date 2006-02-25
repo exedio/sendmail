@@ -2,6 +2,10 @@
 
 <project name="sendmail" default="build" basedir=".">
 
+	<taskdef
+			resource="net/sf/antcontrib/antcontrib.properties"
+			classpath="lib/ant-contrib.jar" />
+	
 	<target name="properties">
 		<property name="api.private" value="off" />
 		<property name="api.link.jdk" value="http://java.sun.com/j2se/1.4.2/docs/api" />
@@ -112,7 +116,13 @@
 		<untar src="build/exedio-sendmail-src.tar.gz"
 				dest="build/dist-test"
 				compression="gzip" />
-		<copy file="test.properties" todir="build/dist-test" />
+		<if>
+			<available file="test.properties" />
+			<then>
+				<!-- don't use failonerror="false", because this hides much more errors -->
+				<copy file="test.properties" todir="build/dist-test" />
+			</then>
+		</if>
 		<ant dir="build/dist-test" target="build" />
 	</target>
 	
