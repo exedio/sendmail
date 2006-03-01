@@ -90,14 +90,11 @@ public final class MailSender
 						final MimeMessage message = new MimeMessage(session);
 						message.setFrom(from);
 						if(to!=null)
-							for(int j = 0; j<to.length; j++)
-								message.addRecipient(Message.RecipientType.TO, to[j]);
+							message.setRecipients(Message.RecipientType.TO, to);
 						if(carbonCopy!=null)
-							for(int j = 0; j<carbonCopy.length; j++)
-								message.addRecipient(Message.RecipientType.CC, carbonCopy[j]);
+							message.setRecipients(Message.RecipientType.CC, carbonCopy);
 						if(blindCarbonCopy!=null)
-							for(int j = 0; j<blindCarbonCopy.length; j++)
-								message.addRecipient(Message.RecipientType.BCC, blindCarbonCopy[j]);
+							message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
 						if(subject!=null)
 							message.setSubject(subject, CHARSET);
 
