@@ -88,26 +88,18 @@ public final class MailSender
 						
 						final MimeMessage message = new MimeMessage(session);
 						message.setFrom(new InternetAddress(from));
-						{
-							if(to!=null)
-								for(int j = 0; j<to.length; j++)
-									message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[j]));
-						}
-						{
-							if(carbonCopy!=null)
-								for(int j = 0; j<carbonCopy.length; j++)
-									message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy[j]));
-						}
-						{
-							if(blindCarbonCopy!=null)
-								for(int j = 0; j<blindCarbonCopy.length; j++)
-									message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy[j]));
-						}
-						{
-							if(subject!=null)
-								message.setSubject(subject, CHARSET);
-						}
-	
+						if(to!=null)
+							for(int j = 0; j<to.length; j++)
+								message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[j]));
+						if(carbonCopy!=null)
+							for(int j = 0; j<carbonCopy.length; j++)
+								message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy[j]));
+						if(blindCarbonCopy!=null)
+							for(int j = 0; j<blindCarbonCopy.length; j++)
+								message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy[j]));
+						if(subject!=null)
+							message.setSubject(subject, CHARSET);
+
 						if(attachments==null || attachments.length==0)
 						{
 							if(html)
