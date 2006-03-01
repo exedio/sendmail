@@ -77,37 +77,40 @@ public final class MailSender
 					final Mail mail = (Mail)i.next();
 					try
 					{
+						final String from = mail.getFrom();
+						final String[] to = mail.getTo();
+						final String[] carbonCopy = mail.getCarbonCopy();
+						final String[] blindCarbonCopy = mail.getBlindCarbonCopy();
+						final boolean html = mail.isHTML();
+						final String subject = mail.getSubject();
+						final String text = mail.getText();
+						final DataSource[] attachments = mail.getAttachments();
+						
 						final MimeMessage message = new MimeMessage(session);
-						message.setFrom(new InternetAddress(mail.getFrom()));
+						message.setFrom(new InternetAddress(from));
 						{
-							final String[] to = mail.getTo();
 							if(to!=null)
 								for(int j = 0; j<to.length; j++)
 									message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[j]));
 						}
 						{
-							final String[] carbonCopy = mail.getCarbonCopy();
 							if(carbonCopy!=null)
 								for(int j = 0; j<carbonCopy.length; j++)
 									message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy[j]));
 						}
 						{
-							final String[] blindCarbonCopy = mail.getBlindCarbonCopy();
 							if(blindCarbonCopy!=null)
 								for(int j = 0; j<blindCarbonCopy.length; j++)
 									message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy[j]));
 						}
 						{
-							final String subject = mail.getSubject();
 							if(subject!=null)
 								message.setSubject(subject, CHARSET);
 						}
 	
-						final String text = mail.getText();
-						final DataSource[] attachments = mail.getAttachments();
 						if(attachments==null || attachments.length==0)
 						{
-							if(mail.isHTML())
+							if(html)
 								message.setContent(text, HTML_CONTENT_TYPE);
 							else
 								message.setText(text, CHARSET);
@@ -117,7 +120,7 @@ public final class MailSender
 							final MimeMultipart multipart = new MimeMultipart("alternative");
 							{
 								final MimeBodyPart mainPart = new MimeBodyPart();
-								if(mail.isHTML())
+								if(html)
 									mainPart.setContent(text, HTML_CONTENT_TYPE);
 								else
 									mainPart.setText(text, CHARSET);
