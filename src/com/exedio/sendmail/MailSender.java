@@ -30,6 +30,7 @@ import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -77,26 +78,26 @@ public final class MailSender
 					final Mail mail = (Mail)i.next();
 					try
 					{
-						final String from = mail.getFrom();
-						final String[] to = mail.getTo();
-						final String[] carbonCopy = mail.getCarbonCopy();
-						final String[] blindCarbonCopy = mail.getBlindCarbonCopy();
+						final InternetAddress from = new InternetAddress(mail.getFrom());
+						final InternetAddress[] to = toAdresses(mail.getTo());
+						final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
+						final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
 						final boolean html = mail.isHTML();
 						final String subject = mail.getSubject();
 						final String text = mail.getText();
 						final DataSource[] attachments = mail.getAttachments();
 						
 						final MimeMessage message = new MimeMessage(session);
-						message.setFrom(new InternetAddress(from));
+						message.setFrom(from);
 						if(to!=null)
 							for(int j = 0; j<to.length; j++)
-								message.addRecipient(Message.RecipientType.TO, new InternetAddress(to[j]));
+								message.addRecipient(Message.RecipientType.TO, to[j]);
 						if(carbonCopy!=null)
 							for(int j = 0; j<carbonCopy.length; j++)
-								message.addRecipient(Message.RecipientType.CC, new InternetAddress(carbonCopy[j]));
+								message.addRecipient(Message.RecipientType.CC, carbonCopy[j]);
 						if(blindCarbonCopy!=null)
 							for(int j = 0; j<blindCarbonCopy.length; j++)
-								message.addRecipient(Message.RecipientType.BCC, new InternetAddress(blindCarbonCopy[j]));
+								message.addRecipient(Message.RecipientType.BCC, blindCarbonCopy[j]);
 						if(subject!=null)
 							message.setSubject(subject, CHARSET);
 
@@ -165,6 +166,19 @@ public final class MailSender
 				}
 			}
 		}
+	}
+	
+	private static final InternetAddress[] toAdresses(final String[] s) throws AddressException
+	{
+		if(s!=null)
+		{
+			final InternetAddress[] result = new InternetAddress[s.length];
+			for(int i = 0; i<s.length; i++)
+				result[i] = new InternetAddress(s[i]);
+			return result;
+		}
+		else
+			return null;
 	}
 
 }
