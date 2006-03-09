@@ -105,6 +105,7 @@
 			<tarfileset dir="${basedir}">
 				<exclude name="build/**" />
 				<exclude name="api/**" />
+				<exclude name="cruise/**" />
 				<exclude name="test.properties" />
 			</tarfileset>
 		</tar>
