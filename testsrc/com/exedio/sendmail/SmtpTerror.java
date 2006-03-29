@@ -66,12 +66,12 @@ public class SmtpTerror extends SendmailTest
 			this.threadNumber = threadNumber;
 		}
 		
-		public Collection getMailsToSend(int maximumResultSize)
+		public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 		{
 			final String[] to = new String[]{user.email};
 			final String subject = ts + "terror subject "+threadNumber+" - ";
 
-			final ArrayList result = new ArrayList();
+			final ArrayList<Mail> result = new ArrayList<Mail>();
 			for( ; maximumResultSize>0 && number<SIZE; maximumResultSize--, number++)
 			{
 				final int mailNumber = number;

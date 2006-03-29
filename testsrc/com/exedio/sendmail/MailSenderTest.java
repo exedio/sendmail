@@ -325,10 +325,10 @@ public class MailSenderTest extends SendmailTest
 
 		final MailSource p = new MailSource()
 		{
-			public Collection getMailsToSend(final int maximumResultSize)
+			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
-				final ArrayList result = new ArrayList();
+				final ArrayList<MockMail> result = new ArrayList<MockMail>();
 				result.add(m1);
 				result.add(f1);
 				result.add(f2);
@@ -411,7 +411,7 @@ public class MailSenderTest extends SendmailTest
 	
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
-		final TreeMap expectedMessages = new TreeMap();
+		final TreeMap<String, MockMail> expectedMessages = new TreeMap<String, MockMail>();
 		for(int i = 0; i<expectedMails.length; i++)
 		{
 			final MockMail m = expectedMails[i];
@@ -434,7 +434,7 @@ public class MailSenderTest extends SendmailTest
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			
-			final TreeMap actualMessages = new TreeMap();
+			final TreeMap<String, Message> actualMessages = new TreeMap<String, Message>();
 			for(int i = 0; i<inboxMessages.length; i++)
 			{
 				final Message m = inboxMessages[i];
@@ -590,12 +590,12 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(message+'-'+i, expected[i], actual[i]);
 	}
 
-	protected final static ArrayList addressList(final String[] addresses) throws MessagingException
+	protected final static ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException
 	{
 		if(addresses==null)
 			return null;
 		
-		final ArrayList result = new ArrayList(addresses.length);
+		final ArrayList<InternetAddress> result = new ArrayList<InternetAddress>(addresses.length);
 		for(int i = 0; i<addresses.length; i++)
 			result.add(new InternetAddress(addresses[i]));
 		return result;
@@ -606,7 +606,7 @@ public class MailSenderTest extends SendmailTest
 		if(addresses==null)
 			return null;
 		
-		final ArrayList result = new ArrayList(addresses.length);
+		final ArrayList<Address> result = new ArrayList<Address>(addresses.length);
 		for(int i = 0; i<addresses.length; i++)
 			result.add(addresses[i]);
 		return result;

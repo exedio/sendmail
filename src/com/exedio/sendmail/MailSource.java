@@ -24,9 +24,8 @@ public interface MailSource
 {
 	/**
 	 * Returns a new packet of mails to send from this mail source.
-	 * @return a collection of {@link Mail}s.
-	 *         An implementation may return an unmodifiable collection.
+	 * An implementation may return an unmodifiable collection.
 	 */
-	Collection getMailsToSend(int maximumResultSize);
+	Collection<? extends Mail> getMailsToSend(int maximumResultSize);
 	
 }

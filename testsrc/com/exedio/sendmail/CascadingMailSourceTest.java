@@ -18,7 +18,7 @@
 
 package com.exedio.sendmail;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,13 +41,13 @@ public class CascadingMailSourceTest extends TestCase
 		
 		final MailSource pe = new MailSource()
 		{
-			public Collection getMailsToSend(final int maximumResultSize)
+			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				if(maximumResultSize<=0)
 					throw new RuntimeException();
 				maximumResultSizeE = maximumResultSize;
 
-				return Collections.EMPTY_LIST;
+				return Collections.<Mail>emptyList();
 			}
 		};
 
@@ -55,7 +55,7 @@ public class CascadingMailSourceTest extends TestCase
 		final MockMail a2 = new MockMail("a2");
 		final MailSource pa = new MailSource()
 		{
-			public Collection getMailsToSend(final int maximumResultSize)
+			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				if(maximumResultSize<=0)
 					throw new RuntimeException();
@@ -75,7 +75,7 @@ public class CascadingMailSourceTest extends TestCase
 		final MockMail b2 = new MockMail("b2");
 		final MailSource pb = new MailSource()
 		{
-			public Collection getMailsToSend(final int maximumResultSize)
+			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				if(maximumResultSize<=0)
 					throw new RuntimeException();
@@ -214,24 +214,36 @@ public class CascadingMailSourceTest extends TestCase
 		return Collections.EMPTY_LIST;
 	}
 
-	protected final static List list(final Object o)
+	protected final static <T> List<T> list(final T o)
 	{
 		return Collections.singletonList(o);
 	}
 	
-	protected final static List list(final Object o1, final Object o2)
+	protected final static <T> List<T> list(final T o1, final T o2)
 	{
-		return Arrays.asList(new Object[]{o1, o2});
+		final ArrayList<T> result = new ArrayList<T>();
+		result.add(o1);
+		result.add(o2);
+		return result;
 	}
 	
-	protected final static List list(final Object o1, final Object o2, final Object o3)
+	protected final static <T> List<T> list(final T o1, final T o2, final T o3)
 	{
-		return Arrays.asList(new Object[]{o1, o2, o3});
+		final ArrayList<T> result = new ArrayList<T>();
+		result.add(o1);
+		result.add(o2);
+		result.add(o3);
+		return result;
 	}
 	
-	protected final static List list(final Object o1, final Object o2, final Object o3, final Object o4)
+	protected final static <T> List<T> list(final T o1, final T o2, final T o3, final T o4)
 	{
-		return Arrays.asList(new Object[]{o1, o2, o3, o4});
+		final ArrayList<T> result = new ArrayList<T>();
+		result.add(o1);
+		result.add(o2);
+		result.add(o3);
+		result.add(o4);
+		return result;
 	}
 	
 }

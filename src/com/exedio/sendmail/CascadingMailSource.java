@@ -40,14 +40,14 @@ public class CascadingMailSource implements MailSource
 		}
 	}
 	
-	public Collection getMailsToSend(int maximumResultSize)
+	public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 	{
-		Collection resultIfOne = null;
-		ArrayList resultIfMoreThanOne = null;
+		Collection<? extends Mail> resultIfOne = null;
+		ArrayList<Mail> resultIfMoreThanOne = null;
 		
 		for(int i = 0; i<sources.length && maximumResultSize>0; i++)
 		{
-			final Collection mails = sources[i].getMailsToSend(maximumResultSize);
+			final Collection<? extends Mail> mails = sources[i].getMailsToSend(maximumResultSize);
 			final int mailsSize = mails.size();
 			
 			if(mailsSize>0)
@@ -62,7 +62,7 @@ public class CascadingMailSource implements MailSource
 				else
 					if(resultIfMoreThanOne==null)
 					{
-						resultIfMoreThanOne = new ArrayList(resultIfOne);
+						resultIfMoreThanOne = new ArrayList<Mail>(resultIfOne);
 						resultIfOne = null;
 						resultIfMoreThanOne.addAll(mails);
 					}
@@ -73,7 +73,7 @@ public class CascadingMailSource implements MailSource
 
 		if(resultIfOne==null)
 			if(resultIfMoreThanOne==null)
-				return Collections.EMPTY_LIST;
+				return Collections.<Mail>emptyList();
 			else
 				return resultIfMoreThanOne;
 		else
