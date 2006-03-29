@@ -601,15 +601,12 @@ public class MailSenderTest extends SendmailTest
 		return result;
 	}
 
-	protected final static ArrayList addressList(final Address[] addresses) throws MessagingException
+	protected final static List<Address> addressList(final Address[] addresses) throws MessagingException
 	{
 		if(addresses==null)
 			return null;
 		
-		final ArrayList<Address> result = new ArrayList<Address>(addresses.length);
-		for(int i = 0; i<addresses.length; i++)
-			result.add(addresses[i]);
-		return result;
+		return Arrays.asList(addresses);
 	}
 
 	protected final static List list()
