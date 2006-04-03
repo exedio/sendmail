@@ -213,7 +213,7 @@ public class MailSenderTest extends SendmailTest
 		
 		public String getSubject()
 		{
-			return subject;
+			return subject + '[' + id + ']' ;
 		}
 		
 		public String getText()
