@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -480,9 +479,8 @@ public class MailSenderTest extends SendmailTest
 					throw new RuntimeException(m.getSubject());
 			}
 			
-			for(Iterator i = expectedMessages.keySet().iterator(); i.hasNext(); )
+			for(final String subject : expectedMessages.keySet())
 			{
-				final String subject = (String)i.next();
 				final Message m = actualMessages.get(subject);
 				final MockMail expected = expectedMessages.get(subject);
 				final String message = account.pop3User + " - " + subject;
