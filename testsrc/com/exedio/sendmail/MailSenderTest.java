@@ -348,6 +348,7 @@ public class MailSenderTest extends SendmailTest
 		final MockMail f1  = new MockMail("f1",  from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final MockMail f2  = new MockMail("f2",  from, (String)null, null, null);
 		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT2);
+		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT1, TEXT2);
 		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
 		final MockMail x13 = new MockMail("x13", from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
 		final MockMail x23 = new MockMail("x23", from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
@@ -370,6 +371,7 @@ public class MailSenderTest extends SendmailTest
 				result.add(f1);
 				result.add(f2);
 				result.add(m2);
+				result.add(m3);
 				result.add(x12);
 				result.add(x13);
 				result.add(x23);
@@ -396,6 +398,10 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(null, m2.failedException);
 		assertEquals(1, m2.sentCounter);
 		assertEquals(0, m2.failedCounter);
+		
+		assertEquals(null, m3.failedException);
+		assertEquals(1, m3.sentCounter);
+		assertEquals(0, m3.failedCounter);
 		
 		assertEquals(null, x12.failedException);
 		assertEquals(1, x12.sentCounter);
@@ -440,7 +446,7 @@ public class MailSenderTest extends SendmailTest
 			System.out.println();
 		
 		assertPOP3(user1, new MockMail[]{m1, x12, x13, ma1, ma2});
-		assertPOP3(user2, new MockMail[]{m1, m2, x12, x23});
+		assertPOP3(user2, new MockMail[]{m1, m2, m3, x12, x23});
 		assertPOP3(user3, new MockMail[]{m1, x13, x23});
 	}
 	
@@ -495,8 +501,26 @@ public class MailSenderTest extends SendmailTest
 				final boolean expectedHtml = expected.getText()==null;
 				if(attachments==null)
 				{
-					assertEquals(message, (expectedHtml ? "text/html" : "text/plain")+"; charset="+CHARSET, m.getContentType());
-					assertEquals(message, (expectedHtml ? expected.getTextAsHtml() : expected.getText()) + TEXT_APPENDIX, m.getContent());
+					if(expected.getText()==null || expected.getTextAsHtml()==null)
+					{
+						assertEquals(message, (expectedHtml ? "text/html" : "text/plain")+"; charset="+CHARSET, m.getContentType());
+						assertEquals(message, (expectedHtml ? expected.getTextAsHtml() : expected.getText()) + TEXT_APPENDIX, m.getContent());
+					}
+					else
+					{
+						assertTrue(message+"-"+m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+						final MimeMultipart multipart = (MimeMultipart)m.getContent();
+						{
+							final BodyPart textBody = multipart.getBodyPart(0);
+							assertEquals(message, "text/plain; charset="+CHARSET, textBody.getContentType());
+							assertEquals(message, expected.getText(), textBody.getContent());
+						}
+						{
+							final BodyPart htmlBody = multipart.getBodyPart(1);
+							assertEquals(message, "text/html; charset="+CHARSET, htmlBody.getContentType());
+							assertEquals(message, expected.getTextAsHtml(), htmlBody.getContent());
+						}
+					}
 				}
 				else
 				{

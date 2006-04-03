@@ -144,13 +144,16 @@ public final class MailSender
 								htmlPart.setDisposition(BodyPart.INLINE);
 								multipart.addBodyPart(htmlPart);
 							}
-							for(int j = 0; j<attachments.length; j++)
+							if(attachments!=null)
 							{
-								final MimeBodyPart attachPart = new MimeBodyPart();
-								attachPart.setDataHandler(new DataHandler(attachments[j]));
-								attachPart.setDisposition(BodyPart.ATTACHMENT);
-								attachPart.setFileName(attachments[j].getName());
-								multipart.addBodyPart(attachPart);
+								for(int j = 0; j<attachments.length; j++)
+								{
+									final MimeBodyPart attachPart = new MimeBodyPart();
+									attachPart.setDataHandler(new DataHandler(attachments[j]));
+									attachPart.setDisposition(BodyPart.ATTACHMENT);
+									attachPart.setFileName(attachments[j].getName());
+									multipart.addBodyPart(attachPart);
+								}
 							}
 							message.setContent(multipart);
 						}
