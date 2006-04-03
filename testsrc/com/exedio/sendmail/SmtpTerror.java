@@ -103,14 +103,14 @@ public class SmtpTerror extends SendmailTest
 						return subject + mailNumber;
 					}
 					
-					public boolean isHTML()
-					{
-						return false;
-					}
-					
 					public String getText()
 					{
 						return "terror mail";
+					}
+					
+					public String getTextAsHtml()
+					{
+						return null;
 					}
 					
 					public DataSource[] getAttachments()

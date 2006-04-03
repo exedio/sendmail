@@ -183,12 +183,12 @@ public class CascadingMailSourceTest extends TestCase
 			throw new RuntimeException(code);
 		}
 		
-		public boolean isHTML()
+		public String getText()
 		{
 			throw new RuntimeException(code);
 		}
 		
-		public String getText()
+		public String getTextAsHtml()
 		{
 			throw new RuntimeException(code);
 		}

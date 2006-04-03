@@ -139,15 +139,15 @@ public final class ErrorMailSource implements MailSource
 			return subject;
 		}
 		
-		public boolean isHTML()
-		{
-			return false;
-		}
-		
 		public String getText()
 		{
 			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 			return df.format(new Date(timestamp)) + '\n' + text;
+		}
+		
+		public String getTextAsHtml()
+		{
+			return null;
 		}
 		
 		public DataSource[] getAttachments()

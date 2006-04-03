@@ -68,6 +68,7 @@
 				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<arg value="com.exedio.sendmail.PackageTest" />
+			<assertions><enable/></assertions>
 		</java>
 	</target>
 	

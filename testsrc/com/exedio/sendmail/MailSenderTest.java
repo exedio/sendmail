@@ -75,13 +75,14 @@ public class MailSenderTest extends SendmailTest
 	
 	private static final class MockMail implements Mail
 	{
+		private final String id;
 		private final String from;
 		private final String[] to;
 		private final String[] cc;
 		private final String[] bcc;
 		private final String subject;
-		private boolean html = false;
 		private final String text;
+		private final String textAsHtml;
 		private final DataSource[] attachments;
 
 		int sentCounter = 0;
@@ -93,67 +94,101 @@ public class MailSenderTest extends SendmailTest
 			return s==null ? null : new String[]{s};
 		}
 		
-		MockMail(final String from,
+		MockMail(
+				final String id,
+				final String from,
 				final String to,
 				final String cc,
 				final String bcc,
 				final String subject,
 				final String text)
 		{
-			this(from, ta(to), ta(cc), ta(bcc), subject, text);
+			this(id, from, ta(to), ta(cc), ta(bcc), subject, text, (String)null, (DataSource[])null);
 		}
 		
-		MockMail(final String from,
+		MockMail(
+				final String id,
+				final String from,
+				final String to,
+				final String cc,
+				final String bcc,
+				final String subject,
+				final String text,
+				final String textAsHtml)
+		{
+			this(id, from, ta(to), ta(cc), ta(bcc), subject, text, textAsHtml, (DataSource[])null);
+		}
+		
+		MockMail(
+				final String id,
+				final String from,
 				final String[] to,
 				final String[] cc,
 				final String[] bcc,
 				final String subject,
 				final String text)
 		{
-			this(from, to, cc, bcc, subject, text, null);
+			this(id, from, to, cc, bcc, subject, text, (String)null, (DataSource[])null);
 		}
 		
-		MockMail(final String from,
+		MockMail(
+				final String id,
+				final String from,
 				final String to,
 				final String subject,
 				final String text)
 		{
-			this(from, ta(to), null, null, subject, text, (DataSource[])null);
+			this(id, from, ta(to), null, null, subject, text, (String)null, (DataSource[])null);
 		}
 		
-		MockMail(final String from,
+		MockMail(
+				final String id,
+				final String from,
 				final String to,
 				final String subject,
 				final String text,
 				final DataSource attachement)
 		{
-			this(from, ta(to), null, null, subject, text, new DataSource[]{attachement});
+			this(id, from, ta(to), null, null, subject, text, (String)null, new DataSource[]{attachement});
 		}
 		
-		MockMail(final String from,
+		MockMail(
+				final String id,
+				final String from,
 				final String to,
 				final String subject,
 				final String text,
+				final String textAsHtml,
 				final DataSource attachement1,
 				final DataSource attachement2)
 		{
-			this(from, ta(to), null, null, subject, text, new DataSource[]{attachement1, attachement2});
+			this(id, from, ta(to), null, null, subject, text, textAsHtml, new DataSource[]{attachement1, attachement2});
 		}
 		
-		MockMail(final String from,
+		MockMail(
+				final String id,
+				final String from,
 				final String[] to,
 				final String[] cc,
 				final String[] bcc,
 				final String subject,
 				final String text,
+				final String textAsHtml,
 				final DataSource[] attachments)
 		{
+			if(id==null)
+				throw new RuntimeException("id must not be null");
+			if(to!=null && text==null && textAsHtml==null)
+				throw new NullPointerException("both text and textAsHtml is null");
+
+			this.id = id;
 			this.from = from;
 			this.to = to;
 			this.cc = cc;
 			this.bcc = bcc;
 			this.subject = subject;
 			this.text = text;
+			this.textAsHtml = textAsHtml;
 			this.attachments = attachments;
 		}
 		
@@ -182,14 +217,14 @@ public class MailSenderTest extends SendmailTest
 			return subject;
 		}
 		
-		public boolean isHTML()
-		{
-			return html;
-		}
-		
 		public String getText()
 		{
 			return text;
+		}
+		
+		public String getTextAsHtml()
+		{
+			return textAsHtml;
 		}
 		
 		public DataSource[] getAttachments()
@@ -206,6 +241,11 @@ public class MailSenderTest extends SendmailTest
 		{
 			failedCounter++;
 			failedException = exception;
+		}
+		
+		public String toString()
+		{
+			return "MockMail(" + id + ')';
 		}
 		
 	}
@@ -305,23 +345,21 @@ public class MailSenderTest extends SendmailTest
 		
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final MockMail m1 = new MockMail(from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
-		final MockMail f1 = new MockMail(from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
-		final MockMail f2 = new MockMail(from, (String)null, null, null);
-		final MockMail m2 = new MockMail(from, user2.email, null, null, ts+SUBJECT2, TEXT2);
-		m2.html = true;
-		final MockMail x12 = new MockMail(from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
-		final MockMail x13 = new MockMail(from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
-		final MockMail x23 = new MockMail(from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
-		final MockMail ma1 = new MockMail(from, user1.email, ts+"subject text attach", TEXT1,
+		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1);
+		final MockMail f1  = new MockMail("f1",  from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
+		final MockMail f2  = new MockMail("f2",  from, (String)null, null, null);
+		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT2);
+		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
+		final MockMail x13 = new MockMail("x13", from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);
+		final MockMail x23 = new MockMail("x23", from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1);
+		final MockMail ma1 = new MockMail("ma1", from, user1.email, ts+"subject text attach", TEXT1,
 				new MockURLDataSource("MailSenderTest.class", "application/one"));
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
-		final MockMail ma2 = new MockMail(from, user1.email, ts+"subject html attach", TEXT2,
+		final MockMail ma2 = new MockMail("ma2", from, user1.email, ts+"subject html attach", (String)null, TEXT2,
 				new MockURLDataSource("PackageTest.class", "application/twoone"),
 				new MockURLDataSource("CascadingMailSourceTest.class", "application/twotwo"));
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
-		ma2.html = true;
 
 		final MailSource p = new MailSource()
 		{
@@ -445,8 +483,8 @@ public class MailSenderTest extends SendmailTest
 			for(Iterator i = expectedMessages.keySet().iterator(); i.hasNext(); )
 			{
 				final String subject = (String)i.next();
-				final Message m = (Message)actualMessages.get(subject);
-				final MockMail expected = (MockMail)expectedMessages.get(subject);
+				final Message m = actualMessages.get(subject);
+				final MockMail expected = expectedMessages.get(subject);
 				final String message = account.pop3User + " - " + subject;
 				
 				assertNotNull(message, m);
@@ -456,18 +494,19 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
 				final DataSource[] attachments = expected.getAttachments();
+				final boolean expectedHtml = expected.getText()==null;
 				if(attachments==null)
 				{
-					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset="+CHARSET, m.getContentType());
-					assertEquals(message, expected.getText() + TEXT_APPENDIX, m.getContent());
+					assertEquals(message, (expectedHtml ? "text/html" : "text/plain")+"; charset="+CHARSET, m.getContentType());
+					assertEquals(message, (expectedHtml ? expected.getTextAsHtml() : expected.getText()) + TEXT_APPENDIX, m.getContent());
 				}
 				else
 				{
 					assertTrue(message+"-"+m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
 					final MimeMultipart multipart = (MimeMultipart)m.getContent();
 					final BodyPart mainBody = multipart.getBodyPart(0);
-					assertEquals(message, (expected.html ? "text/html" : "text/plain")+"; charset="+CHARSET, mainBody.getContentType());
-					assertEquals(message, expected.getText(), mainBody.getContent());
+					assertEquals(message, (expectedHtml ? "text/html" : "text/plain")+"; charset="+CHARSET, mainBody.getContentType());
+					assertEquals(message, (expectedHtml ? expected.getTextAsHtml() : expected.getText()), mainBody.getContent());
 					for(int j = 0; j<attachments.length; j++)
 					{
 						final BodyPart attachBody = multipart.getBodyPart(j+1);
@@ -501,7 +540,7 @@ public class MailSenderTest extends SendmailTest
 					inboxFolder.close(false);
 				}
 				catch(MessagingException e)
-				{}
+				{/*IGNORE*/}
 			}
 			if(store!=null)
 			{
@@ -510,7 +549,7 @@ public class MailSenderTest extends SendmailTest
 					store.close();
 				}
 				catch(MessagingException e)
-				{}
+				{/*IGNORE*/}
 			}
 		}
 	}
@@ -555,7 +594,7 @@ public class MailSenderTest extends SendmailTest
 					inboxFolder.close(false);
 				}
 				catch(MessagingException e)
-				{}
+				{/*IGNORE*/}
 			}
 			if(store!=null)
 			{
@@ -564,7 +603,7 @@ public class MailSenderTest extends SendmailTest
 					store.close();
 				}
 				catch(MessagingException e)
-				{}
+				{/*IGNORE*/}
 			}
 		}
 	}

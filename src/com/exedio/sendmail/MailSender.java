@@ -19,7 +19,6 @@
 package com.exedio.sendmail;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -45,7 +44,7 @@ public final class MailSender
 	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
-		final Collection mails = source.getMailsToSend(maximumResultSize);
+		final Collection<? extends Mail> mails = source.getMailsToSend(maximumResultSize);
 
 		if(!mails.isEmpty())
 		{
@@ -73,18 +72,25 @@ public final class MailSender
 					//System.out.println("Mailsender connected. ("+(System.currentTimeMillis()-start)+"ms)");
 				}
 			
-				for(Iterator i = mails.iterator(); i.hasNext(); )
+				for(final Mail mail : mails)
 				{
-					final Mail mail = (Mail)i.next();
 					try
 					{
+						//System.err.println("-------------------------------------+"+mail);
 						final InternetAddress from = new InternetAddress(mail.getFrom());
+						if(from==null)
+							throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
+						
 						final InternetAddress[] to = toAdresses(mail.getTo());
 						final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
 						final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
-						final boolean html = mail.isHTML();
 						final String subject = mail.getSubject();
+
 						final String text = mail.getText();
+						final String textAsHtml = mail.getTextAsHtml();
+						if(text==null && textAsHtml==null)
+							throw new NullPointerException("either Mail#getText() or Mail#getTextAsHtml() must not return null (" + mail.toString() + ')');
+						
 						final DataSource[] attachments = mail.getAttachments();
 						
 						final MimeMessage message = new MimeMessage(session);
@@ -98,24 +104,45 @@ public final class MailSender
 						if(subject!=null)
 							message.setSubject(subject, CHARSET);
 
-						if(attachments==null || attachments.length==0)
+						if((attachments==null || attachments.length==0) && (text==null || textAsHtml==null))
 						{
-							if(html)
-								message.setContent(text, HTML_CONTENT_TYPE);
+							//System.err.println("if (attachments==null || attachments.length==0) && (text==null || textAsHtml==null)");
+							if(textAsHtml!=null)
+							{
+								assert text==null;
+								assert textAsHtml!=null;
+								//System.err.println("textAsHtml!=null");
+								message.setContent(textAsHtml, HTML_CONTENT_TYPE);
+							}
 							else
+							{
+								assert text!=null;
+								assert textAsHtml==null;
+								//System.err.println("text!=null");
 								message.setText(text, CHARSET);
+							}
 						}
 						else
 						{
+							//System.err.println("else (attachments==null || attachments.length==0) && (text==null || textAsHtml==null)");
 							final MimeMultipart multipart = new MimeMultipart("alternative");
+							if(text!=null)
 							{
-								final MimeBodyPart mainPart = new MimeBodyPart();
-								if(html)
-									mainPart.setContent(text, HTML_CONTENT_TYPE);
-								else
-									mainPart.setText(text, CHARSET);
-								mainPart.setDisposition(BodyPart.INLINE);
-								multipart.addBodyPart(mainPart);
+								//System.err.println("text!=null");
+								final MimeBodyPart textPart = new MimeBodyPart();
+								assert text!=null;
+								textPart.setText(text, CHARSET);
+								textPart.setDisposition(BodyPart.INLINE);
+								multipart.addBodyPart(textPart);
+							}
+							if(textAsHtml!=null)
+							{
+								//System.err.println("textAsHtml!=null");
+								final MimeBodyPart htmlPart = new MimeBodyPart();
+								assert textAsHtml!=null;
+								htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
+								htmlPart.setDisposition(BodyPart.INLINE);
+								multipart.addBodyPart(htmlPart);
 							}
 							for(int j = 0; j<attachments.length; j++)
 							{
@@ -138,6 +165,9 @@ public final class MailSender
 					}
 					catch(Exception e)
 					{
+						//System.err.println("-------------------------------------e"+mail);
+						//e.printStackTrace();
+						//System.err.println("-------------------------------------e"+mail);
 						mail.notifyFailed(e);
 					}
 				}
