@@ -59,17 +59,21 @@
 	</target>
 	
 	<target name="test" depends="test.compile">
-		<java classname="junit.textui.TestRunner" taskname="junit" fork="yes" failonerror="yes">
+		<mkdir dir="build/testresults" />
+		<junit fork="yes"
+				 haltonerror="true" haltonfailure="true"
+				 showoutput="true" printsummary="true">
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
 			<classpath>
 				<pathelement location="build/classes" />
 				<pathelement location="build/testclasses" />
 				<pathelement location="lib/mail.jar" />
 				<pathelement location="lib/activation.jar" />
-				<pathelement location="lib/junit.jar" />
 			</classpath>
-			<arg value="com.exedio.sendmail.PackageTest" />
+			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail" />
 			<assertions><enable/></assertions>
-		</java>
+		</junit>
 	</target>
 	
 	<path id="emma.lib" >
