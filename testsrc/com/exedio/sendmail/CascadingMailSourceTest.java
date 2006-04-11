@@ -129,6 +129,25 @@ public class CascadingMailSourceTest extends TestCase
 			assertMails(list(), p.getMailsToSend(1), 1,-1,-1);
 			assertMails(list(), p.getMailsToSend(0),-1,-1,-1);
 		}
+		
+		try
+		{
+			new CascadingMailSource(new MailSource[]{null});
+			fail();
+		}
+		catch(RuntimeException e)
+		{
+			assertEquals("must have more than one source", e.getMessage());
+		}
+		try
+		{
+			new CascadingMailSource(new MailSource[]{null, null});
+			fail();
+		}
+		catch(NullPointerException e)
+		{
+			assertEquals("source 0 is null", e.getMessage());
+		}
 	}
 	
 	protected final void assertMails(
