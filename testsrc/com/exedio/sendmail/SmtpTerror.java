@@ -68,7 +68,7 @@ public class SmtpTerror extends SendmailTest
 		
 		public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 		{
-			final String[] to = new String[]{user.email};
+			final String[] to = {user.email};
 			final String subject = ts + "terror subject "+threadNumber+" - ";
 
 			final ArrayList<Mail> result = new ArrayList<Mail>();
