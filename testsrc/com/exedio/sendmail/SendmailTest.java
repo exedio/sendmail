@@ -56,7 +56,7 @@ public class SendmailTest extends TestCase
 		{
 			skipTest = true;
 			properties = null;
-			System.out.println("Skipping test " + getClass().getName() + " because not " + fileName + " does not exist.");
+			System.out.println("Skipping test " + getClass().getName() + " because " + fileName + " does not exist.");
 			return;
 		}
 		
