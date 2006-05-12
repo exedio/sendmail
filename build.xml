@@ -37,6 +37,7 @@
 				<attribute name="Implementation-Title" value="exedio sendmail"/>
 				<attribute name="Implementation-Version" value="${build.tag}"/>
 				<attribute name="Implementation-Vendor" value="exedio GmbH"/>
+				<attribute name="Class-Path" value="activation.jar" />
 			</manifest>
 		</jar>
 	</target>
