@@ -257,8 +257,7 @@ public class MailSenderTest extends SendmailTest
 		
 		TestDataSource(final Class resource, final String name, final String contentType)
 		{
-			final String resourceName = resource.getName();
-			this.resource = resourceName.substring(resourceName.lastIndexOf('.'));
+			this.resource = resource.getSimpleName();
 			this.name = name;
 			this.contentType = contentType;
 			
