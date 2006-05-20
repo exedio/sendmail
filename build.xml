@@ -29,7 +29,7 @@
 	</target>
 	
 	<target name="jar" depends="compile">
-		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes">
+		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes" duplicate="fail">
 			<manifest>
 				<attribute name="Specification-Title" value="exedio sendmail"/>
 				<attribute name="Specification-Version" value="${build.tag}"/>
