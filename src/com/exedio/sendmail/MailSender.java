@@ -77,9 +77,13 @@ public final class MailSender
 					try
 					{
 						//System.err.println("-------------------------------------+"+mail);
-						final InternetAddress from = new InternetAddress(mail.getFrom());
-						if(from==null)
-							throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
+						final InternetAddress from;
+						{
+							final String fromString = mail.getFrom();
+							if(fromString==null)
+								throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
+							from = new InternetAddress(fromString);
+						}
 						
 						final InternetAddress[] to = toAdresses(mail.getTo());
 						final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
