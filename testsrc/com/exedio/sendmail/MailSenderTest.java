@@ -54,6 +54,7 @@ public class MailSenderTest extends SendmailTest
 	
 	private static boolean countDebug = false;
 	
+	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();
@@ -242,6 +243,7 @@ public class MailSenderTest extends SendmailTest
 			failedException = exception;
 		}
 		
+		@Override
 		public String toString()
 		{
 			return "MockMail(" + id + ')';
@@ -305,11 +307,13 @@ public class MailSenderTest extends SendmailTest
 				throw new RuntimeException();
 		}
 		
+		@Override
 		public String getName()
 		{
 			return name;
 		}
 		
+		@Override
 		public String getContentType()
 		{
 			return contentType;

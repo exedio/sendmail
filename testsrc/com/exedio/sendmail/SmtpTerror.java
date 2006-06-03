@@ -37,6 +37,7 @@ public class SmtpTerror extends SendmailTest
 	private int sent;
 	private static final boolean terrorDebug = true;
 
+	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();

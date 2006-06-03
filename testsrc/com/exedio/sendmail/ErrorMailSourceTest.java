@@ -29,6 +29,7 @@ public class ErrorMailSourceTest extends TestCase
 {
 	private ErrorMailSource ep;
 	
+	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();

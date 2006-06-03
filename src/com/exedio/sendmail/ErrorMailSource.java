@@ -166,6 +166,7 @@ public final class ErrorMailSource implements MailSource
 			mailsToSend.remove(this);
 		}
 		
+		@Override
 		public String toString()
 		{
 			return text;

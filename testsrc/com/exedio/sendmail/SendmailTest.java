@@ -46,6 +46,7 @@ public class SendmailTest extends TestCase
 
 	protected String from;
 
+	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();
