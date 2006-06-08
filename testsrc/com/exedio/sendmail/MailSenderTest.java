@@ -84,6 +84,7 @@ public class MailSenderTest extends SendmailTest
 		private final String text;
 		private final String textAsHtml;
 		private final DataSource[] attachments;
+		boolean specialMessageID = false;
 
 		int sentCounter = 0;
 		int failedCounter = 0;
@@ -190,6 +191,11 @@ public class MailSenderTest extends SendmailTest
 			this.text = text;
 			this.textAsHtml = textAsHtml;
 			this.attachments = attachments;
+		}
+		
+		public String getMessageID()
+		{
+			return specialMessageID ? "messageid-" + id + '-' + System.currentTimeMillis() : null;
 		}
 		
 		public String getFrom()
@@ -351,6 +357,7 @@ public class MailSenderTest extends SendmailTest
 		final MockMail f1  = new MockMail("f1",  from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail");
 		final MockMail f2  = new MockMail("f2",  from, (String)null, null, null);
 		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT2);
+		m2.specialMessageID = true;
 		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT1, TEXT2);
 		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1);
 		final MockMail x13 = new MockMail("x13", from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1);

@@ -79,6 +79,11 @@ public class SmtpTerror extends SendmailTest
 				
 				result.add(new Mail()
 				{
+					public String getMessageID()
+					{
+						return null;
+					}
+					
 					public String getFrom()
 					{
 						return from;

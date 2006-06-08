@@ -178,6 +178,11 @@ public class CascadingMailSourceTest extends TestCase
 			return "mail:"+code;
 		}
 		
+		public String getMessageID()
+		{
+			throw new RuntimeException(code);
+		}
+		
 		public String getFrom()
 		{
 			throw new RuntimeException(code);

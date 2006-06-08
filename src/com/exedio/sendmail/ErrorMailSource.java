@@ -114,6 +114,11 @@ public final class ErrorMailSource implements MailSource
 			}
 		}
 
+		public String getMessageID()
+		{
+			return null;
+		}
+		
 		public String getFrom()
 		{
 			return from;

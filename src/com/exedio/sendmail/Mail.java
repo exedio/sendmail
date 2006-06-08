@@ -23,6 +23,11 @@ import javax.activation.DataSource;
 
 public interface Mail
 {
+	/**
+	 * May return null, then javax.mail produces an ID.
+	 */
+	String getMessageID();
+	
 	String getFrom();
 	
 	String[] getTo();

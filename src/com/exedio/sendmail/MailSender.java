@@ -77,6 +77,7 @@ public final class MailSender
 					try
 					{
 						//System.err.println("-------------------------------------+"+mail);
+						final String id = mail.getMessageID();
 						final InternetAddress from;
 						{
 							final String fromString = mail.getFrom();
@@ -97,7 +98,7 @@ public final class MailSender
 						
 						final DataSource[] attachments = mail.getAttachments();
 						
-						final MimeMessage message = new MimeMessage(session);
+						final MimeMessage message = id!=null ? new MimeMessageWithID(session, id) : new MimeMessage(session);
 						message.setFrom(from);
 						if(to!=null)
 							message.setRecipients(Message.RecipientType.TO, to);
@@ -199,6 +200,30 @@ public final class MailSender
 					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * See
+	 * http://java.sun.com/products/javamail/FAQ.html#msgid
+	 * but updateMessageID did not work, so I used updateHeaders instead.
+	 */
+	private static final class MimeMessageWithID extends MimeMessage
+	{
+		final String id;
+		
+		private MimeMessageWithID(final Session session, final String id)
+		{
+			super(session);
+			assert id!=null;
+			this.id = id;
+		}
+		
+		@Override
+		protected void updateHeaders() throws MessagingException
+		{
+			super.updateHeaders();
+			setHeader("Message-ID", id);
 		}
 	}
 	
