@@ -55,32 +55,34 @@ public class CascadingMailSource implements MailSource
 				maximumResultSize -= mailsSize;
 				
 				if(resultIfOne==null)
+				{
 					if(resultIfMoreThanOne==null)
 						resultIfOne = mails;
 					else
 						resultIfMoreThanOne.addAll(mails);
+				}
 				else
-					if(resultIfMoreThanOne==null)
-					{
-						resultIfMoreThanOne = new ArrayList<Mail>(resultIfOne);
-						resultIfOne = null;
-						resultIfMoreThanOne.addAll(mails);
-					}
-					else
-						throw new RuntimeException();
+				{
+					assert resultIfMoreThanOne==null;
+					resultIfMoreThanOne = new ArrayList<Mail>(resultIfOne);
+					resultIfOne = null;
+					resultIfMoreThanOne.addAll(mails);
+				}
 			}
 		}
 
 		if(resultIfOne==null)
+		{
 			if(resultIfMoreThanOne==null)
 				return Collections.<Mail>emptyList();
 			else
 				return resultIfMoreThanOne;
+		}
 		else
-			if(resultIfMoreThanOne==null)
-				return resultIfOne;
-			else
-				throw new RuntimeException();
+		{
+			assert resultIfMoreThanOne==null;
+			return resultIfOne;
+		}
 	}
 	
 }
