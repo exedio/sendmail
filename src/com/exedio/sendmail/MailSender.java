@@ -44,10 +44,12 @@ public final class MailSender
 	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
-		final Collection<? extends Mail> mails = source.getMailsToSend(maximumResultSize);
-
-		if(!mails.isEmpty())
+		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
 		{
+			final Collection<? extends Mail> mails = source.getMailsToSend(maximumResultSize);
+			if(mails.isEmpty())
+				return;
+
 			final Properties properties = new Properties();
 			properties.put(MAIL_SMTP_HOST, smtpHost);
 			properties.put("mail.transport.protocol", "smtp");
@@ -201,6 +203,7 @@ public final class MailSender
 				}
 			}
 		}
+		System.err.println("MailSender#sendMails terminates because of possibly infinite loop");
 	}
 	
 	/**

@@ -373,9 +373,15 @@ public class MailSenderTest extends SendmailTest
 
 		final MailSource p = new MailSource()
 		{
+			boolean done = false;
+			
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
+				
+				if(done)
+					return Collections.<Mail>emptyList();
+				
 				final ArrayList<MockMail> result = new ArrayList<MockMail>();
 				result.add(m1);
 				result.add(f1);
@@ -387,6 +393,8 @@ public class MailSenderTest extends SendmailTest
 				result.add(x23);
 				result.add(ma1);
 				result.add(ma2);
+				
+				done = true;
 				return result;
 			}
 		};
