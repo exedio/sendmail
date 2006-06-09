@@ -41,7 +41,7 @@ public interface Mail
 	/**
 	 * An implementation may return
 	 * both normal text and html text,
-	 * the both texts are sent as
+	 * then both texts are sent as
 	 * alternatives.
 	 */
 	String getTextAsHtml();
