@@ -19,7 +19,6 @@
 package com.exedio.sendmail;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -95,24 +94,9 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 	}
 
-	protected final static List list()
+	protected final static <T> List list(final T... o)
 	{
-		return Collections.EMPTY_LIST;
-	}
-
-	protected final static List list(final Object o)
-	{
-		return Collections.singletonList(o);
-	}
-	
-	protected final static List list(final Object o1, final Object o2)
-	{
-		return Arrays.asList(new Object[]{o1, o2});
-	}
-	
-	protected final static List list(final Object o1, final Object o2, final Object o3)
-	{
-		return Arrays.asList(new Object[]{o1, o2, o3});
+		return Arrays.asList(o);
 	}
 	
 	protected void assertEquals(final Object[] expected, final Object[] actual)

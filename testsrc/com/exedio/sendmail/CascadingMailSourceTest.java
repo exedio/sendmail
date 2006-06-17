@@ -18,7 +18,7 @@
 
 package com.exedio.sendmail;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -234,41 +234,9 @@ public class CascadingMailSourceTest extends TestCase
 		}
 	}
 
-	protected final static List list()
+	protected final static <T> List<T> list(final T... o)
 	{
-		return Collections.EMPTY_LIST;
-	}
-
-	protected final static <T> List<T> list(final T o)
-	{
-		return Collections.singletonList(o);
-	}
-	
-	protected final static <T> List<T> list(final T o1, final T o2)
-	{
-		final ArrayList<T> result = new ArrayList<T>();
-		result.add(o1);
-		result.add(o2);
-		return result;
-	}
-	
-	protected final static <T> List<T> list(final T o1, final T o2, final T o3)
-	{
-		final ArrayList<T> result = new ArrayList<T>();
-		result.add(o1);
-		result.add(o2);
-		result.add(o3);
-		return result;
-	}
-	
-	protected final static <T> List<T> list(final T o1, final T o2, final T o3, final T o4)
-	{
-		final ArrayList<T> result = new ArrayList<T>();
-		result.add(o1);
-		result.add(o2);
-		result.add(o3);
-		result.add(o4);
-		return result;
+		return Arrays.asList(o);
 	}
 	
 }

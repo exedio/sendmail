@@ -688,29 +688,9 @@ public class MailSenderTest extends SendmailTest
 		return Arrays.asList(addresses);
 	}
 
-	protected final static List list()
+	protected final static <T> List<T> list(final T... o)
 	{
-		return Collections.EMPTY_LIST;
-	}
-
-	protected final static List list(final Object o)
-	{
-		return Collections.singletonList(o);
-	}
-	
-	protected final static List list(final Object o1, final Object o2)
-	{
-		return Arrays.asList(new Object[]{o1, o2});
-	}
-	
-	protected final static List list(final Object o1, final Object o2, final Object o3)
-	{
-		return Arrays.asList(new Object[]{o1, o2, o3});
-	}
-	
-	protected final static List list(final Object o1, final Object o2, final Object o3, final Object o4)
-	{
-		return Arrays.asList(new Object[]{o1, o2, o3, o4});
+		return Arrays.asList(o);
 	}
 	
 }
