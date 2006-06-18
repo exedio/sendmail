@@ -234,7 +234,7 @@ public class CascadingMailSourceTest extends TestCase
 		}
 	}
 
-	protected final static <T> List<T> list(final T... o)
+	protected final static List<Mail> list(final Mail... o)
 	{
 		return Arrays.asList(o);
 	}
