@@ -57,6 +57,9 @@
 			</classpath>
 			<compilerarg value="-Xlint" />
 		</javac>
+		<copy todir="build/testclasses/com/exedio/sendmail">
+			<fileset dir="testresources" />
+		</copy>
 	</target>
 	
 	<target name="test" depends="test.compile">

@@ -442,7 +442,7 @@ public class MailSenderTest extends SendmailTest
 		});
 		final MockMail ma1 = new MockMail("ma1", from, user1.email, ts+"subject text attach", TEXT1,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
-				new MockURLDataSource("MailSenderTest.class", "application/one"), new MockChecker(){
+				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -452,9 +452,9 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(TEXT1, mainBody.getContent());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
-					assertEquals("MailSenderTest.class", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("application/one;"));
-					assertEquals(bytes("MailSenderTest.class"), bytes((InputStream)attachBody.getContent()));
+					assertEquals("osorno.png", attachBody.getFileName());
+					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/png;"));
+					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
 				}
 				assertEquals(2, multipart.getCount());
 			}
@@ -462,8 +462,8 @@ public class MailSenderTest extends SendmailTest
 		final MockMail ma2 = new MockMail("ma2", from, user1.email, ts+"subject html attach", (String)null, TEXT2,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
-				new MockURLDataSource("PackageTest.class", "application/twoone"),
-				new MockURLDataSource("CascadingMailSourceTest.class", "application/twotwo"), new MockChecker(){
+				new MockURLDataSource("tree.jpg", "image/jpeg"),
+				new MockURLDataSource("dummy.txt", "text/plain"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -473,15 +473,15 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(TEXT2, mainBody.getContent());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
-					assertEquals("PackageTest.class", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("application/twoone;"));
-					assertEquals(bytes("PackageTest.class"), bytes((InputStream)attachBody.getContent()));
+					assertEquals("tree.jpg", attachBody.getFileName());
+					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/jpeg;"));
+					assertEquals(bytes("tree.jpg"), bytes((InputStream)attachBody.getContent()));
 				}
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
-					assertEquals("CascadingMailSourceTest.class", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("application/twotwo;"));
-					assertEquals(bytes("CascadingMailSourceTest.class"), bytes((InputStream)attachBody.getContent()));
+					assertEquals("dummy.txt", attachBody.getFileName());
+					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
+					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
 				}
 				assertEquals(3, multipart.getCount());
 			}
