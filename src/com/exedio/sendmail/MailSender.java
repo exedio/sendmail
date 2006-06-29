@@ -153,12 +153,12 @@ public final class MailSender
 							}
 							if(attachments!=null)
 							{
-								for(int j = 0; j<attachments.length; j++)
+								for(final DataSource attachment : attachments)
 								{
 									final MimeBodyPart attachPart = new MimeBodyPart();
-									attachPart.setDataHandler(new DataHandler(attachments[j]));
+									attachPart.setDataHandler(new DataHandler(attachment));
 									attachPart.setDisposition(BodyPart.ATTACHMENT);
-									attachPart.setFileName(attachments[j].getName());
+									attachPart.setFileName(attachment.getName());
 									multipart.addBodyPart(attachPart);
 								}
 							}
