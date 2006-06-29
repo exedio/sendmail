@@ -18,6 +18,7 @@
 
 package com.exedio.sendmail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -734,8 +735,10 @@ public class MailSenderTest extends SendmailTest
 		try
 		{
 			final byte[] buf = new byte[1024];
-			in.read(buf);
-			return buf;
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			for(int len = in.read(buf); len>=0; len = in.read(buf))
+				baos.write(buf, 0, len);
+			return baos.toByteArray();
 		}
 		catch(IOException e)
 		{
