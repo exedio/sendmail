@@ -191,15 +191,13 @@ public final class MailSender
 								alternativePart.setContent(alternative);
 								mixed.addBodyPart(alternativePart);
 							}
+							for(final DataSource attachment : attachments)
 							{
-								for(final DataSource attachment : attachments)
-								{
-									final MimeBodyPart attachPart = new MimeBodyPart();
-									attachPart.setDataHandler(new DataHandler(attachment));
-									attachPart.setDisposition(BodyPart.ATTACHMENT);
-									attachPart.setFileName(attachment.getName());
-									mixed.addBodyPart(attachPart);
-								}
+								final MimeBodyPart attachPart = new MimeBodyPart();
+								attachPart.setDataHandler(new DataHandler(attachment));
+								attachPart.setDisposition(BodyPart.ATTACHMENT);
+								attachPart.setFileName(attachment.getName());
+								mixed.addBodyPart(attachPart);
 							}
 							message.setContent(mixed);
 						}
