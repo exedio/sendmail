@@ -356,7 +356,7 @@ public class MailSenderTest extends SendmailTest
 	private final static String SUBJECT1 = "subject text" + NON_ASCII_SUBJECT;
 	private final static String SUBJECT2 = "subject html" + NON_ASCII_SUBJECT;
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
-	private final static String TEXT1 = "text for test mail" + NON_ASCII_TEXT;
+	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
 	private final static String TEXT2 =
 		"<html>" +
 		"<head>" +
@@ -376,11 +376,11 @@ public class MailSenderTest extends SendmailTest
 		
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1, new MockChecker(){
+		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
-				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
+				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 				assertEquals(null, m.getDisposition());
 			}
 		});
@@ -405,7 +405,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		m2.specialMessageID = true;
-		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT1, TEXT2, new MockChecker(){
+		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT_PLAIN, TEXT2, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -413,7 +413,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart textBody = multipart.getBodyPart(0);
 					assertEquals("text/plain; charset="+CHARSET, textBody.getContentType());
-					assertEquals(TEXT1, textBody.getContent());
+					assertEquals(TEXT_PLAIN, textBody.getContent());
 					assertEquals(BodyPart.INLINE, textBody.getDisposition());
 				}
 				{
@@ -425,28 +425,28 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(2, multipart.getCount());
 			}
 		});
-		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1, new MockChecker(){
+		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
-				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
+				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail x13 = new MockMail("x13", from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1, new MockChecker(){
+		final MockMail x13 = new MockMail("x13", from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
-				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
+				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail x23 = new MockMail("x23", from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1, new MockChecker(){
+		final MockMail x23 = new MockMail("x23", from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
-				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
+				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail ma1 = new MockMail("ma1", from, user1.email, ts+"subject text attach", TEXT1,
+		final MockMail ma1 = new MockMail("ma1", from, user1.email, ts+"subject text attach", TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
@@ -455,7 +455,7 @@ public class MailSenderTest extends SendmailTest
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/plain; charset="+CHARSET, mainBody.getContentType());
-				assertEquals(TEXT1, mainBody.getContent());
+				assertEquals(TEXT_PLAIN, mainBody.getContent());
 				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
@@ -497,7 +497,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(3, multipart.getCount());
 			}
 		});
-		final MockMail ma3 = new MockMail("ma3", from, user1.email, ts+"subject html+text attach", TEXT1, TEXT2,
+		final MockMail ma3 = new MockMail("ma3", from, user1.email, ts+"subject html+text attach", TEXT_PLAIN, TEXT2,
 				new MockURLDataSource("dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
@@ -509,7 +509,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart mainText = mainPart.getBodyPart(0);
 					assertEquals("text/plain; charset="+CHARSET, mainText.getContentType());
-					assertEquals(TEXT1, mainText.getContent());
+					assertEquals(TEXT_PLAIN, mainText.getContent());
 					assertEquals(BodyPart.INLINE, mainText.getDisposition());
 				}
 				{
