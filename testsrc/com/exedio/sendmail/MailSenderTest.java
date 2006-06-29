@@ -357,7 +357,7 @@ public class MailSenderTest extends SendmailTest
 	private final static String SUBJECT2 = "subject html" + NON_ASCII_SUBJECT;
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
 	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
-	private final static String TEXT2 =
+	private final static String TEXT_HTML =
 		"<html>" +
 		"<head>" +
 		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
@@ -396,16 +396,16 @@ public class MailSenderTest extends SendmailTest
 				fail("should not be sent");
 			}
 		});
-		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT2, new MockChecker(){
+		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
-				assertEquals(TEXT2 + TEXT_APPENDIX, m.getContent());
+				assertEquals(TEXT_HTML + TEXT_APPENDIX, m.getContent());
 				assertEquals(null, m.getDisposition());
 			}
 		});
 		m2.specialMessageID = true;
-		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT_PLAIN, TEXT2, new MockChecker(){
+		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -419,7 +419,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart htmlBody = multipart.getBodyPart(1);
 					assertEquals("text/html; charset="+CHARSET, htmlBody.getContentType());
-					assertEquals(TEXT2, htmlBody.getContent());
+					assertEquals(TEXT_HTML, htmlBody.getContent());
 					assertEquals(BodyPart.INLINE, htmlBody.getDisposition());
 				}
 				assertEquals(2, multipart.getCount());
@@ -467,7 +467,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(2, multipart.getCount());
 			}
 		});
-		final MockMail ma2 = new MockMail("ma2", from, user1.email, ts+"subject html attach", (String)null, TEXT2,
+		final MockMail ma2 = new MockMail("ma2", from, user1.email, ts+"subject html attach", (String)null, TEXT_HTML,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 				new MockURLDataSource("tree.jpg", "image/jpeg"),
@@ -478,7 +478,7 @@ public class MailSenderTest extends SendmailTest
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/html; charset="+CHARSET, mainBody.getContentType());
-				assertEquals(TEXT2, mainBody.getContent());
+				assertEquals(TEXT_HTML, mainBody.getContent());
 				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
@@ -497,7 +497,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(3, multipart.getCount());
 			}
 		});
-		final MockMail ma3 = new MockMail("ma3", from, user1.email, ts+"subject html+text attach", TEXT_PLAIN, TEXT2,
+		final MockMail ma3 = new MockMail("ma3", from, user1.email, ts+"subject html+text attach", TEXT_PLAIN, TEXT_HTML,
 				new MockURLDataSource("dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
@@ -515,7 +515,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart mainHtml = mainPart.getBodyPart(1);
 					assertEquals("text/html; charset="+CHARSET, mainHtml.getContentType());
-					assertEquals(TEXT2, mainHtml.getContent());
+					assertEquals(TEXT_HTML, mainHtml.getContent());
 					assertEquals(BodyPart.INLINE, mainHtml.getDisposition());
 				}
 				assertEquals(2, mainPart.getCount());
