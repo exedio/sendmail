@@ -259,6 +259,7 @@ public final class MailSender
 	{
 		assert text!=null;
 		assert textAsHtml!=null;
+		
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
