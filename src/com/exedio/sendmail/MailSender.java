@@ -111,47 +111,86 @@ public final class MailSender
 						if(subject!=null)
 							message.setSubject(subject, CHARSET);
 
-						if(attachments==null && (text==null || textAsHtml==null))
+						if(attachments==null)
 						{
-							//System.err.println("if attachments==null && (text==null || textAsHtml==null)");
-							if(textAsHtml!=null)
+							if(text==null || textAsHtml==null)
 							{
-								assert text==null;
-								assert textAsHtml!=null;
-								//System.err.println("textAsHtml!=null");
-								message.setContent(textAsHtml, HTML_CONTENT_TYPE);
+								if(textAsHtml!=null)
+								{
+									assert text==null;
+									assert textAsHtml!=null;
+									message.setContent(textAsHtml, HTML_CONTENT_TYPE);
+								}
+								else
+								{
+									assert text!=null;
+									assert textAsHtml==null;
+									message.setText(text, CHARSET);
+								}
 							}
 							else
 							{
-								assert text!=null;
-								assert textAsHtml==null;
-								//System.err.println("text!=null");
-								message.setText(text, CHARSET);
+								final MimeMultipart alternative = new MimeMultipart("alternative");
+								{
+									final MimeBodyPart textPart = new MimeBodyPart();
+									assert text!=null;
+									textPart.setText(text, CHARSET);
+									textPart.setDisposition(BodyPart.INLINE);
+									alternative.addBodyPart(textPart);
+								}
+								{
+									final MimeBodyPart htmlPart = new MimeBodyPart();
+									assert textAsHtml!=null;
+									htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
+									htmlPart.setDisposition(BodyPart.INLINE);
+									alternative.addBodyPart(htmlPart);
+								}
+								message.setContent(alternative);
 							}
 						}
 						else
 						{
-							//System.err.println("else attachments==null && (text==null || textAsHtml==null)");
-							final MimeMultipart multipart = new MimeMultipart("alternative");
-							if(text!=null)
+							final MimeMultipart mixed = new MimeMultipart("mixed");
+							if(text==null || textAsHtml==null)
 							{
-								//System.err.println("text!=null");
-								final MimeBodyPart textPart = new MimeBodyPart();
-								assert text!=null;
-								textPart.setText(text, CHARSET);
-								textPart.setDisposition(BodyPart.INLINE);
-								multipart.addBodyPart(textPart);
+								if(text!=null)
+								{
+									final MimeBodyPart textPart = new MimeBodyPart();
+									assert text!=null;
+									textPart.setText(text, CHARSET);
+									textPart.setDisposition(BodyPart.INLINE);
+									mixed.addBodyPart(textPart);
+								}
+								if(textAsHtml!=null)
+								{
+									final MimeBodyPart htmlPart = new MimeBodyPart();
+									assert textAsHtml!=null;
+									htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
+									htmlPart.setDisposition(BodyPart.INLINE);
+									mixed.addBodyPart(htmlPart);
+								}
 							}
-							if(textAsHtml!=null)
+							else
 							{
-								//System.err.println("textAsHtml!=null");
-								final MimeBodyPart htmlPart = new MimeBodyPart();
-								assert textAsHtml!=null;
-								htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
-								htmlPart.setDisposition(BodyPart.INLINE);
-								multipart.addBodyPart(htmlPart);
+								final MimeMultipart alternative = new MimeMultipart("alternative");
+								{
+									final MimeBodyPart textPart = new MimeBodyPart();
+									assert text!=null;
+									textPart.setText(text, CHARSET);
+									textPart.setDisposition(BodyPart.INLINE);
+									alternative.addBodyPart(textPart);
+								}
+								{
+									final MimeBodyPart htmlPart = new MimeBodyPart();
+									assert textAsHtml!=null;
+									htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
+									htmlPart.setDisposition(BodyPart.INLINE);
+									alternative.addBodyPart(htmlPart);
+								}
+								final MimeBodyPart alternativePart = new MimeBodyPart();
+								alternativePart.setContent(alternative);
+								mixed.addBodyPart(alternativePart);
 							}
-							if(attachments!=null)
 							{
 								for(final DataSource attachment : attachments)
 								{
@@ -159,10 +198,10 @@ public final class MailSender
 									attachPart.setDataHandler(new DataHandler(attachment));
 									attachPart.setDisposition(BodyPart.ATTACHMENT);
 									attachPart.setFileName(attachment.getName());
-									multipart.addBodyPart(attachPart);
+									mixed.addBodyPart(attachPart);
 								}
 							}
-							message.setContent(multipart);
+							message.setContent(mixed);
 						}
 						
 						{

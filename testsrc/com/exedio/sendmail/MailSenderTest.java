@@ -445,7 +445,7 @@ public class MailSenderTest extends SendmailTest
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/plain; charset="+CHARSET, mainBody.getContentType());
@@ -466,7 +466,7 @@ public class MailSenderTest extends SendmailTest
 				new MockURLDataSource("dummy.txt", "text/plain"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/html; charset="+CHARSET, mainBody.getContentType());
