@@ -361,7 +361,7 @@ public class MailSenderTest extends SendmailTest
 		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
 		"</head>" +
 		"<body>" +
-		"text for test mail with multiple recipients and with html features " +
+		"text with html features " +
 		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
 		"and special characters" + NON_ASCII_TEXT + "." +
 		"</body>" +
