@@ -381,6 +381,7 @@ public class MailSenderTest extends SendmailTest
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
+				assertEquals(null, m.getDisposition());
 			}
 		});
 		final MockMail f1  = new MockMail("f1",  from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail", new MockChecker(){
@@ -400,6 +401,7 @@ public class MailSenderTest extends SendmailTest
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT2 + TEXT_APPENDIX, m.getContent());
+				assertEquals(null, m.getDisposition());
 			}
 		});
 		m2.specialMessageID = true;
@@ -412,11 +414,13 @@ public class MailSenderTest extends SendmailTest
 					final BodyPart textBody = multipart.getBodyPart(0);
 					assertEquals("text/plain; charset="+CHARSET, textBody.getContentType());
 					assertEquals(TEXT1, textBody.getContent());
+					assertEquals(BodyPart.INLINE, textBody.getDisposition());
 				}
 				{
 					final BodyPart htmlBody = multipart.getBodyPart(1);
 					assertEquals("text/html; charset="+CHARSET, htmlBody.getContentType());
 					assertEquals(TEXT2, htmlBody.getContent());
+					assertEquals(BodyPart.INLINE, htmlBody.getDisposition());
 				}
 			}
 		});
@@ -451,11 +455,13 @@ public class MailSenderTest extends SendmailTest
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/plain; charset="+CHARSET, mainBody.getContentType());
 				assertEquals(TEXT1, mainBody.getContent());
+				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("osorno.png", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/png;"));
 					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
+					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				assertEquals(2, multipart.getCount());
 			}
@@ -472,17 +478,20 @@ public class MailSenderTest extends SendmailTest
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/html; charset="+CHARSET, mainBody.getContentType());
 				assertEquals(TEXT2, mainBody.getContent());
+				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("tree.jpg", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/jpeg;"));
 					assertEquals(bytes("tree.jpg"), bytes((InputStream)attachBody.getContent()));
+					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("dummy.txt", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
+					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				assertEquals(3, multipart.getCount());
 			}
@@ -500,11 +509,13 @@ public class MailSenderTest extends SendmailTest
 					final BodyPart mainText = mainPart.getBodyPart(0);
 					assertEquals("text/plain; charset="+CHARSET, mainText.getContentType());
 					assertEquals(TEXT1, mainText.getContent());
+					assertEquals(BodyPart.INLINE, mainText.getDisposition());
 				}
 				{
 					final BodyPart mainHtml = mainPart.getBodyPart(1);
 					assertEquals("text/html; charset="+CHARSET, mainHtml.getContentType());
 					assertEquals(TEXT2, mainHtml.getContent());
+					assertEquals(BodyPart.INLINE, mainHtml.getDisposition());
 				}
 				assertEquals(2, mainPart.getCount());
 				{
@@ -512,12 +523,14 @@ public class MailSenderTest extends SendmailTest
 					assertEquals("dummy.txt", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
+					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("osorno.png", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/png;"));
 					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
+					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				assertEquals(3, multipart.getCount());
 			}
