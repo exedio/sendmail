@@ -257,17 +257,17 @@ public final class MailSender
 	
 	private static final MimeMultipart alternative(final String text, final String textAsHtml) throws MessagingException
 	{
+		assert text!=null;
+		assert textAsHtml!=null;
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
-			assert text!=null;
 			textPart.setText(text, CHARSET);
 			textPart.setDisposition(BodyPart.INLINE);
 			result.addBodyPart(textPart);
 		}
 		{
 			final MimeBodyPart htmlPart = new MimeBodyPart();
-			assert textAsHtml!=null;
 			htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
 			htmlPart.setDisposition(BodyPart.INLINE);
 			result.addBodyPart(htmlPart);
