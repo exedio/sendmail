@@ -115,10 +115,10 @@ public final class MailSender
 						{
 							if(text==null || textAsHtml==null)
 							{
-								if(textAsHtml!=null)
-									message.setContent(textAsHtml, HTML_CONTENT_TYPE);
-								else if(text!=null)
+								if(text!=null)
 									message.setText(text, CHARSET);
+								else if(textAsHtml!=null)
+									message.setContent(textAsHtml, HTML_CONTENT_TYPE);
 								else
 									assert false;
 							}
