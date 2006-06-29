@@ -94,8 +94,8 @@ public final class MailSender
 						final String subject = mail.getSubject();
 
 						final String textPlain = mail.getTextPlain();
-						final String textAsHtml = mail.getTextHtml();
-						if(textPlain==null && textAsHtml==null)
+						final String textHtml = mail.getTextHtml();
+						if(textPlain==null && textHtml==null)
 							throw new NullPointerException("either Mail#getTextPlain() or Mail#getTextHtml() must not return null (" + mail.toString() + ')');
 						
 						final DataSource[] attachments = emptyToNull(mail.getAttachments());
@@ -113,30 +113,30 @@ public final class MailSender
 
 						if(attachments==null)
 						{
-							if(textPlain==null || textAsHtml==null)
+							if(textPlain==null || textHtml==null)
 							{
 								if(textPlain!=null)
 									message.setText(textPlain, CHARSET);
-								else if(textAsHtml!=null)
-									message.setContent(textAsHtml, HTML_CONTENT_TYPE);
+								else if(textHtml!=null)
+									message.setContent(textHtml, HTML_CONTENT_TYPE);
 								else
 									assert false;
 							}
 							else
 							{
-								message.setContent(alternative(textPlain, textAsHtml));
+								message.setContent(alternative(textPlain, textHtml));
 							}
 						}
 						else
 						{
 							final MimeMultipart mixed = new MimeMultipart("mixed");
-							if(textPlain==null || textAsHtml==null)
+							if(textPlain==null || textHtml==null)
 							{
 								final MimeBodyPart part = new MimeBodyPart();
 								if(textPlain!=null)
 									part.setText(textPlain, CHARSET);
-								else if(textAsHtml!=null)
-									part.setContent(textAsHtml, HTML_CONTENT_TYPE);
+								else if(textHtml!=null)
+									part.setContent(textHtml, HTML_CONTENT_TYPE);
 								else
 									assert false;
 								part.setDisposition(BodyPart.INLINE);
@@ -145,7 +145,7 @@ public final class MailSender
 							else
 							{
 								final MimeBodyPart alternativePart = new MimeBodyPart();
-								alternativePart.setContent(alternative(textPlain, textAsHtml));
+								alternativePart.setContent(alternative(textPlain, textHtml));
 								mixed.addBodyPart(alternativePart);
 							}
 							for(final DataSource attachment : attachments)
