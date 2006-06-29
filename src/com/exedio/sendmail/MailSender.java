@@ -116,17 +116,11 @@ public final class MailSender
 							if(text==null || textAsHtml==null)
 							{
 								if(textAsHtml!=null)
-								{
-									assert text==null;
-									assert textAsHtml!=null;
 									message.setContent(textAsHtml, HTML_CONTENT_TYPE);
-								}
-								else
-								{
-									assert text!=null;
-									assert textAsHtml==null;
+								else if(text!=null)
 									message.setText(text, CHARSET);
-								}
+								else
+									assert false;
 							}
 							else
 							{
@@ -138,22 +132,15 @@ public final class MailSender
 							final MimeMultipart mixed = new MimeMultipart("mixed");
 							if(text==null || textAsHtml==null)
 							{
+								final MimeBodyPart part = new MimeBodyPart();
 								if(text!=null)
-								{
-									final MimeBodyPart textPart = new MimeBodyPart();
-									assert text!=null;
-									textPart.setText(text, CHARSET);
-									textPart.setDisposition(BodyPart.INLINE);
-									mixed.addBodyPart(textPart);
-								}
-								if(textAsHtml!=null)
-								{
-									final MimeBodyPart htmlPart = new MimeBodyPart();
-									assert textAsHtml!=null;
-									htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
-									htmlPart.setDisposition(BodyPart.INLINE);
-									mixed.addBodyPart(htmlPart);
-								}
+									part.setText(text, CHARSET);
+								else if(textAsHtml!=null)
+									part.setContent(textAsHtml, HTML_CONTENT_TYPE);
+								else
+									assert false;
+								part.setDisposition(BodyPart.INLINE);
+								mixed.addBodyPart(part);
 							}
 							else
 							{
