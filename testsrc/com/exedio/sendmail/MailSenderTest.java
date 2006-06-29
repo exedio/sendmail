@@ -39,6 +39,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 import com.sun.mail.pop3.POP3Store;
@@ -486,6 +487,41 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(3, multipart.getCount());
 			}
 		});
+		final MockMail ma3 = new MockMail("ma3", from, user1.email, ts+"subject html+text attach", TEXT1, TEXT2,
+				new MockURLDataSource("dummy.txt", "text/plain"),
+				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
+			public void checkBody(final Message m) throws IOException, MessagingException
+			{
+				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
+				final MimeMultipart multipart = (MimeMultipart)m.getContent();
+				final MimeMultipart mainPart = (MimeMultipart)((MimeBodyPart)multipart.getBodyPart(0)).getContent();
+				assertTrue(mainPart.getContentType(), mainPart.getContentType().startsWith("multipart/alternative;"));
+				{
+					final BodyPart mainText = mainPart.getBodyPart(0);
+					assertEquals("text/plain; charset="+CHARSET, mainText.getContentType());
+					assertEquals(TEXT1, mainText.getContent());
+				}
+				{
+					final BodyPart mainHtml = mainPart.getBodyPart(1);
+					assertEquals("text/html; charset="+CHARSET, mainHtml.getContentType());
+					assertEquals(TEXT2, mainHtml.getContent());
+				}
+				assertEquals(2, mainPart.getCount());
+				{
+					final BodyPart attachBody = multipart.getBodyPart(1);
+					assertEquals("dummy.txt", attachBody.getFileName());
+					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
+					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
+				}
+				{
+					final BodyPart attachBody = multipart.getBodyPart(2);
+					assertEquals("osorno.png", attachBody.getFileName());
+					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/png;"));
+					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
+				}
+				assertEquals(3, multipart.getCount());
+			}
+		});
 
 		final MailSource p = new MailSource()
 		{
@@ -509,6 +545,7 @@ public class MailSenderTest extends SendmailTest
 				result.add(x23);
 				result.add(ma1);
 				result.add(ma2);
+				result.add(ma3);
 				
 				done = true;
 				return result;
@@ -579,7 +616,7 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1, new MockMail[]{m1, x12, x13, ma1, ma2});
+		assertPOP3(user1, new MockMail[]{m1, x12, x13, ma1, ma2, ma3});
 		assertPOP3(user2, new MockMail[]{m1, m2, m3, x12, x23});
 		assertPOP3(user3, new MockMail[]{m1, x13, x23});
 	}
