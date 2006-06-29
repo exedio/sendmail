@@ -450,11 +450,10 @@ public class MailSenderTest extends SendmailTest
 				assertEquals("text/plain; charset="+CHARSET, mainBody.getContentType());
 				assertEquals(TEXT1, mainBody.getContent());
 				{
-					final DataSource exa = ex.getAttachments()[0];
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("MailSenderTest.class", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("application/one;"));
-					assertEquals(bytes(exa.getInputStream()), bytes((InputStream)attachBody.getContent()));
+					assertEquals(bytes("MailSenderTest.class"), bytes((InputStream)attachBody.getContent()));
 				}
 				assertEquals(2, multipart.getCount());
 			}
@@ -472,18 +471,16 @@ public class MailSenderTest extends SendmailTest
 				assertEquals("text/html; charset="+CHARSET, mainBody.getContentType());
 				assertEquals(TEXT2, mainBody.getContent());
 				{
-					final DataSource exa = ex.getAttachments()[0];
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("PackageTest.class", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("application/twoone;"));
-					assertEquals(bytes(exa.getInputStream()), bytes((InputStream)attachBody.getContent()));
+					assertEquals(bytes("PackageTest.class"), bytes((InputStream)attachBody.getContent()));
 				}
 				{
-					final DataSource exa = ex.getAttachments()[1];
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("CascadingMailSourceTest.class", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("application/twotwo;"));
-					assertEquals(bytes(exa.getInputStream()), bytes((InputStream)attachBody.getContent()));
+					assertEquals(bytes("CascadingMailSourceTest.class"), bytes((InputStream)attachBody.getContent()));
 				}
 				assertEquals(3, multipart.getCount());
 			}
@@ -725,6 +722,11 @@ public class MailSenderTest extends SendmailTest
 				{/*IGNORE*/}
 			}
 		}
+	}
+	
+	protected final static byte[] bytes(final String name)
+	{
+		return bytes(MailSenderTest.class.getResourceAsStream(name));
 	}
 	
 	protected final static byte[] bytes(final InputStream in)
