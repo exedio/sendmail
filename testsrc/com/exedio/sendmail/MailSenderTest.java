@@ -422,6 +422,7 @@ public class MailSenderTest extends SendmailTest
 					assertEquals(TEXT2, htmlBody.getContent());
 					assertEquals(BodyPart.INLINE, htmlBody.getDisposition());
 				}
+				assertEquals(2, multipart.getCount());
 			}
 		});
 		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1, new MockChecker(){
