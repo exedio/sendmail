@@ -267,9 +267,9 @@ public class MailSenderTest extends SendmailTest
 			return "MockMail(" + id + ')';
 		}
 		
-		void checkBody(final Message actual) throws IOException, MessagingException
+		void checkBody(final Message m) throws IOException, MessagingException
 		{
-			checker.checkBody(this, actual);;
+			checker.checkBody(m);;
 		}
 		
 	}
@@ -345,7 +345,7 @@ public class MailSenderTest extends SendmailTest
 	
 	private static interface MockChecker
 	{
-		void checkBody(MockMail expected, Message actual) throws IOException, MessagingException;
+		void checkBody(Message m) throws IOException, MessagingException;
 	}
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
@@ -376,26 +376,26 @@ public class MailSenderTest extends SendmailTest
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
 		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT1, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail f1  = new MockMail("f1",  from, fail, null, null, "subject for failure test mail"+ts, "text for failure test mail", new MockChecker(){
-			public void checkBody(final MockMail ex, final Message actual)
+			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
 		final MockMail f2  = new MockMail("f2",  from, (String)null, null, null, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message actual)
+			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
 		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT2, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT2 + TEXT_APPENDIX, m.getContent());
@@ -403,7 +403,7 @@ public class MailSenderTest extends SendmailTest
 		});
 		m2.specialMessageID = true;
 		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT1, TEXT2, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
@@ -420,21 +420,21 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail x12 = new MockMail("x12", from, new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT1, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x13 = new MockMail("x13", from, null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT1, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x23 = new MockMail("x23", from, null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT1, new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT1 + TEXT_APPENDIX, m.getContent());
@@ -443,7 +443,7 @@ public class MailSenderTest extends SendmailTest
 		final MockMail ma1 = new MockMail("ma1", from, user1.email, ts+"subject text attach", TEXT1,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("MailSenderTest.class", "application/one"), new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
@@ -464,7 +464,7 @@ public class MailSenderTest extends SendmailTest
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 				new MockURLDataSource("PackageTest.class", "application/twoone"),
 				new MockURLDataSource("CascadingMailSourceTest.class", "application/twotwo"), new MockChecker(){
-			public void checkBody(final MockMail ex, final Message m) throws IOException, MessagingException
+			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
