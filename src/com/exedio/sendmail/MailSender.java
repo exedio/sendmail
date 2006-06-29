@@ -130,22 +130,7 @@ public final class MailSender
 							}
 							else
 							{
-								final MimeMultipart alternative = new MimeMultipart("alternative");
-								{
-									final MimeBodyPart textPart = new MimeBodyPart();
-									assert text!=null;
-									textPart.setText(text, CHARSET);
-									textPart.setDisposition(BodyPart.INLINE);
-									alternative.addBodyPart(textPart);
-								}
-								{
-									final MimeBodyPart htmlPart = new MimeBodyPart();
-									assert textAsHtml!=null;
-									htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
-									htmlPart.setDisposition(BodyPart.INLINE);
-									alternative.addBodyPart(htmlPart);
-								}
-								message.setContent(alternative);
+								message.setContent(alternative(text, textAsHtml));
 							}
 						}
 						else
@@ -172,23 +157,8 @@ public final class MailSender
 							}
 							else
 							{
-								final MimeMultipart alternative = new MimeMultipart("alternative");
-								{
-									final MimeBodyPart textPart = new MimeBodyPart();
-									assert text!=null;
-									textPart.setText(text, CHARSET);
-									textPart.setDisposition(BodyPart.INLINE);
-									alternative.addBodyPart(textPart);
-								}
-								{
-									final MimeBodyPart htmlPart = new MimeBodyPart();
-									assert textAsHtml!=null;
-									htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
-									htmlPart.setDisposition(BodyPart.INLINE);
-									alternative.addBodyPart(htmlPart);
-								}
 								final MimeBodyPart alternativePart = new MimeBodyPart();
-								alternativePart.setContent(alternative);
+								alternativePart.setContent(alternative(text, textAsHtml));
 								mixed.addBodyPart(alternativePart);
 							}
 							for(final DataSource attachment : attachments)
@@ -283,6 +253,26 @@ public final class MailSender
 	private static final DataSource[] emptyToNull(final DataSource[] ds)
 	{
 		return ds==null ? null : ds.length==0 ? null : ds;
+	}
+	
+	private static final MimeMultipart alternative(final String text, final String textAsHtml) throws MessagingException
+	{
+		final MimeMultipart result = new MimeMultipart("alternative");
+		{
+			final MimeBodyPart textPart = new MimeBodyPart();
+			assert text!=null;
+			textPart.setText(text, CHARSET);
+			textPart.setDisposition(BodyPart.INLINE);
+			result.addBodyPart(textPart);
+		}
+		{
+			final MimeBodyPart htmlPart = new MimeBodyPart();
+			assert textAsHtml!=null;
+			htmlPart.setContent(textAsHtml, HTML_CONTENT_TYPE);
+			htmlPart.setDisposition(BodyPart.INLINE);
+			result.addBodyPart(htmlPart);
+		}
+		return result;
 	}
 
 }
