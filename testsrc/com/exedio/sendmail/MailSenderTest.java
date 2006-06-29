@@ -351,10 +351,8 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	private final static String NON_ASCII_SUBJECT = " (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)";
 	private final static String NON_ASCII_TEXT = " (auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac)";
-	private final static String SUBJECT1 = "subject text" + NON_ASCII_SUBJECT;
-	private final static String SUBJECT2 = "subject html" + NON_ASCII_SUBJECT;
+	private final static String SUBJECT = "subject (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)";
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
 	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
 	private final static String TEXT_HTML =
@@ -376,7 +374,7 @@ public class MailSenderTest extends SendmailTest
 		
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT1, TEXT_PLAIN, new MockChecker(){
+		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
@@ -396,7 +394,7 @@ public class MailSenderTest extends SendmailTest
 				fail("should not be sent");
 			}
 		});
-		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT2, (String)null, TEXT_HTML, new MockChecker(){
+		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
@@ -405,7 +403,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		m2.specialMessageID = true;
-		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT2, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
+		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
