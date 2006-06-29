@@ -242,15 +242,15 @@ public final class MailSender
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
 	
-	private static final MimeMultipart alternative(final String text, final String textAsHtml) throws MessagingException
+	private static final MimeMultipart alternative(final String plain, final String textAsHtml) throws MessagingException
 	{
-		assert text!=null;
+		assert plain!=null;
 		assert textAsHtml!=null;
 		
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
-			textPart.setText(text, CHARSET);
+			textPart.setText(plain, CHARSET);
 			textPart.setDisposition(BodyPart.INLINE);
 			result.addBodyPart(textPart);
 		}
