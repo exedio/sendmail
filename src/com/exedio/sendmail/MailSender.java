@@ -93,8 +93,8 @@ public final class MailSender
 						final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
 						final String subject = mail.getSubject();
 
-						final String text = mail.getText();
-						final String textAsHtml = mail.getTextAsHtml();
+						final String text = mail.getTextPlain();
+						final String textAsHtml = mail.getTextHtml();
 						if(text==null && textAsHtml==null)
 							throw new NullPointerException("either Mail#getText() or Mail#getTextAsHtml() must not return null (" + mail.toString() + ')');
 						

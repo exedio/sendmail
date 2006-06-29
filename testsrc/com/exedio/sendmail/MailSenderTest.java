@@ -236,12 +236,12 @@ public class MailSenderTest extends SendmailTest
 			return subject + '[' + id + ']' ;
 		}
 		
-		public String getText()
+		public String getTextPlain()
 		{
 			return text;
 		}
 		
-		public String getTextAsHtml()
+		public String getTextHtml()
 		{
 			return textAsHtml;
 		}

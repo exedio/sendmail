@@ -36,15 +36,15 @@ public interface Mail
 	
 	String[] getBlindCarbonCopy();
 	
-	String getText();
+	String getTextPlain();
 	
 	/**
 	 * An implementation may return
-	 * both normal text and html text,
+	 * both plain text and html text,
 	 * then both texts are sent as
 	 * alternatives.
 	 */
-	String getTextAsHtml();
+	String getTextHtml();
 
 	String getSubject();
 	

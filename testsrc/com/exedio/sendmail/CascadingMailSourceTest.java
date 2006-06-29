@@ -208,12 +208,12 @@ public class CascadingMailSourceTest extends TestCase
 			throw new RuntimeException(code);
 		}
 		
-		public String getText()
+		public String getTextPlain()
 		{
 			throw new RuntimeException(code);
 		}
 		
-		public String getTextAsHtml()
+		public String getTextHtml()
 		{
 			throw new RuntimeException(code);
 		}

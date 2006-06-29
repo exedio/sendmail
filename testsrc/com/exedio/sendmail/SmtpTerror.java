@@ -109,12 +109,12 @@ public class SmtpTerror extends SendmailTest
 						return subject + mailNumber;
 					}
 					
-					public String getText()
+					public String getTextPlain()
 					{
 						return "terror mail";
 					}
 					
-					public String getTextAsHtml()
+					public String getTextHtml()
 					{
 						return null;
 					}
