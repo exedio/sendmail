@@ -98,7 +98,7 @@ public final class MailSender
 						if(text==null && textAsHtml==null)
 							throw new NullPointerException("either Mail#getText() or Mail#getTextAsHtml() must not return null (" + mail.toString() + ')');
 						
-						final DataSource[] attachments = mail.getAttachments();
+						final DataSource[] attachments = emptyToNull(mail.getAttachments());
 						
 						final MimeMessage message = id!=null ? new MimeMessageWithID(session, id) : new MimeMessage(session);
 						message.setFrom(from);
@@ -111,9 +111,9 @@ public final class MailSender
 						if(subject!=null)
 							message.setSubject(subject, CHARSET);
 
-						if((attachments==null || attachments.length==0) && (text==null || textAsHtml==null))
+						if(attachments==null && (text==null || textAsHtml==null))
 						{
-							//System.err.println("if (attachments==null || attachments.length==0) && (text==null || textAsHtml==null)");
+							//System.err.println("if attachments==null && (text==null || textAsHtml==null)");
 							if(textAsHtml!=null)
 							{
 								assert text==null;
@@ -131,7 +131,7 @@ public final class MailSender
 						}
 						else
 						{
-							//System.err.println("else (attachments==null || attachments.length==0) && (text==null || textAsHtml==null)");
+							//System.err.println("else attachments==null && (text==null || textAsHtml==null)");
 							final MimeMultipart multipart = new MimeMultipart("alternative");
 							if(text!=null)
 							{
@@ -241,6 +241,11 @@ public final class MailSender
 		}
 		else
 			return null;
+	}
+	
+	private static final DataSource[] emptyToNull(final DataSource[] ds)
+	{
+		return ds==null ? null : ds.length==0 ? null : ds;
 	}
 
 }
