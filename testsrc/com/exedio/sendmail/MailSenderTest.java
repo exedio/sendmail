@@ -753,9 +753,8 @@ public class MailSenderTest extends SendmailTest
 	
 	void assertEquals(String message, byte[] expected, byte[] actual)
 	{
-		assertEquals(message, expected.length, actual.length);
-		for(int i = 0; i<expected.length; i++)
-			assertEquals(message+'-'+i, expected[i], actual[i]);
+		if(!Arrays.equals(expected, actual))
+			fail("expected " + Arrays.toString(expected) + ", but was " + Arrays.toString(actual));
 	}
 
 	protected final static ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException
