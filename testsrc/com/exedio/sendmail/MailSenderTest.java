@@ -85,7 +85,7 @@ public class MailSenderTest extends SendmailTest
 		private final String[] bcc;
 		private final String subject;
 		private final String textPlain;
-		private final String textAsHtml;
+		private final String textHtml;
 		private final DataSource[] attachments;
 		boolean specialMessageID = false;
 
@@ -119,10 +119,10 @@ public class MailSenderTest extends SendmailTest
 				final String bcc,
 				final String subject,
 				final String textPlain,
-				final String textAsHtml,
+				final String textHtml,
 				final MockChecker checker)
 		{
-			this(id, from, ta(to), ta(cc), ta(bcc), subject, textPlain, textAsHtml, (DataSource[])null, checker);
+			this(id, from, ta(to), ta(cc), ta(bcc), subject, textPlain, textHtml, (DataSource[])null, checker);
 		}
 		
 		MockMail(
@@ -167,12 +167,12 @@ public class MailSenderTest extends SendmailTest
 				final String to,
 				final String subject,
 				final String textPlain,
-				final String textAsHtml,
+				final String textHtml,
 				final DataSource attachement1,
 				final DataSource attachement2,
 				final MockChecker checker)
 		{
-			this(id, from, ta(to), null, null, subject, textPlain, textAsHtml, new DataSource[]{attachement1, attachement2}, checker);
+			this(id, from, ta(to), null, null, subject, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, checker);
 		}
 		
 		MockMail(
@@ -183,7 +183,7 @@ public class MailSenderTest extends SendmailTest
 				final String[] bcc,
 				final String subject,
 				final String textPlain,
-				final String textAsHtml,
+				final String textHtml,
 				final DataSource[] attachments,
 				final MockChecker checker)
 		{
@@ -191,7 +191,7 @@ public class MailSenderTest extends SendmailTest
 				throw new RuntimeException("checker must not be null");
 			if(id==null)
 				throw new RuntimeException("id must not be null");
-			if(to!=null && textPlain==null && textAsHtml==null)
+			if(to!=null && textPlain==null && textHtml==null)
 				throw new NullPointerException("both textPlain and textAsHtml is null");
 
 			this.checker = checker;
@@ -202,7 +202,7 @@ public class MailSenderTest extends SendmailTest
 			this.bcc = bcc;
 			this.subject = subject;
 			this.textPlain = textPlain;
-			this.textAsHtml = textAsHtml;
+			this.textHtml = textHtml;
 			this.attachments = attachments;
 		}
 		
@@ -243,7 +243,7 @@ public class MailSenderTest extends SendmailTest
 		
 		public String getTextHtml()
 		{
-			return textAsHtml;
+			return textHtml;
 		}
 		
 		public DataSource[] getAttachments()
