@@ -53,6 +53,7 @@ public class MailSenderTest extends SendmailTest
 	private Account user3;
 
 	private String fail;
+	private String timeStamp;
 	
 	private static boolean countDebug = false;
 	
@@ -73,6 +74,9 @@ public class MailSenderTest extends SendmailTest
 		cleanPOP3Account(user1);
 		cleanPOP3Account(user2);
 		cleanPOP3Account(user3);
+
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
+		timeStamp = df.format(new Date());
 	}
 	
 	public static final String[] ta(final String s)
@@ -87,7 +91,6 @@ public class MailSenderTest extends SendmailTest
 		private final String[] to;
 		private final String[] cc;
 		private final String[] bcc;
-		private final String subject;
 		private final String textPlain;
 		private final String textHtml;
 		private final DataSource[] attachments;
@@ -102,11 +105,10 @@ public class MailSenderTest extends SendmailTest
 				final String to,
 				final String cc,
 				final String bcc,
-				final String subject,
 				final String textPlain,
 				final MockChecker checker)
 		{
-			this(id, ta(to), ta(cc), ta(bcc), subject, textPlain, (String)null, (DataSource[])null, checker);
+			this(id, ta(to), ta(cc), ta(bcc), textPlain, (String)null, (DataSource[])null, checker);
 		}
 		
 		MockMail(
@@ -114,12 +116,11 @@ public class MailSenderTest extends SendmailTest
 				final String to,
 				final String cc,
 				final String bcc,
-				final String subject,
 				final String textPlain,
 				final String textHtml,
 				final MockChecker checker)
 		{
-			this(id, ta(to), ta(cc), ta(bcc), subject, textPlain, textHtml, (DataSource[])null, checker);
+			this(id, ta(to), ta(cc), ta(bcc), textPlain, textHtml, (DataSource[])null, checker);
 		}
 		
 		MockMail(
@@ -127,45 +128,41 @@ public class MailSenderTest extends SendmailTest
 				final String[] to,
 				final String[] cc,
 				final String[] bcc,
-				final String subject,
 				final String textPlain,
 				final MockChecker checker)
 		{
-			this(id, to, cc, bcc, subject, textPlain, (String)null, (DataSource[])null, checker);
+			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, checker);
 		}
 		
 		MockMail(
 				final String id,
 				final String to,
-				final String subject,
 				final String textPlain,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, subject, textPlain, (String)null, (DataSource[])null, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, checker);
 		}
 		
 		MockMail(
 				final String id,
 				final String to,
-				final String subject,
 				final String textPlain,
 				final DataSource attachement,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, subject, textPlain, (String)null, new DataSource[]{attachement}, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachement}, checker);
 		}
 		
 		MockMail(
 				final String id,
 				final String to,
-				final String subject,
 				final String textPlain,
 				final String textHtml,
 				final DataSource attachement1,
 				final DataSource attachement2,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, subject, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, checker);
 		}
 		
 		MockMail(
@@ -173,7 +170,6 @@ public class MailSenderTest extends SendmailTest
 				final String[] to,
 				final String[] cc,
 				final String[] bcc,
-				final String subject,
 				final String textPlain,
 				final String textHtml,
 				final DataSource[] attachments,
@@ -191,7 +187,6 @@ public class MailSenderTest extends SendmailTest
 			this.to = to;
 			this.cc = cc;
 			this.bcc = bcc;
-			this.subject = subject;
 			this.textPlain = textPlain;
 			this.textHtml = textHtml;
 			this.attachments = attachments;
@@ -224,7 +219,7 @@ public class MailSenderTest extends SendmailTest
 		
 		public String getSubject()
 		{
-			return subject + '[' + id + ']' ;
+			return timeStamp + "subject (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)" + '[' + id + ']' ;
 		}
 		
 		public String getTextPlain()
@@ -343,7 +338,6 @@ public class MailSenderTest extends SendmailTest
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
 	private final static String NON_ASCII_TEXT = " (auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac)";
-	private final static String SUBJECT = "subject (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)";
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
 	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
 	private final static String TEXT_HTML =
@@ -363,9 +357,7 @@ public class MailSenderTest extends SendmailTest
 		if(skipTest)
 			return;
 		
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
-		final String ts = df.format(new Date());
-		final MockMail mp  = new MockMail("mp", user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, new MockChecker(){
+		final MockMail mp  = new MockMail("mp", user1.email, null, null, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
@@ -373,19 +365,19 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(null, m.getDisposition());
 			}
 		});
-		final MockMail f1  = new MockMail("f1", fail, null, null, "subject for failure test mail"+ts, "text for failure test mail", new MockChecker(){
+		final MockMail f1  = new MockMail("f1", fail, null, null, "text for failure test mail", new MockChecker(){
 			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
-		final MockMail f2  = new MockMail("f2", (String)null, null, null, new MockChecker(){
+		final MockMail f2  = new MockMail("f2", (String)null, null, new MockChecker(){
 			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
-		final MockMail mh  = new MockMail("mh", user1.email, null, null, ts+SUBJECT, (String)null, TEXT_HTML, new MockChecker(){
+		final MockMail mh  = new MockMail("mh", user1.email, null, null, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
@@ -394,7 +386,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		mh.specialMessageID = true;
-		final MockMail ma  = new MockMail("ma", user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
+		final MockMail ma  = new MockMail("ma", user1.email, null, null, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -414,28 +406,28 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(2, multipart.getCount());
 			}
 		});
-		final MockMail x12 = new MockMail("x12", new String[]{user1.email, user2.email}, null, null, ts+"subject 1+2", TEXT_PLAIN, new MockChecker(){
+		final MockMail x12 = new MockMail("x12", new String[]{user1.email, user2.email}, null, null, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail x13 = new MockMail("x13", null, new String[]{user1.email, user3.email}, null, ts+"subject 1+3", TEXT_PLAIN, new MockChecker(){
+		final MockMail x13 = new MockMail("x13", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail x23 = new MockMail("x23", null, null, new String[]{user2.email, user3.email}, ts+"subject 2+3", TEXT_PLAIN, new MockChecker(){
+		final MockMail x23 = new MockMail("x23", null, null, new String[]{user2.email, user3.email}, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail mpa = new MockMail("mpa", user1.email, ts+"subject text attach", TEXT_PLAIN,
+		final MockMail mpa = new MockMail("mpa", user1.email, TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
@@ -456,7 +448,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(2, multipart.getCount());
 			}
 		});
-		final MockMail mha = new MockMail("mha", user1.email, ts+"subject html attach", (String)null, TEXT_HTML,
+		final MockMail mha = new MockMail("mha", user1.email, (String)null, TEXT_HTML,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 				new MockURLDataSource("tree.jpg", "image/jpeg"),
@@ -486,7 +478,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(3, multipart.getCount());
 			}
 		});
-		final MockMail maa = new MockMail("maa", user1.email, ts+"subject html+text attach", TEXT_PLAIN, TEXT_HTML,
+		final MockMail maa = new MockMail("maa", user1.email, TEXT_PLAIN, TEXT_HTML,
 				new MockURLDataSource("dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
