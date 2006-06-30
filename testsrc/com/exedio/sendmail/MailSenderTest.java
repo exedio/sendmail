@@ -103,24 +103,20 @@ public class MailSenderTest extends SendmailTest
 		MockMail(
 				final String id,
 				final String to,
-				final String cc,
-				final String bcc,
 				final String textPlain,
 				final MockChecker checker)
 		{
-			this(id, ta(to), ta(cc), ta(bcc), textPlain, (String)null, (DataSource[])null, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, checker);
 		}
 		
 		MockMail(
 				final String id,
 				final String to,
-				final String cc,
-				final String bcc,
 				final String textPlain,
 				final String textHtml,
 				final MockChecker checker)
 		{
-			this(id, ta(to), ta(cc), ta(bcc), textPlain, textHtml, (DataSource[])null, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, checker);
 		}
 		
 		MockMail(
@@ -132,15 +128,6 @@ public class MailSenderTest extends SendmailTest
 				final MockChecker checker)
 		{
 			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, checker);
-		}
-		
-		MockMail(
-				final String id,
-				final String to,
-				final String textPlain,
-				final MockChecker checker)
-		{
-			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, checker);
 		}
 		
 		MockMail(
@@ -357,7 +344,7 @@ public class MailSenderTest extends SendmailTest
 		if(skipTest)
 			return;
 		
-		final MockMail mp  = new MockMail("mp", user1.email, null, null, TEXT_PLAIN, new MockChecker(){
+		final MockMail mp  = new MockMail("mp", user1.email, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
@@ -365,7 +352,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(null, m.getDisposition());
 			}
 		});
-		final MockMail f1  = new MockMail("f1", fail, null, null, "text for failure test mail", new MockChecker(){
+		final MockMail f1  = new MockMail("f1", fail, "text for failure test mail", new MockChecker(){
 			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
@@ -377,7 +364,7 @@ public class MailSenderTest extends SendmailTest
 				fail("should not be sent");
 			}
 		});
-		final MockMail mh  = new MockMail("mh", user1.email, null, null, (String)null, TEXT_HTML, new MockChecker(){
+		final MockMail mh  = new MockMail("mh", user1.email, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
@@ -386,7 +373,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		mh.specialMessageID = true;
-		final MockMail ma  = new MockMail("ma", user1.email, null, null, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
+		final MockMail ma  = new MockMail("ma", user1.email, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
