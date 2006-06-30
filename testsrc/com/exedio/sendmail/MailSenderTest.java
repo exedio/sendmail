@@ -374,7 +374,7 @@ public class MailSenderTest extends SendmailTest
 		
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final MockMail m1  = new MockMail("m1",  from, user1.email, user2.email, user3.email, ts+SUBJECT, TEXT_PLAIN, new MockChecker(){
+		final MockMail m1  = new MockMail("m1",  from, user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
@@ -394,7 +394,7 @@ public class MailSenderTest extends SendmailTest
 				fail("should not be sent");
 			}
 		});
-		final MockMail m2  = new MockMail("m2",  from, user2.email, null, null, ts+SUBJECT, (String)null, TEXT_HTML, new MockChecker(){
+		final MockMail m2  = new MockMail("m2",  from, user1.email, null, null, ts+SUBJECT, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
@@ -403,7 +403,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		m2.specialMessageID = true;
-		final MockMail m3  = new MockMail("m3",  from, user2.email, null, null, ts+SUBJECT, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
+		final MockMail m3  = new MockMail("m3",  from, user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -628,9 +628,9 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1, new MockMail[]{m1, x12, x13, ma1, ma2, ma3});
-		assertPOP3(user2, new MockMail[]{m1, m2, m3, x12, x23});
-		assertPOP3(user3, new MockMail[]{m1, x13, x23});
+		assertPOP3(user1, new MockMail[]{m1, m2, m3, x12, x13, ma1, ma2, ma3});
+		assertPOP3(user2, new MockMail[]{x12, x23});
+		assertPOP3(user3, new MockMail[]{x13, x23});
 	}
 	
 	private static final String CHARSET = "UTF-8";
