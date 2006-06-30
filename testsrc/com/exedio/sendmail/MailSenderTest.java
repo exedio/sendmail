@@ -374,7 +374,7 @@ public class MailSenderTest extends SendmailTest
 		
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		final String ts = df.format(new Date());
-		final MockMail m1  = new MockMail("m1",  from, user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, new MockChecker(){
+		final MockMail mp  = new MockMail("mp",  from, user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
@@ -394,7 +394,7 @@ public class MailSenderTest extends SendmailTest
 				fail("should not be sent");
 			}
 		});
-		final MockMail m2  = new MockMail("m2",  from, user1.email, null, null, ts+SUBJECT, (String)null, TEXT_HTML, new MockChecker(){
+		final MockMail mh  = new MockMail("mh",  from, user1.email, null, null, ts+SUBJECT, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+CHARSET, m.getContentType());
@@ -402,8 +402,8 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(null, m.getDisposition());
 			}
 		});
-		m2.specialMessageID = true;
-		final MockMail m3  = new MockMail("m3",  from, user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
+		mh.specialMessageID = true;
+		final MockMail ma  = new MockMail("ma",  from, user1.email, null, null, ts+SUBJECT, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -444,7 +444,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
-		final MockMail ma1 = new MockMail("ma1", from, user1.email, ts+"subject text attach", TEXT_PLAIN,
+		final MockMail mpa = new MockMail("mpa", from, user1.email, ts+"subject text attach", TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
@@ -465,7 +465,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(2, multipart.getCount());
 			}
 		});
-		final MockMail ma2 = new MockMail("ma2", from, user1.email, ts+"subject html attach", (String)null, TEXT_HTML,
+		final MockMail mha = new MockMail("mha", from, user1.email, ts+"subject html attach", (String)null, TEXT_HTML,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 				new MockURLDataSource("tree.jpg", "image/jpeg"),
@@ -495,7 +495,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(3, multipart.getCount());
 			}
 		});
-		final MockMail ma3 = new MockMail("ma3", from, user1.email, ts+"subject html+text attach", TEXT_PLAIN, TEXT_HTML,
+		final MockMail maa = new MockMail("maa", from, user1.email, ts+"subject html+text attach", TEXT_PLAIN, TEXT_HTML,
 				new MockURLDataSource("dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
@@ -547,17 +547,17 @@ public class MailSenderTest extends SendmailTest
 					return Collections.<Mail>emptyList();
 				
 				final ArrayList<MockMail> result = new ArrayList<MockMail>();
-				result.add(m1);
+				result.add(mp);
 				result.add(f1);
 				result.add(f2);
-				result.add(m2);
-				result.add(m3);
+				result.add(mh);
+				result.add(ma);
 				result.add(x12);
 				result.add(x13);
 				result.add(x23);
-				result.add(ma1);
-				result.add(ma2);
-				result.add(ma3);
+				result.add(mpa);
+				result.add(mha);
+				result.add(maa);
 				
 				done = true;
 				return result;
@@ -565,9 +565,9 @@ public class MailSenderTest extends SendmailTest
 		};
 		MailSender.sendMails(p, smtpHost, smtpDebug, MAXIMUM_RESULT_SIZE);
 
-		assertEquals(null, m1.failedException);
-		assertEquals(1, m1.sentCounter);
-		assertEquals(0, m1.failedCounter);
+		assertEquals(null, mp.failedException);
+		assertEquals(1, mp.sentCounter);
+		assertEquals(0, mp.failedCounter);
 
 		final String fm1 = f1.failedException.getMessage();
 		assertTrue(fm1+"--------"+fail, fm1.indexOf(fail)>=0);
@@ -578,13 +578,13 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(0, f2.sentCounter);
 		assertEquals(1, f2.failedCounter);
 
-		assertEquals(null, m2.failedException);
-		assertEquals(1, m2.sentCounter);
-		assertEquals(0, m2.failedCounter);
+		assertEquals(null, mh.failedException);
+		assertEquals(1, mh.sentCounter);
+		assertEquals(0, mh.failedCounter);
 		
-		assertEquals(null, m3.failedException);
-		assertEquals(1, m3.sentCounter);
-		assertEquals(0, m3.failedCounter);
+		assertEquals(null, ma.failedException);
+		assertEquals(1, ma.sentCounter);
+		assertEquals(0, ma.failedCounter);
 		
 		assertEquals(null, x12.failedException);
 		assertEquals(1, x12.sentCounter);
@@ -598,13 +598,13 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(1, x23.sentCounter);
 		assertEquals(0, x23.failedCounter);
 		
-		assertEquals(null, ma1.failedException);
-		assertEquals(1, ma1.sentCounter);
-		assertEquals(0, ma1.failedCounter);
+		assertEquals(null, mpa.failedException);
+		assertEquals(1, mpa.sentCounter);
+		assertEquals(0, mpa.failedCounter);
 		
-		assertEquals(null, ma2.failedException);
-		assertEquals(1, ma2.sentCounter);
-		assertEquals(0, ma2.failedCounter);
+		assertEquals(null, mha.failedException);
+		assertEquals(1, mha.sentCounter);
+		assertEquals(0, mha.failedCounter);
 
 		boolean complete1 = false;
 		boolean complete2 = false;
@@ -628,7 +628,7 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1, new MockMail[]{m1, m2, m3, x12, x13, ma1, ma2, ma3});
+		assertPOP3(user1, new MockMail[]{mp, mh, ma, x12, x13, mpa, mha, maa});
 		assertPOP3(user2, new MockMail[]{x12, x23});
 		assertPOP3(user3, new MockMail[]{x13, x23});
 	}
