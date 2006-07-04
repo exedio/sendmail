@@ -428,7 +428,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("osorno.png", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/png;"));
+					assertEquals("image/png; name=osorno.png", attachBody.getContentType());
 					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
@@ -458,7 +458,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("dummyname.txt", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
+					assertEquals("text/plain; name=dummyname.txt; charset=us-ascii", attachBody.getContentType());
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
@@ -490,14 +490,14 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("dummy.txt", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
+					assertEquals("text/plain; name=dummy.txt; charset=us-ascii", attachBody.getContentType());
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("osorno.png", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/png;"));
+					assertEquals("image/png; name=osorno.png", attachBody.getContentType());
 					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
