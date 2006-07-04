@@ -294,9 +294,9 @@ public class MailSenderTest extends SendmailTest
 		final String name;
 		final String contentType;
 		
-		MockURLDataSource(final String name, final String contentType)
+		MockURLDataSource(final String resource, final String name, final String contentType)
 		{
-			super(MailSenderTest.class.getResource(name));
+			super(MailSenderTest.class.getResource(resource));
 			this.name = name;
 			this.contentType = contentType;
 			
@@ -416,7 +416,7 @@ public class MailSenderTest extends SendmailTest
 		});
 		final MockMail mpa = new MockMail("mpa", user1.email, TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
-				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
+				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
@@ -438,8 +438,8 @@ public class MailSenderTest extends SendmailTest
 		final MockMail mha = new MockMail("mha", user1.email, (String)null, TEXT_HTML,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
-				new MockURLDataSource("tree.jpg", "image/jpeg"),
-				new MockURLDataSource("dummy.txt", "text/plain"), new MockChecker(){
+				new MockURLDataSource("tree.jpg", null, "image/jpeg"),
+				new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
@@ -450,14 +450,14 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
-					assertEquals("tree.jpg", attachBody.getFileName());
-					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("image/jpeg;"));
+					assertEquals(null, attachBody.getFileName());
+					assertEquals("image/jpeg", attachBody.getContentType());
 					assertEquals(bytes("tree.jpg"), bytes((InputStream)attachBody.getContent()));
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
-					assertEquals("dummy.txt", attachBody.getFileName());
+					assertEquals("dummyname.txt", attachBody.getFileName());
 					assertTrue(attachBody.getContentType(), attachBody.getContentType().startsWith("text/plain;"));
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
@@ -466,8 +466,8 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail maa = new MockMail("maa", user1.email, TEXT_PLAIN, TEXT_HTML,
-				new MockURLDataSource("dummy.txt", "text/plain"),
-				new MockURLDataSource("osorno.png", "image/png"), new MockChecker(){
+				new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"),
+				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));

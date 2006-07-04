@@ -153,7 +153,9 @@ public final class MailSender
 								final MimeBodyPart attachPart = new MimeBodyPart();
 								attachPart.setDataHandler(new DataHandler(attachment));
 								attachPart.setDisposition(BodyPart.ATTACHMENT);
-								attachPart.setFileName(attachment.getName());
+								final String attachmentName = attachment.getName();
+								if(attachmentName!=null)
+									attachPart.setFileName(attachmentName);
 								mixed.addBodyPart(attachPart);
 							}
 							message.setContent(mixed);
