@@ -37,8 +37,6 @@ import javax.mail.internet.MimeMultipart;
 
 public final class MailSender
 {
-	private static final String MAIL_SMTP_HOST = "mail.host";
-	
 	private static final String CHARSET = "UTF-8";
 	private static final String HTML_CONTENT_TYPE = "text/html; charset=" + CHARSET;
 	
@@ -51,7 +49,7 @@ public final class MailSender
 				return;
 
 			final Properties properties = new Properties();
-			properties.put(MAIL_SMTP_HOST, smtpHost);
+			properties.put("mail.host", smtpHost);
 			properties.put("mail.transport.protocol", "smtp");
 			final Session session = Session.getInstance(properties);
 			if(smtpDebug)
