@@ -18,6 +18,7 @@
 
 package com.exedio.sendmail;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -39,6 +40,7 @@ public final class MailSender
 {
 	private static final String CHARSET = "UTF-8";
 	private static final String HTML_CONTENT_TYPE = "text/html; charset=" + CHARSET;
+	private static PrintStream log = System.err;
 	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
@@ -64,6 +66,8 @@ public final class MailSender
 			{
 				throw new RuntimeException(e);
 			}
+			int mailsTriedToSendInOneConnection = 0;
+			int mailsSentInOneConnection = 0;
 			try
 			{
 				{
@@ -158,11 +162,23 @@ public final class MailSender
 							}
 							message.setContent(mixed);
 						}
-						
+
+						try
 						{
+							mailsTriedToSendInOneConnection++;
 							//final long start = System.currentTimeMillis();
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
+							mailsSentInOneConnection++;
+						}
+						catch(IllegalStateException e)
+						{
+							log.println(MailSender.class.getName() + " encounters unexpectedly closed connection on mail #" + mailsTriedToSendInOneConnection + '/' + mailsSentInOneConnection);
+							transport.connect();
+							mailsTriedToSendInOneConnection = 1;
+							mailsSentInOneConnection = 0;
+							transport.sendMessage(message, message.getAllRecipients());
+							mailsSentInOneConnection++;
 						}
 						
 						mail.notifySent();
@@ -197,7 +213,7 @@ public final class MailSender
 				}
 			}
 		}
-		System.err.println("MailSender#sendMails terminates because of possibly infinite loop");
+		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
 	}
 	
 	/**
