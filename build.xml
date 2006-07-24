@@ -193,6 +193,8 @@
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail-src.tar.gz" />
 			<fileset file="${basedir}/build/exedio-sendmail-api.tar.bz2" />
+			<fileset file="${basedir}/lib/activation.jar" />			
+			<fileset file="${basedir}/lib/activation.jar" />
 		</copy>
 		<mkdir dir="${basedir}/cruise/emma-sendmail" />
 		<copy todir="${basedir}/cruise/emma-sendmail">
