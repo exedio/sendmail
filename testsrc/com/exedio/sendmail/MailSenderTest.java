@@ -466,7 +466,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("dummyname.txt", attachBody.getFileName());
-					assertEquals("text/plain; name=dummyname.txt; charset=us-ascii", attachBody.getContentType());
+					assertEquals("text/plain; charset=us-ascii; name=dummyname.txt", attachBody.getContentType());
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
@@ -498,7 +498,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("dummy.txt", attachBody.getFileName());
-					assertEquals("text/plain; name=dummy.txt; charset=us-ascii", attachBody.getContentType());
+					assertEquals("text/plain; charset=us-ascii; name=dummy.txt", attachBody.getContentType());
 					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
 					assertEquals(BodyPart.ATTACHMENT, attachBody.getDisposition());
 				}
@@ -549,7 +549,9 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(0, mp.failedCounter);
 
 		final String fm1 = f1.failedException.getMessage();
-		assertTrue(fm1+"--------"+fail, fm1.indexOf(fail)>=0);
+		assertEquals("Invalid Addresses", fm1);
+		final String fm1n = f1.failedException.getCause().getMessage();
+		assertTrue(fm1n+"--------"+fail, fm1n.indexOf(fail)>=0);
 		assertEquals(0, f1.sentCounter);
 		assertEquals(1, f1.failedCounter);
 
@@ -558,7 +560,9 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(1, f2.failedCounter);
 
 		final String fm3 = f3.failedException.getMessage();
-		assertTrue(fm3+"--------"+failclose, fm3.indexOf(failclose)>=0);
+		assertEquals("Invalid Addresses", fm3);
+		final String fm3n = f3.failedException.getCause().getMessage();
+		assertTrue(fm3n+"--------"+failclose, fm3n.indexOf(failclose)>=0);
 		assertEquals(0, f3.sentCounter);
 		assertEquals(1, f3.failedCounter);
 
