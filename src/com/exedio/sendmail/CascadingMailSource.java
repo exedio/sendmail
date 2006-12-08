@@ -27,7 +27,7 @@ public class CascadingMailSource implements MailSource
 {
 	private final MailSource[] sources;
 	
-	public CascadingMailSource(final MailSource[] sources)
+	public CascadingMailSource(final MailSource... sources)
 	{
 		this.sources = sources;
 
