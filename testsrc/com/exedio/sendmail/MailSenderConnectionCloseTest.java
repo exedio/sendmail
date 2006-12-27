@@ -148,7 +148,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 	
 	private final static String TEXT = "text for test mail";
 	
-	public void testSendMail() throws InterruptedException
+	public void testSendMail()
 	{
 		if(skipTest)
 			return;
