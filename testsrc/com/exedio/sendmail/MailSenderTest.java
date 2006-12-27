@@ -785,11 +785,6 @@ public class MailSenderTest extends SendmailTest
 	
 	void assertEquals(byte[] expected, byte[] actual)
 	{
-		assertEquals(null, expected, actual);
-	}
-	
-	void assertEquals(String message, byte[] expected, byte[] actual)
-	{
 		if(!Arrays.equals(expected, actual))
 			fail("expected " + Arrays.toString(expected) + ", but was " + Arrays.toString(actual));
 	}
@@ -805,7 +800,7 @@ public class MailSenderTest extends SendmailTest
 		return result;
 	}
 
-	protected final static List<Address> addressList(final Address[] addresses) throws MessagingException
+	protected final static List<Address> addressList(final Address[] addresses)
 	{
 		if(addresses==null)
 			return null;
