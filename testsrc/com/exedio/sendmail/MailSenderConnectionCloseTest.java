@@ -120,6 +120,11 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 			return null;
 		}
 		
+		public String getCharset()
+		{
+			return null;
+		}
+		
 		public void notifySent()
 		{
 			sentCounter++;

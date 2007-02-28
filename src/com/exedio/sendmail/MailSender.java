@@ -38,8 +38,7 @@ import javax.mail.internet.MimeMultipart;
 
 public final class MailSender
 {
-	private static final String CHARSET = "UTF-8";
-	private static final String HTML_CONTENT_TYPE = "text/html; charset=" + CHARSET;
+	private static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
 	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
@@ -102,6 +101,10 @@ public final class MailSender
 						
 						final DataSource[] attachments = emptyToNull(mail.getAttachments());
 						
+						final String mailCharset = mail.getCharset();
+						final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
+						final String htmlContentType = "text/html; charset=" + charset;
+						
 						final MimeMessage message = id!=null ? new MimeMessageWithID(session, id) : new MimeMessage(session);
 						message.setFrom(from);
 						if(to!=null)
@@ -111,22 +114,22 @@ public final class MailSender
 						if(blindCarbonCopy!=null)
 							message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
 						if(subject!=null)
-							message.setSubject(subject, CHARSET);
+							message.setSubject(subject, charset);
 
 						if(attachments==null)
 						{
 							if(textPlain==null || textHtml==null)
 							{
 								if(textPlain!=null)
-									message.setText(textPlain, CHARSET);
+									message.setText(textPlain, charset);
 								else if(textHtml!=null)
-									message.setContent(textHtml, HTML_CONTENT_TYPE);
+									message.setContent(textHtml, htmlContentType);
 								else
 									assert false;
 							}
 							else
 							{
-								message.setContent(alternative(textPlain, textHtml));
+								message.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
 							}
 						}
 						else
@@ -136,9 +139,9 @@ public final class MailSender
 							{
 								final MimeBodyPart part = new MimeBodyPart();
 								if(textPlain!=null)
-									part.setText(textPlain, CHARSET);
+									part.setText(textPlain, charset);
 								else if(textHtml!=null)
-									part.setContent(textHtml, HTML_CONTENT_TYPE);
+									part.setContent(textHtml, htmlContentType);
 								else
 									assert false;
 								part.setDisposition(BodyPart.INLINE);
@@ -147,7 +150,7 @@ public final class MailSender
 							else
 							{
 								final MimeBodyPart alternativePart = new MimeBodyPart();
-								alternativePart.setContent(alternative(textPlain, textHtml));
+								alternativePart.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
 								mixed.addBodyPart(alternativePart);
 							}
 							for(final DataSource attachment : attachments)
@@ -258,7 +261,7 @@ public final class MailSender
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
 	
-	private static final MimeMultipart alternative(final String plain, final String html) throws MessagingException
+	private static final MimeMultipart alternative(final String plain, final String html, final String charset, final String htmlContentType) throws MessagingException
 	{
 		assert plain!=null;
 		assert html!=null;
@@ -266,13 +269,13 @@ public final class MailSender
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
-			textPart.setText(plain, CHARSET);
+			textPart.setText(plain, charset);
 			textPart.setDisposition(BodyPart.INLINE);
 			result.addBodyPart(textPart);
 		}
 		{
 			final MimeBodyPart htmlPart = new MimeBodyPart();
-			htmlPart.setContent(html, HTML_CONTENT_TYPE);
+			htmlPart.setContent(html, htmlContentType);
 			htmlPart.setDisposition(BodyPart.INLINE);
 			result.addBodyPart(htmlPart);
 		}

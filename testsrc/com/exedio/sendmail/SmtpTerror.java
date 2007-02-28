@@ -124,6 +124,11 @@ public class SmtpTerror extends SendmailTest
 						return null;
 					}
 					
+					public String getCharset()
+					{
+						return null;
+					}
+					
 					public void notifySent()
 					{
 						sent++;

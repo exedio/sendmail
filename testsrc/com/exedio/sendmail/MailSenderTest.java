@@ -96,6 +96,7 @@ public class MailSenderTest extends SendmailTest
 		private final String textPlain;
 		private final String textHtml;
 		private final DataSource[] attachments;
+		private final String charset;
 		boolean specialMessageID = false;
 
 		int sentCounter = 0;
@@ -108,7 +109,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
 		
 		MockMail(
@@ -118,7 +119,18 @@ public class MailSenderTest extends SendmailTest
 				final String textHtml,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, null, checker);
+		}
+		
+		MockMail(
+				final String id,
+				final String to,
+				final String textPlain,
+				final String textHtml,
+				final String charset,
+				final MockChecker checker)
+		{
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, charset, checker);
 		}
 		
 		MockMail(
@@ -129,7 +141,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final MockChecker checker)
 		{
-			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, checker);
+			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
 		
 		MockMail(
@@ -139,7 +151,7 @@ public class MailSenderTest extends SendmailTest
 				final DataSource attachement,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachement}, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachement}, null, checker);
 		}
 		
 		MockMail(
@@ -151,7 +163,7 @@ public class MailSenderTest extends SendmailTest
 				final DataSource attachement2,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, null, checker);
 		}
 		
 		MockMail(
@@ -162,6 +174,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final String textHtml,
 				final DataSource[] attachments,
+				final String charset,
 				final MockChecker checker)
 		{
 			if(checker==null)
@@ -179,6 +192,7 @@ public class MailSenderTest extends SendmailTest
 			this.textPlain = textPlain;
 			this.textHtml = textHtml;
 			this.attachments = attachments;
+			this.charset = charset;
 		}
 		
 		public String getMessageID()
@@ -208,7 +222,7 @@ public class MailSenderTest extends SendmailTest
 		
 		public String getSubject()
 		{
-			return timeStamp + "subject (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)" + '[' + id + ']' ;
+			return timeStamp + "subject " + ("ISO-8859-1".equals(charset)?NON_ASCII_TEXT_ISO:NON_ASCII_TEXT) + '[' + id + ']' ;
 		}
 		
 		public String getTextPlain()
@@ -224,6 +238,11 @@ public class MailSenderTest extends SendmailTest
 		public DataSource[] getAttachments()
 		{
 			return attachments;
+		}
+		
+		public String getCharset()
+		{
+			return charset;
 		}
 		
 		public void notifySent()
@@ -326,9 +345,11 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	private final static String NON_ASCII_TEXT = " (auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac)";
+	private final static String NON_ASCII_TEXT = " ((utf auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac))";
+	private final static String NON_ASCII_TEXT_ISO = " ((iso auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df))";
 	private final static String TEXT_APPENDIX = "\r\n\r\n";
 	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
+	private final static String TEXT_PLAIN_ISO = "text for test mail" + NON_ASCII_TEXT_ISO;
 	private final static String TEXT_HTML =
 		"<html>" +
 		"<head>" +
@@ -338,6 +359,17 @@ public class MailSenderTest extends SendmailTest
 		"text with html features " +
 		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
 		"and special characters" + NON_ASCII_TEXT + "." +
+		"</body>" +
+		"</html>";
+	private final static String TEXT_HTML_ISO =
+		"<html>" +
+		"<head>" +
+		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
+		"</head>" +
+		"<body>" +
+		"text with html features " +
+		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
+		"and special characters" + NON_ASCII_TEXT_ISO + "." +
 		"</body>" +
 		"</html>";
 	
@@ -367,28 +399,35 @@ public class MailSenderTest extends SendmailTest
 		final MockMail x12 = new MockMail("x12", new String[]{user1.email, user2.email}, null, null, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
+				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x13 = new MockMail("x13", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
+				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
+			}
+		});
+		final MockMail x14 = new MockMail("x14", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN_ISO, null, null, "ISO-8859-1", new MockChecker(){
+			public void checkBody(final Message m) throws IOException, MessagingException
+			{
+				assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
+				assertEquals(TEXT_PLAIN_ISO + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x23 = new MockMail("x23", null, null, new String[]{user2.email, user3.email}, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
+				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail mp  = new MockMail("mp", user1.email, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertEquals("text/plain; charset="+CHARSET, m.getContentType());
+				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
 				assertEquals(null, m.getDisposition());
 			}
@@ -396,7 +435,7 @@ public class MailSenderTest extends SendmailTest
 		final MockMail mh  = new MockMail("mh", user1.email, (String)null, TEXT_HTML, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
-				assertEquals("text/html; charset="+CHARSET, m.getContentType());
+				assertEquals("text/html; charset="+DEFAULT_CHARSET, m.getContentType());
 				assertEquals(TEXT_HTML + TEXT_APPENDIX, m.getContent());
 				assertEquals(null, m.getDisposition());
 			}
@@ -409,14 +448,34 @@ public class MailSenderTest extends SendmailTest
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				{
 					final BodyPart textBody = multipart.getBodyPart(0);
-					assertEquals("text/plain; charset="+CHARSET, textBody.getContentType());
+					assertEquals("text/plain; charset="+DEFAULT_CHARSET, textBody.getContentType());
 					assertEquals(TEXT_PLAIN, textBody.getContent());
 					assertEquals(BodyPart.INLINE, textBody.getDisposition());
 				}
 				{
 					final BodyPart htmlBody = multipart.getBodyPart(1);
-					assertEquals("text/html; charset="+CHARSET, htmlBody.getContentType());
+					assertEquals("text/html; charset="+DEFAULT_CHARSET, htmlBody.getContentType());
 					assertEquals(TEXT_HTML, htmlBody.getContent());
+					assertEquals(BodyPart.INLINE, htmlBody.getDisposition());
+				}
+				assertEquals(2, multipart.getCount());
+			}
+		});
+		final MockMail ma2  = new MockMail("ma2", user1.email, TEXT_PLAIN_ISO, TEXT_HTML_ISO, "ISO-8859-1", new MockChecker(){
+			public void checkBody(final Message m) throws IOException, MessagingException
+			{
+				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+				final MimeMultipart multipart = (MimeMultipart)m.getContent();
+				{
+					final BodyPart textBody = multipart.getBodyPart(0);
+					assertEquals("text/plain; charset=ISO-8859-1", textBody.getContentType());
+					assertEquals(TEXT_PLAIN_ISO, textBody.getContent());
+					assertEquals(BodyPart.INLINE, textBody.getDisposition());
+				}
+				{
+					final BodyPart htmlBody = multipart.getBodyPart(1);
+					assertEquals("text/html; charset=ISO-8859-1", htmlBody.getContentType());
+					assertEquals(TEXT_HTML_ISO, htmlBody.getContent());
 					assertEquals(BodyPart.INLINE, htmlBody.getDisposition());
 				}
 				assertEquals(2, multipart.getCount());
@@ -430,7 +489,7 @@ public class MailSenderTest extends SendmailTest
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
-				assertEquals("text/plain; charset="+CHARSET, mainBody.getContentType());
+				assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainBody.getContentType());
 				assertEquals(TEXT_PLAIN, mainBody.getContent());
 				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
@@ -453,7 +512,7 @@ public class MailSenderTest extends SendmailTest
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
-				assertEquals("text/html; charset="+CHARSET, mainBody.getContentType());
+				assertEquals("text/html; charset="+DEFAULT_CHARSET, mainBody.getContentType());
 				assertEquals(TEXT_HTML, mainBody.getContent());
 				assertEquals(BodyPart.INLINE, mainBody.getDisposition());
 				{
@@ -484,13 +543,13 @@ public class MailSenderTest extends SendmailTest
 				assertTrue(mainPart.getContentType(), mainPart.getContentType().startsWith("multipart/alternative;"));
 				{
 					final BodyPart mainText = mainPart.getBodyPart(0);
-					assertEquals("text/plain; charset="+CHARSET, mainText.getContentType());
+					assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainText.getContentType());
 					assertEquals(TEXT_PLAIN, mainText.getContent());
 					assertEquals(BodyPart.INLINE, mainText.getDisposition());
 				}
 				{
 					final BodyPart mainHtml = mainPart.getBodyPart(1);
-					assertEquals("text/html; charset="+CHARSET, mainHtml.getContentType());
+					assertEquals("text/html; charset="+DEFAULT_CHARSET, mainHtml.getContentType());
 					assertEquals(TEXT_HTML, mainHtml.getContent());
 					assertEquals(BodyPart.INLINE, mainHtml.getDisposition());
 				}
@@ -530,9 +589,11 @@ public class MailSenderTest extends SendmailTest
 				result.add(f2);
 				result.add(mh);
 				result.add(ma);
+				result.add(ma2);
 				result.add(x12);
 				result.add(f3);
 				result.add(x13);
+				result.add(x14);
 				result.add(x23);
 				result.add(mpa);
 				result.add(mha);
@@ -574,6 +635,10 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(1, ma.sentCounter);
 		assertEquals(0, ma.failedCounter);
 		
+		assertEquals(null, ma2.failedException);
+		assertEquals(1, ma2.sentCounter);
+		assertEquals(0, ma2.failedCounter);
+		
 		assertEquals(null, x12.failedException);
 		assertEquals(1, x12.sentCounter);
 		assertEquals(0, x12.failedCounter);
@@ -581,6 +646,10 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(null, x13.failedException);
 		assertEquals(1, x13.sentCounter);
 		assertEquals(0, x13.failedCounter);
+		
+		assertEquals(null, x14.failedException);
+		assertEquals(1, x14.sentCounter);
+		assertEquals(0, x14.failedCounter);
 		
 		assertEquals(null, x23.failedException);
 		assertEquals(1, x23.sentCounter);
@@ -616,12 +685,12 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 		
-		assertPOP3(user1, new MockMail[]{mp, mh, ma, x12, x13, mpa, mha, maa});
+		assertPOP3(user1, new MockMail[]{mp, mh, ma, ma2, x12, x13, x14, mpa, mha, maa});
 		assertPOP3(user2, new MockMail[]{x12, x23});
-		assertPOP3(user3, new MockMail[]{x13, x23});
+		assertPOP3(user3, new MockMail[]{x13, x14, x23});
 	}
 	
-	private static final String CHARSET = "UTF-8";
+	private static final String DEFAULT_CHARSET = "UTF-8";
 	
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
@@ -656,13 +725,33 @@ public class MailSenderTest extends SendmailTest
 					throw new RuntimeException(m.getSubject());
 			}
 			
+			// check that the non-ascii characters in the subject are handled properly:
+			for(final Message m : actualMessages.values())
+			{
+				String subjectPart = m.getSubject().substring(
+					m.getSubject().indexOf(" (("), m.getSubject().indexOf("))")+2
+				);
+				if ( subjectPart.startsWith(" ((utf") )
+				{
+					assertEquals( m.getSubject(), NON_ASCII_TEXT, subjectPart );
+				}
+				else if ( subjectPart.startsWith(" ((iso") )
+				{
+					assertEquals( m.getSubject(), NON_ASCII_TEXT_ISO, subjectPart );
+				}
+				else
+				{
+					fail( m.getSubject() );
+				}
+			}
+			
 			for(final String subject : expectedMessages.keySet())
 			{
 				final Message m = actualMessages.get(subject);
 				final MockMail expected = expectedMessages.get(subject);
 				final String message = account.pop3User + " - " + subject;
 				
-				assertNotNull(message, m);
+				assertNotNull("no message "+message+"; found "+actualMessages.keySet(), m);
 				assertEquals(message, expected.getSubject(), m.getSubject());
 				assertEquals(message, list(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
 				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));

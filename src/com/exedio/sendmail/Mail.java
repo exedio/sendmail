@@ -50,6 +50,11 @@ public interface Mail
 	
 	DataSource[] getAttachments();
 	
+	/**
+	 *	May return null, then the {@link MailSender#DEFAULT_CHARSET default charset} is used.
+	 */
+	String getCharset();
+	
 	void notifySent();
 
 	void notifyFailed(Exception exception);

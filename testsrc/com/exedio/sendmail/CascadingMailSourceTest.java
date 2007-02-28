@@ -223,6 +223,11 @@ public class CascadingMailSourceTest extends TestCase
 			throw new RuntimeException(code);
 		}
 		
+		public String getCharset()
+		{
+			throw new RuntimeException(code);
+		}
+		
 		public void notifySent()
 		{
 			throw new RuntimeException(code);

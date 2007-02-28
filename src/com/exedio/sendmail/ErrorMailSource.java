@@ -159,6 +159,11 @@ public final class ErrorMailSource implements MailSource
 		{
 			return null;
 		}
+
+		public String getCharset()
+		{
+			return null;
+		}
 		
 		public void notifySent()
 		{
