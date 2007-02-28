@@ -38,7 +38,7 @@ import javax.mail.internet.MimeMultipart;
 
 public final class MailSender
 {
-	private static final String DEFAULT_CHARSET = "UTF-8";
+	public static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
 	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
