@@ -79,93 +79,7 @@ public final class MailSender
 				{
 					try
 					{
-						//System.err.println("-------------------------------------+"+mail);
-						final String id = mail.getMessageID();
-						final InternetAddress from;
-						{
-							final String fromString = mail.getFrom();
-							if(fromString==null)
-								throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
-							from = new InternetAddress(fromString);
-						}
-						
-						final InternetAddress[] to = toAdresses(mail.getTo());
-						final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
-						final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
-						final String subject = mail.getSubject();
-
-						final String textPlain = mail.getTextPlain();
-						final String textHtml = mail.getTextHtml();
-						if(textPlain==null && textHtml==null)
-							throw new NullPointerException("either Mail#getTextPlain() or Mail#getTextHtml() must not return null (" + mail.toString() + ')');
-						
-						final DataSource[] attachments = emptyToNull(mail.getAttachments());
-						
-						final String mailCharset = mail.getCharset();
-						final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
-						final String htmlContentType = "text/html; charset=" + charset;
-						
-						final MimeMessage message = id!=null ? new MimeMessageWithID(session, id) : new MimeMessage(session);
-						message.setFrom(from);
-						if(to!=null)
-							message.setRecipients(Message.RecipientType.TO, to);
-						if(carbonCopy!=null)
-							message.setRecipients(Message.RecipientType.CC, carbonCopy);
-						if(blindCarbonCopy!=null)
-							message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
-						if(subject!=null)
-							message.setSubject(subject, charset);
-
-						if(attachments==null)
-						{
-							if(textPlain==null || textHtml==null)
-							{
-								if(textPlain!=null)
-									message.setText(textPlain, charset);
-								else if(textHtml!=null)
-									message.setContent(textHtml, htmlContentType);
-								else
-									assert false;
-							}
-							else
-							{
-								message.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
-							}
-						}
-						else
-						{
-							final MimeMultipart mixed = new MimeMultipart("mixed");
-							if(textPlain==null || textHtml==null)
-							{
-								final MimeBodyPart part = new MimeBodyPart();
-								if(textPlain!=null)
-									part.setText(textPlain, charset);
-								else if(textHtml!=null)
-									part.setContent(textHtml, htmlContentType);
-								else
-									assert false;
-								part.setDisposition(BodyPart.INLINE);
-								mixed.addBodyPart(part);
-							}
-							else
-							{
-								final MimeBodyPart alternativePart = new MimeBodyPart();
-								alternativePart.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
-								mixed.addBodyPart(alternativePart);
-							}
-							for(final DataSource attachment : attachments)
-							{
-								final MimeBodyPart attachPart = new MimeBodyPart();
-								attachPart.setDataHandler(new DataHandler(attachment));
-								attachPart.setDisposition(BodyPart.ATTACHMENT);
-								final String attachmentName = attachment.getName();
-								if(attachmentName!=null)
-									attachPart.setFileName(attachmentName);
-								mixed.addBodyPart(attachPart);
-							}
-							message.setContent(mixed);
-						}
-
+						final MimeMessage message = createMessage(session, mail);
 						try
 						{
 							mailsTriedToSendInOneConnection++;
@@ -217,6 +131,97 @@ public final class MailSender
 			}
 		}
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
+	}
+	
+	private static final MimeMessage createMessage(final Session session, final Mail mail) throws MessagingException
+	{
+		//System.err.println("-------------------------------------+"+mail);
+		final String id = mail.getMessageID();
+		final InternetAddress from;
+		{
+			final String fromString = mail.getFrom();
+			if(fromString==null)
+				throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
+			from = new InternetAddress(fromString);
+		}
+		
+		final InternetAddress[] to = toAdresses(mail.getTo());
+		final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
+		final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
+		final String subject = mail.getSubject();
+
+		final String textPlain = mail.getTextPlain();
+		final String textHtml = mail.getTextHtml();
+		if(textPlain==null && textHtml==null)
+			throw new NullPointerException("either Mail#getTextPlain() or Mail#getTextHtml() must not return null (" + mail.toString() + ')');
+		
+		final DataSource[] attachments = emptyToNull(mail.getAttachments());
+		
+		final String mailCharset = mail.getCharset();
+		final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
+		final String htmlContentType = "text/html; charset=" + charset;
+		
+		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id) : new MimeMessage(session);
+		message.setFrom(from);
+		if(to!=null)
+			message.setRecipients(Message.RecipientType.TO, to);
+		if(carbonCopy!=null)
+			message.setRecipients(Message.RecipientType.CC, carbonCopy);
+		if(blindCarbonCopy!=null)
+			message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
+		if(subject!=null)
+			message.setSubject(subject, charset);
+
+		if(attachments==null)
+		{
+			if(textPlain==null || textHtml==null)
+			{
+				if(textPlain!=null)
+					message.setText(textPlain, charset);
+				else if(textHtml!=null)
+					message.setContent(textHtml, htmlContentType);
+				else
+					assert false;
+			}
+			else
+			{
+				message.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
+			}
+		}
+		else
+		{
+			final MimeMultipart mixed = new MimeMultipart("mixed");
+			if(textPlain==null || textHtml==null)
+			{
+				final MimeBodyPart part = new MimeBodyPart();
+				if(textPlain!=null)
+					part.setText(textPlain, charset);
+				else if(textHtml!=null)
+					part.setContent(textHtml, htmlContentType);
+				else
+					assert false;
+				part.setDisposition(BodyPart.INLINE);
+				mixed.addBodyPart(part);
+			}
+			else
+			{
+				final MimeBodyPart alternativePart = new MimeBodyPart();
+				alternativePart.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
+				mixed.addBodyPart(alternativePart);
+			}
+			for(final DataSource attachment : attachments)
+			{
+				final MimeBodyPart attachPart = new MimeBodyPart();
+				attachPart.setDataHandler(new DataHandler(attachment));
+				attachPart.setDisposition(BodyPart.ATTACHMENT);
+				final String attachmentName = attachment.getName();
+				if(attachmentName!=null)
+					attachPart.setFileName(attachmentName);
+				mixed.addBodyPart(attachPart);
+			}
+			message.setContent(mixed);
+		}
+		return message;
 	}
 	
 	/**
@@ -281,5 +286,4 @@ public final class MailSender
 		}
 		return result;
 	}
-
 }
