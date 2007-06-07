@@ -2,6 +2,8 @@
 
 <project name="sendmail" default="build" basedir=".">
 
+	<property name="build.file.tag" value="unlabeled" />
+	
 	<taskdef
 			resource="net/sf/antcontrib/antcontrib.properties"
 			classpath="lib/ant-contrib.jar" />
@@ -110,7 +112,7 @@
 	<target name="dist.tar">
 		<mkdir dir="build" />
 		<echo file="build/build.number" message="${build.tag}" />
-		<tar destfile="build/exedio-sendmail-src.tar.gz"
+		<tar destfile="build/exedio-sendmail-src-${build.file.tag}.tar.gz"
 				compression="gzip">
 			<tarfileset file="${basedir}/build/build.number" />
 			<tarfileset dir="${basedir}">
@@ -125,7 +127,7 @@
 	<target name="dist.test" depends="dist.tar">
 		<delete dir="build/dist-test" />
 		<mkdir dir="build/dist-test" />
-		<untar src="build/exedio-sendmail-src.tar.gz"
+		<untar src="build/exedio-sendmail-src-${build.file.tag}.tar.gz"
 				dest="build/dist-test"
 				compression="gzip" />
 		<if>
@@ -191,7 +193,7 @@
 		<mkdir dir="cruise" />
 		<copy todir="${basedir}/cruise">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
-			<fileset file="${basedir}/build/exedio-sendmail-src.tar.gz" />
+			<fileset file="${basedir}/build/exedio-sendmail-src-${build.file.tag}.tar.gz" />
 			<fileset file="${basedir}/build/exedio-sendmail-api.tar.bz2" />
 			<fileset file="${basedir}/lib/activation.jar" />
 			<fileset file="${basedir}/lib/mail.jar" />
