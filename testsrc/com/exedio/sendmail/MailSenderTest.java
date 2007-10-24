@@ -265,7 +265,7 @@ public class MailSenderTest extends SendmailTest
 		
 		void checkBody(final Message m) throws IOException, MessagingException
 		{
-			checker.checkBody(m);;
+			checker.checkBody(m);
 		}
 		
 	}

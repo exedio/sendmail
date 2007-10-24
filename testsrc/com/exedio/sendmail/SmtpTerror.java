@@ -142,7 +142,7 @@ public class SmtpTerror extends SendmailTest
 			}
 			return result;
 		}
-	};
+	}
 
 	public void testTerror() throws InterruptedException
 	{
