@@ -151,7 +151,7 @@ public class CascadingMailSourceTest extends TestCase
 	}
 	
 	protected final void assertMails(
-			final List expectedMails, final Collection actualMails,
+			final List<? extends Mail> expectedMails, final Collection<? extends Mail> actualMails,
 			final int expectedMaximumResultSizeE, final int expectedMaximumResultSizeA, final int expectedMaximumResultSizeB)
 	{
 		assertEquals(expectedMails, actualMails);
@@ -243,5 +243,4 @@ public class CascadingMailSourceTest extends TestCase
 	{
 		return Arrays.asList(o);
 	}
-	
 }

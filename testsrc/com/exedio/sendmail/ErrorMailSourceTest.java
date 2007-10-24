@@ -94,7 +94,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 	}
 
-	protected final static List list(final Object... o)
+	protected final static List<Object> list(final Object... o)
 	{
 		return Arrays.asList(o);
 	}
