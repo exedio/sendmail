@@ -18,14 +18,11 @@
 
 package com.exedio.sendmail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 
 
@@ -144,11 +141,6 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		
 	}
 	
-	private static interface MockChecker
-	{
-		void checkBody(Message m) throws IOException, MessagingException;
-	}
-
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
 	private final static String TEXT = "text for test mail";
