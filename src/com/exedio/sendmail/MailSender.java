@@ -24,10 +24,10 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
+import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -200,7 +200,7 @@ public final class MailSender
 					part.setContent(textHtml, htmlContentType);
 				else
 					assert false;
-				part.setDisposition(BodyPart.INLINE);
+				part.setDisposition(Part.INLINE);
 				mixed.addBodyPart(part);
 			}
 			else
@@ -213,7 +213,7 @@ public final class MailSender
 			{
 				final MimeBodyPart attachPart = new MimeBodyPart();
 				attachPart.setDataHandler(new DataHandler(attachment));
-				attachPart.setDisposition(BodyPart.ATTACHMENT);
+				attachPart.setDisposition(Part.ATTACHMENT);
 				final String attachmentName = attachment.getName();
 				if(attachmentName!=null)
 					attachPart.setFileName(attachmentName);
@@ -275,13 +275,13 @@ public final class MailSender
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
 			textPart.setText(plain, charset);
-			textPart.setDisposition(BodyPart.INLINE);
+			textPart.setDisposition(Part.INLINE);
 			result.addBodyPart(textPart);
 		}
 		{
 			final MimeBodyPart htmlPart = new MimeBodyPart();
 			htmlPart.setContent(html, htmlContentType);
-			htmlPart.setDisposition(BodyPart.INLINE);
+			htmlPart.setDisposition(Part.INLINE);
 			result.addBodyPart(htmlPart);
 		}
 		return result;
