@@ -31,10 +31,10 @@ import javax.activation.DataSource;
  */
 public class SmtpTerror extends SendmailTest
 {
-	private Account user;
+	Account user;
 
-	private String ts;
-	private int sent;
+	String ts;
+	int sent;
 	private static final boolean terrorDebug = true;
 
 	@Override

@@ -233,7 +233,7 @@ public final class MailSender
 	{
 		final String id;
 		
-		private MimeMessageWithID(final Session session, final String id)
+		MimeMessageWithID(final Session session, final String id)
 		{
 			super(session);
 			assert id!=null;

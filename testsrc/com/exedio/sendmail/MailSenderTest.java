@@ -55,7 +55,7 @@ public class MailSenderTest extends SendmailTest
 
 	private String fail;
 	private String failclose;
-	private String timeStamp;
+	String timeStamp;
 	
 	private static boolean countDebug = false;
 	

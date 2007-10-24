@@ -33,9 +33,9 @@ public final class ErrorMailSource implements MailSource
 {
 	private static final int DEFAULT_OVERFLOW_THRESHOLD = 100;
 
-	private final String from;
-	private final String[] to;
-	private final String subject;
+	final String from;
+	final String[] to;
+	final String subject;
 	private final int overflowThreshold;
 	
 	public ErrorMailSource(final String from, final String to, final String subject)
@@ -61,7 +61,7 @@ public final class ErrorMailSource implements MailSource
 		this.overflowThreshold = overflowThreshold;
 	}
 	
-	private final List<ErrorMail> mailsToSend = new ArrayList<ErrorMail>();
+	final List<ErrorMail> mailsToSend = new ArrayList<ErrorMail>();
 	
 	public final Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 	{
@@ -103,7 +103,7 @@ public final class ErrorMailSource implements MailSource
 		final long timestamp;
 		final String text;
 		
-		private ErrorMail(final String text)
+		ErrorMail(final String text)
 		{
 			this.timestamp = System.currentTimeMillis();
 			this.text = text;
