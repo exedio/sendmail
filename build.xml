@@ -44,6 +44,15 @@
 		</jar>
 	</target>
 	
+	<target name="jar.src">
+		<mkdir dir="build" />
+		<zip destfile="build/exedio-sendmail.jar-src.zip">
+			<zipfileset dir="${basedir}/src">
+				<include name="**/*.java" />
+			</zipfileset>
+		</zip>
+	</target>
+	
 	<target name="test.compile" depends="compile">
 		<mkdir dir="build/testclasses" />
 		<javac srcdir="testsrc"
@@ -186,13 +195,14 @@
 	</target>
 	
 	<target name="build" depends="compile, jar, test, emma, api" />
-	<target name="all" depends="build, api.zip, dist" />
+	<target name="all" depends="build, jar.src, api.zip, dist" />
 
 	<target name="cruise" depends="all">
 		<delete dir="cruise" />
 		<mkdir dir="cruise" />
 		<copy todir="${basedir}/cruise">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
+			<fileset file="${basedir}/build/exedio-sendmail.jar-src.zip" />
 			<fileset file="${basedir}/build/exedio-sendmail-src-${build.file.tag}.tar.gz" />
 			<fileset file="${basedir}/build/exedio-sendmail-api.tar.bz2" />
 			<fileset file="${basedir}/lib/activation.jar" />
