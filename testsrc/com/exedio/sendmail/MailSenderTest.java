@@ -346,7 +346,7 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 	
-	private final static String NON_ASCII_TEXT = " ((utf auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac))";
+	private final static String NON_ASCII_TEXT = " ((utf auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df abreve-\u0102 hebrew-\u05d8 euro-\u20ac aelig-\u00e6))";
 	private final static String NON_ASCII_TEXT_ISO = " ((iso auml-\u00e4 ouml-\u00f6 uuml-\u00fc szlig-\u00df))";
 	private final static String TEXT_APPENDIX = "\r\n";
 	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
