@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataSource;
@@ -166,10 +167,12 @@ public class CascadingMailSourceTest extends TestCase
 	private static class MockMail implements Mail
 	{
 		final String code;
+		final long timestamp;
 		
 		MockMail(final String code)
 		{
 			this.code = code;
+			this.timestamp = System.currentTimeMillis();
 		}
 		
 		@Override
@@ -227,6 +230,16 @@ public class CascadingMailSourceTest extends TestCase
 		{
 			throw new RuntimeException(code);
 		}
+		
+		public String getContentTransferEncoding()
+		{
+			throw new RuntimeException(code);
+		}		
+		
+		public Date getDate()
+		{
+			return new Date(timestamp);
+		}		
 		
 		public void notifySent()
 		{

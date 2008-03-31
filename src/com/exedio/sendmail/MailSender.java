@@ -19,7 +19,9 @@
 package com.exedio.sendmail;
 
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -83,7 +85,7 @@ public final class MailSender
 						try
 						{
 							mailsTriedToSendInOneConnection++;
-							//final long start = System.currentTimeMillis();
+							//final long start = System.currentTimeMillis();		
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 							mailsSentInOneConnection++;
@@ -160,8 +162,10 @@ public final class MailSender
 		final String mailCharset = mail.getCharset();
 		final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
+		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mail.getDate()==null ? new java.util.Date() : mail.getDate() );
+		final String contentTransferEncoding = mail.getContentTransferEncoding();
 		
-		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id) : new MimeMessage(session);
+		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id, date, contentTransferEncoding) : new MimeMessage(session);
 		message.setFrom(from);
 		if(to!=null)
 			message.setRecipients(Message.RecipientType.TO, to);
@@ -232,12 +236,16 @@ public final class MailSender
 	private static final class MimeMessageWithID extends MimeMessage
 	{
 		final String id;
+		final String date;
+		final String contentTransferEncoding;
 		
-		MimeMessageWithID(final Session session, final String id)
+		MimeMessageWithID(final Session session, final String id, final String date, final String contentTransferEncoding)
 		{
 			super(session);
 			assert id!=null;
 			this.id = id;
+			this.date = date;
+			this.contentTransferEncoding = contentTransferEncoding;
 		}
 		
 		@Override
@@ -245,6 +253,9 @@ public final class MailSender
 		{
 			super.updateHeaders();
 			setHeader("Message-ID", id);
+			setHeader("Date", date);
+			if (contentTransferEncoding!=null)			
+			    setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 		}
 	}
 	

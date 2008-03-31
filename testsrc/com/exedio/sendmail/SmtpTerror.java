@@ -71,6 +71,7 @@ public class SmtpTerror extends SendmailTest
 		{
 			final String[] to = {user.email};
 			final String subject = ts + "terror subject "+threadNumber+" - ";
+			final long timestamp =  System.currentTimeMillis();
 
 			final ArrayList<Mail> result = new ArrayList<Mail>();
 			for( ; maximumResultSize>0 && number<SIZE; maximumResultSize--, number++)
@@ -128,6 +129,16 @@ public class SmtpTerror extends SendmailTest
 					{
 						return null;
 					}
+					
+					public String getContentTransferEncoding()
+					{
+						return null;
+					}	
+					
+					public Date getDate()
+					{
+						return new Date(timestamp);
+					}					
 					
 					public void notifySent()
 					{

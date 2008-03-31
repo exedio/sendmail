@@ -99,6 +99,7 @@ public class MailSenderTest extends SendmailTest
 		private final DataSource[] attachments;
 		private final String charset;
 		boolean specialMessageID = false;
+		private final long timestamp;
 
 		int sentCounter = 0;
 		int failedCounter = 0;
@@ -194,6 +195,7 @@ public class MailSenderTest extends SendmailTest
 			this.textHtml = textHtml;
 			this.attachments = attachments;
 			this.charset = charset;
+			this.timestamp = System.currentTimeMillis();
 		}
 		
 		public String getMessageID()
@@ -245,6 +247,16 @@ public class MailSenderTest extends SendmailTest
 		{
 			return charset;
 		}
+		
+		public String getContentTransferEncoding()
+		{
+			return null;
+		}
+		
+		public Date getDate()
+		{
+			return new Date(timestamp);
+		}		
 		
 		public void notifySent()
 		{

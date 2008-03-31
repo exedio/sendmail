@@ -165,6 +165,16 @@ public final class ErrorMailSource implements MailSource
 			return null;
 		}
 		
+		public String getContentTransferEncoding()
+		{
+			return null;
+		}
+		
+		public Date getDate()
+		{
+			return new Date(timestamp);
+		}
+		
 		public void notifySent()
 		{
 			mailsToSend.remove(this);

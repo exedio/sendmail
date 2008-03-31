@@ -18,6 +18,7 @@
 
 package com.exedio.sendmail;
 
+import java.util.Date;
 import javax.activation.DataSource;
 
 
@@ -58,5 +59,19 @@ public interface Mail
 	void notifySent();
 
 	void notifyFailed(Exception exception);
+	
+	/**
+	 * Returns the value the Content-Transfer-Encoding header of the mail should be set to.
+	 * May return null, then the Content-Transfer-Encoding header won't be set.
+	 * @return the desired content-transfer-encoding
+	 */	
+	String getContentTransferEncoding();
+	
+	/**
+	 * Returns the date the Date header of the mail should be set to.
+	 * According to RFC 2822 this Date should provide the creation date of the mail.
+	 * @return the creation date of the mail
+	 */
+	Date getDate();
 	
 }

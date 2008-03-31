@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
 import javax.activation.DataSource;
 import javax.mail.SendFailedException;
@@ -52,6 +53,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		private final String id;
 		private final String to;
 		private final String textPlain;
+		private final long timestamp;
 
 		int sentCounter = 0;
 		int failedCounter = 0;
@@ -70,6 +72,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 			this.id = id;
 			this.to = to;
 			this.textPlain = textPlain;
+			this.timestamp = System.currentTimeMillis();
 		}
 		
 		public String getMessageID()
@@ -121,6 +124,16 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		{
 			return null;
 		}
+		
+		public String getContentTransferEncoding()
+		{
+			return null;
+		}		
+		
+		public Date getDate()
+		{
+			return new Date(timestamp);
+		}			
 		
 		public void notifySent()
 		{
