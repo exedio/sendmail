@@ -200,7 +200,7 @@ public class MailSenderTest extends SendmailTest
 		
 		public String getMessageID()
 		{
-			return specialMessageID ? "messageid-" + id + '-' + System.currentTimeMillis() : null;
+			return specialMessageID ? "messageid-" + id + '-' + timestamp : null;
 		}
 		
 		public String getFrom()
@@ -784,6 +784,12 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
+				assertNotNull(message, m.getHeader("Message-ID"));
+				assertEquals(message, 1, m.getHeader("Message-ID").length);
+				if(expected.specialMessageID)
+					assertEquals(message, expected.getMessageID(), m.getHeader("Message-ID")[0]);
+				else
+					assertTrue(message, m.getHeader("Message-ID")[0].indexOf(".JavaMail.")>0);
 				expected.checkBody(m);
 			}
 			assertEquals(account.pop3User, expectedMails.length, inboxMessages.length);
