@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -85,7 +86,7 @@ public final class MailSender
 						try
 						{
 							mailsTriedToSendInOneConnection++;
-							//final long start = System.currentTimeMillis();		
+							//final long start = System.currentTimeMillis();
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 							mailsSentInOneConnection++;
@@ -151,6 +152,7 @@ public final class MailSender
 		final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
 		final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
 		final String subject = mail.getSubject();
+		final Date mailDate = mail.getDate();
 
 		final String textPlain = mail.getTextPlain();
 		final String textHtml = mail.getTextHtml();
@@ -162,7 +164,7 @@ public final class MailSender
 		final String mailCharset = mail.getCharset();
 		final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
-		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mail.getDate()==null ? new java.util.Date() : mail.getDate() );
+		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mailDate==null ? new java.util.Date() : mailDate );
 		final String contentTransferEncoding = mail.getContentTransferEncoding();
 		
 		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id, contentTransferEncoding) : new MimeMessage(session);
