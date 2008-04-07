@@ -165,7 +165,7 @@ public final class MailSender
 		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mail.getDate()==null ? new java.util.Date() : mail.getDate() );
 		final String contentTransferEncoding = mail.getContentTransferEncoding();
 		
-		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id, date, contentTransferEncoding) : new MimeMessage(session);
+		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id, contentTransferEncoding) : new MimeMessage(session);
 		message.setFrom(from);
 		if(to!=null)
 			message.setRecipients(Message.RecipientType.TO, to);
@@ -175,6 +175,7 @@ public final class MailSender
 			message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
 		if(subject!=null)
 			message.setSubject(subject, charset);
+		message.setHeader("Date", date);
 
 		if(attachments==null)
 		{
@@ -236,15 +237,13 @@ public final class MailSender
 	private static final class MimeMessageWithID extends MimeMessage
 	{
 		final String id;
-		final String date;
 		final String contentTransferEncoding;
 		
-		MimeMessageWithID(final Session session, final String id, final String date, final String contentTransferEncoding)
+		MimeMessageWithID(final Session session, final String id, final String contentTransferEncoding)
 		{
 			super(session);
 			assert id!=null;
 			this.id = id;
-			this.date = date;
 			this.contentTransferEncoding = contentTransferEncoding;
 		}
 		
@@ -253,7 +252,6 @@ public final class MailSender
 		{
 			super.updateHeaders();
 			setHeader("Message-ID", id);
-			setHeader("Date", date);
 			if (contentTransferEncoding!=null)			
 			    setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 		}
