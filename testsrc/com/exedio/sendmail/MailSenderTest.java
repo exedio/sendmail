@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TreeMap;
 
 import javax.activation.DataSource;
@@ -790,6 +791,10 @@ public class MailSenderTest extends SendmailTest
 					assertEquals(message, expected.getMessageID(), m.getHeader("Message-ID")[0]);
 				else
 					assertTrue(message, m.getHeader("Message-ID")[0].indexOf(".JavaMail.")>0);
+				assertNotNull(message, m.getHeader("Date"));
+				assertEquals(message, 1, m.getHeader("Date").length);
+				if(expected.specialMessageID)
+					assertEquals(message, (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expected.getDate()), m.getHeader("Date")[0]);
 				expected.checkBody(m);
 			}
 			assertEquals(account.pop3User, expectedMails.length, inboxMessages.length);
