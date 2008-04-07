@@ -167,7 +167,10 @@ public final class MailSender
 		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mailDate==null ? new java.util.Date() : mailDate );
 		final String contentTransferEncoding = mail.getContentTransferEncoding();
 		
-		final MimeMessage message = id!=null ? new MimeMessageWithID(session, id, contentTransferEncoding) : new MimeMessage(session);
+		final MimeMessage message =
+				id!=null
+				? new MimeMessageWithID(session, id, contentTransferEncoding)
+				: new MimeMessage(session);
 		message.setFrom(from);
 		if(to!=null)
 			message.setRecipients(Message.RecipientType.TO, to);
@@ -254,8 +257,8 @@ public final class MailSender
 		{
 			super.updateHeaders();
 			setHeader("Message-ID", id);
-			if (contentTransferEncoding!=null)			
-			    setHeader("Content-Transfer-Encoding", contentTransferEncoding);
+			if(contentTransferEncoding!=null)			
+				setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 		}
 	}
 	
