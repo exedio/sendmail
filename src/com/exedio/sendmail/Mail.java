@@ -56,10 +56,6 @@ public interface Mail
 	 */
 	String getCharset();
 	
-	void notifySent();
-
-	void notifyFailed(Exception exception);
-	
 	/**
 	 * Returns the value the Content-Transfer-Encoding header of the mail should be set to.
 	 * May return null, then the Content-Transfer-Encoding header won't be set.
@@ -89,4 +85,7 @@ public interface Mail
 	 */
 	Date getDate();
 	
+	void notifySent();
+
+	void notifyFailed(Exception exception);
 }
