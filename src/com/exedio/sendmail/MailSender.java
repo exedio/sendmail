@@ -44,6 +44,17 @@ public final class MailSender
 	public static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
 	
+	private static final Session newSession(final String smtpHost, final boolean smtpDebug)
+	{
+		final Properties properties = new Properties();
+		properties.put("mail.host", smtpHost);
+		properties.put("mail.transport.protocol", "smtp");
+		final Session session = Session.getInstance(properties);
+		if(smtpDebug)
+			session.setDebug(true);
+		return session;
+	}
+	
 	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
@@ -52,13 +63,7 @@ public final class MailSender
 			if(mails.isEmpty())
 				return;
 
-			final Properties properties = new Properties();
-			properties.put("mail.host", smtpHost);
-			properties.put("mail.transport.protocol", "smtp");
-			final Session session = Session.getInstance(properties);
-			if(smtpDebug)
-				session.setDebug(true);
-			
+			final Session session = newSession(smtpHost, smtpDebug);
 			final Transport transport;
 			try
 			{
