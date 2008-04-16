@@ -141,6 +141,21 @@ public final class MailSender
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
 	}
 	
+	/**
+	 * BEWARE:
+	 * this method does not call {@link Mail#notifySent()}
+	 * or {@link Mail#notifyFailed(Exception)}.
+	 */
+	public static final void sendMail(final Mail mail, final String smtpHost, final boolean smtpDebug)
+		throws MessagingException
+	{
+		final Session session = newSession(smtpHost, smtpDebug);
+		final MimeMessage message = createMessage(session, mail);
+		//final long start = System.currentTimeMillis();
+		Transport.send(message);
+		//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
+	}
+	
 	private static final MimeMessage createMessage(final Session session, final Mail mail) throws MessagingException
 	{
 		//System.err.println("-------------------------------------+"+mail);
