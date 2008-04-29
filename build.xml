@@ -190,19 +190,16 @@
 	<target name="build" depends="compile, jar, test, emma, api" />
 	<target name="all" depends="build, jar.src, dist" />
 
-	<target name="cruise" depends="all">
-		<delete dir="cruise" />
-		<mkdir dir="cruise" />
+	<target name="cruise" depends="clean, all">
 		<copy todir="${basedir}/cruise">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail.jar-src.zip" />
 			<fileset file="${basedir}/build/exedio-sendmail-src-${build.file.tag}.tar.gz" />
+			<fileset dir="${basedir}/build">
+				<include name="emma/**" />
+			</fileset>
 			<fileset file="${basedir}/lib/activation.jar" />
 			<fileset file="${basedir}/lib/mail.jar" />
-		</copy>
-		<mkdir dir="${basedir}/cruise/emma-sendmail" />
-		<copy todir="${basedir}/cruise/emma-sendmail">
-			<fileset dir="${basedir}/build/emma" />
 		</copy>
 	</target>
 	
