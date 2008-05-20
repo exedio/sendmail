@@ -126,6 +126,7 @@
 				compression="gzip">
 			<tarfileset file="${basedir}/build/build.number" />
 			<tarfileset dir="${basedir}">
+				<exclude name="log.xml" /><!-- created by cruise -->
 				<exclude name=".eclipse-output/**" />
 				<exclude name="build/**" />
 				<exclude name="api/**" />
