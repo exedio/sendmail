@@ -85,6 +85,7 @@
 				<pathelement location="build/testclasses" />
 				<pathelement location="lib/mail.jar" />
 				<pathelement location="lib/activation.jar" />
+				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail" />
 			<assertions><enable/></assertions>
