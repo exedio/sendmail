@@ -184,6 +184,7 @@ public final class MailSender
 		final String mailCharset = mail.getCharset();
 		final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
+		final String plainContentType = "text/plain; charset=" + charset;
 		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mailDate==null ? new java.util.Date() : mailDate );
 		final String contentTransferEncoding = mail.getContentTransferEncoding();
 		
@@ -207,7 +208,7 @@ public final class MailSender
 			if(textPlain==null || textHtml==null)
 			{
 				if(textPlain!=null)
-					message.setText(textPlain, charset);
+					message.setContent(textPlain, plainContentType);
 				else if(textHtml!=null)
 					message.setContent(textHtml, htmlContentType);
 				else
@@ -215,7 +216,7 @@ public final class MailSender
 			}
 			else
 			{
-				message.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
+				message.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType));
 			}
 		}
 		else
@@ -225,7 +226,7 @@ public final class MailSender
 			{
 				final MimeBodyPart part = new MimeBodyPart();
 				if(textPlain!=null)
-					part.setText(textPlain, charset);
+					part.setContent(textPlain, plainContentType);
 				else if(textHtml!=null)
 					part.setContent(textHtml, htmlContentType);
 				else
@@ -236,7 +237,7 @@ public final class MailSender
 			else
 			{
 				final MimeBodyPart alternativePart = new MimeBodyPart();
-				alternativePart.setContent(alternative(textPlain, textHtml, charset, htmlContentType));
+				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType));
 				mixed.addBodyPart(alternativePart);
 			}
 			for(final DataSource attachment : attachments)
@@ -300,7 +301,7 @@ public final class MailSender
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
 	
-	private static final MimeMultipart alternative(final String plain, final String html, final String charset, final String htmlContentType) throws MessagingException
+	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType) throws MessagingException
 	{
 		assert plain!=null;
 		assert html!=null;
@@ -308,7 +309,7 @@ public final class MailSender
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
-			textPart.setText(plain, charset);
+			textPart.setContent(plain, plainContentType);
 			textPart.setDisposition(Part.INLINE);
 			result.addBodyPart(textPart);
 		}
