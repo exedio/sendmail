@@ -216,7 +216,7 @@ public final class MailSender
 			}
 			else
 			{
-				message.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType));
+				message.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding));
 			}
 		}
 		else
@@ -226,9 +226,17 @@ public final class MailSender
 			{
 				final MimeBodyPart part = new MimeBodyPart();
 				if(textPlain!=null)
+				{
 					part.setContent(textPlain, plainContentType);
+					if(contentTransferEncoding!=null)			
+						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
+				}
 				else if(textHtml!=null)
+				{
 					part.setContent(textHtml, htmlContentType);
+					if(contentTransferEncoding!=null)			
+						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);					
+				}
 				else
 					assert false;
 				part.setDisposition(Part.INLINE);
@@ -237,7 +245,9 @@ public final class MailSender
 			else
 			{
 				final MimeBodyPart alternativePart = new MimeBodyPart();
-				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType));
+				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding));
+				if(contentTransferEncoding!=null)			
+					alternativePart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
 				mixed.addBodyPart(alternativePart);
 			}
 			for(final DataSource attachment : attachments)
@@ -301,7 +311,7 @@ public final class MailSender
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
 	
-	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType) throws MessagingException
+	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding) throws MessagingException
 	{
 		assert plain!=null;
 		assert html!=null;
@@ -310,12 +320,16 @@ public final class MailSender
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
 			textPart.setContent(plain, plainContentType);
+			if(contentTransferEncoding!=null)			
+				textPart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );			
 			textPart.setDisposition(Part.INLINE);
 			result.addBodyPart(textPart);
 		}
 		{
 			final MimeBodyPart htmlPart = new MimeBodyPart();
 			htmlPart.setContent(html, htmlContentType);
+			if(contentTransferEncoding!=null)			
+				htmlPart.setHeader("Content-Transfer-Encoding", contentTransferEncoding);			
 			htmlPart.setDisposition(Part.INLINE);
 			result.addBodyPart(htmlPart);
 		}
