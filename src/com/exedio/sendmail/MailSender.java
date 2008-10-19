@@ -55,13 +55,14 @@ public final class MailSender
 		return session;
 	}
 	
-	public static final void sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
+	public static final int sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
+		int result = 0;
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
 		{
 			final Collection<? extends Mail> mails = source.getMailsToSend(maximumResultSize);
 			if(mails.isEmpty())
-				return;
+				return result;
 
 			final Session session = newSession(smtpHost, smtpDebug);
 			final Transport transport;
@@ -95,6 +96,7 @@ public final class MailSender
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 							mailsSentInOneConnection++;
+							result++;
 						}
 						catch(IllegalStateException e)
 						{
@@ -139,6 +141,7 @@ public final class MailSender
 			}
 		}
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
+		return result;
 	}
 	
 	/**
