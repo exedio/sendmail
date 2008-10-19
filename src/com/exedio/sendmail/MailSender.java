@@ -55,6 +55,9 @@ public final class MailSender
 		return session;
 	}
 	
+	/**
+	 * @return the number of successfully sent mails
+	 */
 	public static final int sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
 	{
 		int result = 0;
