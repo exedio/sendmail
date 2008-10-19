@@ -49,6 +49,7 @@ public final class MailSender
 		final Properties properties = new Properties();
 		properties.put("mail.host", smtpHost);
 		properties.put("mail.transport.protocol", "smtp");
+		// TODO add mail.smtp.connectiontimeout and mail.smtp.timeout
 		final Session session = Session.getInstance(properties);
 		if(smtpDebug)
 			session.setDebug(true);
