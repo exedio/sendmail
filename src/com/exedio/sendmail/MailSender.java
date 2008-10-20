@@ -50,7 +50,11 @@ public final class MailSender
 	private final boolean smtpDebug;
 	private final Session session;
 	
-	public MailSender(final String host, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
+	public MailSender(
+			final String host,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean smtpDebug)
 	{
 		if(host==null)
 			throw new IllegalArgumentException("host must not be null");
@@ -100,7 +104,13 @@ public final class MailSender
 	 * @deprecated Use {@link #sendMails(MailSource, int)} instead
 	 */
 	@Deprecated
-	public static final int sendMails(final MailSource source, final String host, final int connectTimeout, final int readTimeout, final boolean smtpDebug, final int maximumResultSize)
+	public static final int sendMails(
+			final MailSource source,
+			final String host,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean smtpDebug,
+			final int maximumResultSize)
 	{
 		return new MailSender(host, connectTimeout, readTimeout, smtpDebug).sendMails(source, maximumResultSize);
 	}
@@ -203,7 +213,12 @@ public final class MailSender
 	 * @deprecated Use {@link #sendMail(Mail)} instead
 	 */
 	@Deprecated
-	public static final void sendMail(final Mail mail, final String host, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
+	public static final void sendMail(
+			final Mail mail,
+			final String host,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean smtpDebug)
 		throws MessagingException
 	{
 		new MailSender(host, connectTimeout, readTimeout, smtpDebug).sendMail(mail);
