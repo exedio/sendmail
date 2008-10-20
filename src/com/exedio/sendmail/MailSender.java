@@ -50,7 +50,7 @@ public final class MailSender
 	private final boolean smtpDebug;
 	private final Session session;
 	
-	MailSender(final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
+	public MailSender(final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
 	{
 		if(connectTimeout<0)
 			throw new IllegalArgumentException("connectTimeout must not be negative");
