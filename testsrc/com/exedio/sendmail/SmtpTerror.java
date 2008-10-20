@@ -181,7 +181,7 @@ public class SmtpTerror extends SendmailTest
 				{
 					public void run()
 					{
-						MailSender.sendMails(tms[threadNumber], smtpHost, 5000, 5000, smtpDebug, SIZE);
+						mailSender.sendMails(tms[threadNumber], SIZE);
 						tms[threadNumber].readyTimestamp = System.currentTimeMillis();
 					}
 				}

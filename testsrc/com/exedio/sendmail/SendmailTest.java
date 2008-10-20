@@ -38,8 +38,7 @@ public class SendmailTest extends TestCase
 	protected boolean skipTest;
 	protected Properties properties;
 
-	protected String smtpHost;
-	protected boolean smtpDebug;
+	protected MailSender mailSender;
 
 	protected String pop3Host;
 	protected boolean pop3Debug;
@@ -65,9 +64,10 @@ public class SendmailTest extends TestCase
 		properties = new Properties();
 		properties.load(new FileInputStream(file));
 
-		smtpHost=(String)properties.get("smtp.host");
-		smtpDebug=properties.get("smtp.debug")!=null;
+		final String smtpHost = (String)properties.get("smtp.host");
+		final boolean smtpDebug = properties.get("smtp.debug")!=null;
 		
+		mailSender = new MailSender(smtpHost, 5000, 5000, smtpDebug);
 		pop3Host=(String)properties.get("pop3.host");
 		pop3Debug=properties.get("pop3.debug")!=null;
 

@@ -182,7 +182,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 				return mails;
 			}
 		};
-		MailSender.sendMails(p, smtpHost, 5000, 5000, smtpDebug, MAXIMUM_RESULT_SIZE);
+		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE);
 		
 		for(MockMail m : mails)
 			assertSame(SendFailedException.class, m.failedException.getClass());
