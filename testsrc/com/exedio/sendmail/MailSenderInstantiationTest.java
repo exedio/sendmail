@@ -45,6 +45,12 @@ public class MailSenderInstantiationTest extends TestCase
 	
 	public void testIt() throws Exception
 	{
+		final MailSender ms = new MailSender("host", 123, 456, false);
+		assertEquals("host", ms.getHost());
+		assertEquals(123, ms.getConnectTimeout());
+		assertEquals(456, ms.getReadTimeout());
+		assertEquals(false, ms.isDebug());
+		
 		try
 		{
 			new MailSender(null, -1, -1, true);
@@ -53,12 +59,6 @@ public class MailSenderInstantiationTest extends TestCase
 		{
 			assertEquals("host must not be null", e.getMessage());
 		}
-		final MailSender ms = new MailSender("host", 123, 456, false);
-		assertEquals("host", ms.getHost());
-		assertEquals(123, ms.getConnectTimeout());
-		assertEquals(456, ms.getReadTimeout());
-		assertEquals(false, ms.isDebug());
-		
 		try
 		{
 			new MailSender("host", -1, -1, true);
