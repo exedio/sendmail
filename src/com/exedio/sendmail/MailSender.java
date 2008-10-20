@@ -44,12 +44,18 @@ public final class MailSender
 	public static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
 	
-	private static final Session newSession(final String smtpHost, final boolean smtpDebug)
+	private static final Session newSession(final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
 	{
+		if(connectTimeout<0)
+			throw new IllegalArgumentException("connectTimeout must not be negative");
+		if(readTimeout<0)
+			throw new IllegalArgumentException("readTimeout must not be negative");
+		
 		final Properties properties = new Properties();
 		properties.put("mail.host", smtpHost);
 		properties.put("mail.transport.protocol", "smtp");
-		// TODO add mail.smtp.connectiontimeout and mail.smtp.timeout
+		properties.put("mail.smtp.connectiontimeout", connectTimeout);
+		properties.put("mail.smtp.timeout", readTimeout);
 		final Session session = Session.getInstance(properties);
 		if(smtpDebug)
 			session.setDebug(true);
@@ -59,7 +65,7 @@ public final class MailSender
 	/**
 	 * @return the number of successfully sent mails
 	 */
-	public static final int sendMails(final MailSource source, final String smtpHost, final boolean smtpDebug, final int maximumResultSize)
+	public static final int sendMails(final MailSource source, final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug, final int maximumResultSize)
 	{
 		int result = 0;
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
@@ -68,7 +74,7 @@ public final class MailSender
 			if(mails.isEmpty())
 				return result;
 
-			final Session session = newSession(smtpHost, smtpDebug);
+			final Session session = newSession(smtpHost, connectTimeout, readTimeout, smtpDebug);
 			final Transport transport;
 			try
 			{
@@ -153,10 +159,10 @@ public final class MailSender
 	 * this method does not call {@link Mail#notifySent()}
 	 * or {@link Mail#notifyFailed(Exception)}.
 	 */
-	public static final void sendMail(final Mail mail, final String smtpHost, final boolean smtpDebug)
+	public static final void sendMail(final Mail mail, final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
 		throws MessagingException
 	{
-		final Session session = newSession(smtpHost, smtpDebug);
+		final Session session = newSession(smtpHost, connectTimeout, readTimeout, smtpDebug);
 		final MimeMessage message = createMessage(session, mail);
 		//final long start = System.currentTimeMillis();
 		Transport.send(message);
