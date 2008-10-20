@@ -52,6 +52,8 @@ public final class MailSender
 	
 	public MailSender(final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
 	{
+		if(smtpHost==null)
+			throw new IllegalArgumentException("host must not be null");
 		if(connectTimeout<0)
 			throw new IllegalArgumentException("connectTimeout must not be negative");
 		if(readTimeout<0)

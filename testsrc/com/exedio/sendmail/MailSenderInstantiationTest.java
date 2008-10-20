@@ -45,6 +45,14 @@ public class MailSenderInstantiationTest extends TestCase
 	
 	public void testIt() throws Exception
 	{
+		try
+		{
+			new MailSender(null, -1, -1, true);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertEquals("host must not be null", e.getMessage());
+		}
 		final MailSender ms = new MailSender("host", 123, 456, false);
 		assertEquals("host", ms.getHost());
 		assertEquals(123, ms.getConnectTimeout());
@@ -53,7 +61,7 @@ public class MailSenderInstantiationTest extends TestCase
 		
 		try
 		{
-			new MailSender(null, -1, -1, true);
+			new MailSender("host", -1, -1, true);
 		}
 		catch(IllegalArgumentException e)
 		{
@@ -61,7 +69,7 @@ public class MailSenderInstantiationTest extends TestCase
 		}
 		try
 		{
-			new MailSender(null, 0, -1, true);
+			new MailSender("host", 0, -1, true);
 		}
 		catch(IllegalArgumentException e)
 		{
