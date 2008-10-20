@@ -47,14 +47,14 @@ public final class MailSender
 	private final String host;
 	private final int connectTimeout;
 	private final int readTimeout;
-	private final boolean smtpDebug;
+	private final boolean debug;
 	private final Session session;
 	
 	public MailSender(
 			final String host,
 			final int connectTimeout,
 			final int readTimeout,
-			final boolean smtpDebug)
+			final boolean debug)
 	{
 		if(host==null)
 			throw new IllegalArgumentException("host must not be null");
@@ -66,7 +66,7 @@ public final class MailSender
 		this.host = host;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
-		this.smtpDebug = smtpDebug;
+		this.debug = debug;
 		
 		final Properties properties = new Properties();
 		properties.put("mail.host", host);
@@ -74,7 +74,7 @@ public final class MailSender
 		properties.put("mail.smtp.connectiontimeout", connectTimeout);
 		properties.put("mail.smtp.timeout", readTimeout);
 		final Session session = Session.getInstance(properties);
-		if(smtpDebug)
+		if(debug)
 			session.setDebug(true);
 		this.session = session;
 	}
@@ -96,7 +96,7 @@ public final class MailSender
 
 	public boolean isDebug()
 	{
-		return smtpDebug;
+		return debug;
 	}
 	
 	/**
@@ -109,10 +109,10 @@ public final class MailSender
 			final String host,
 			final int connectTimeout,
 			final int readTimeout,
-			final boolean smtpDebug,
+			final boolean debug,
 			final int maximumResultSize)
 	{
-		return new MailSender(host, connectTimeout, readTimeout, smtpDebug).sendMails(source, maximumResultSize);
+		return new MailSender(host, connectTimeout, readTimeout, debug).sendMails(source, maximumResultSize);
 	}
 	
 	/**
@@ -218,10 +218,10 @@ public final class MailSender
 			final String host,
 			final int connectTimeout,
 			final int readTimeout,
-			final boolean smtpDebug)
+			final boolean debug)
 		throws MessagingException
 	{
-		new MailSender(host, connectTimeout, readTimeout, smtpDebug).sendMail(mail);
+		new MailSender(host, connectTimeout, readTimeout, debug).sendMail(mail);
 	}
 	
 	/**
