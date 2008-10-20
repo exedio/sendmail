@@ -44,12 +44,23 @@ public final class MailSender
 	public static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
 	
-	private static final Session newSession(final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
+	private final String smtpHost;
+	private final int connectTimeout;
+	private final int readTimeout;
+	private final boolean smtpDebug;
+	private final Session session;
+	
+	MailSender(final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
 	{
 		if(connectTimeout<0)
 			throw new IllegalArgumentException("connectTimeout must not be negative");
 		if(readTimeout<0)
 			throw new IllegalArgumentException("readTimeout must not be negative");
+		
+		this.smtpHost = smtpHost;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+		this.smtpDebug = smtpDebug;
 		
 		final Properties properties = new Properties();
 		properties.put("mail.host", smtpHost);
@@ -59,13 +70,43 @@ public final class MailSender
 		final Session session = Session.getInstance(properties);
 		if(smtpDebug)
 			session.setDebug(true);
-		return session;
+		this.session = session;
+	}
+
+	public String getHost()
+	{
+		return smtpHost;
+	}
+
+	public int getConnectTimeout()
+	{
+		return connectTimeout;
+	}
+
+	public int getReadTimeout()
+	{
+		return readTimeout;
+	}
+
+	public boolean isDebug()
+	{
+		return smtpDebug;
+	}
+	
+	/**
+	 * @return the number of successfully sent mails
+	 * @deprecated Use {@link #sendMails(MailSource, int)} instead
+	 */
+	@Deprecated
+	public static final int sendMails(final MailSource source, final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug, final int maximumResultSize)
+	{
+		return new MailSender(smtpHost, connectTimeout, readTimeout, smtpDebug).sendMails(source, maximumResultSize);
 	}
 	
 	/**
 	 * @return the number of successfully sent mails
 	 */
-	public static final int sendMails(final MailSource source, final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug, final int maximumResultSize)
+	public int sendMails(final MailSource source, final int maximumResultSize)
 	{
 		int result = 0;
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
@@ -74,7 +115,6 @@ public final class MailSender
 			if(mails.isEmpty())
 				return result;
 
-			final Session session = newSession(smtpHost, connectTimeout, readTimeout, smtpDebug);
 			final Transport transport;
 			try
 			{
@@ -158,11 +198,23 @@ public final class MailSender
 	 * BEWARE:
 	 * this method does not call {@link Mail#notifySent()}
 	 * or {@link Mail#notifyFailed(Exception)}.
+	 * @deprecated Use {@link #sendMail(Mail)} instead
 	 */
+	@Deprecated
 	public static final void sendMail(final Mail mail, final String smtpHost, final int connectTimeout, final int readTimeout, final boolean smtpDebug)
 		throws MessagingException
 	{
-		final Session session = newSession(smtpHost, connectTimeout, readTimeout, smtpDebug);
+		new MailSender(smtpHost, connectTimeout, readTimeout, smtpDebug).sendMail(mail);
+	}
+	
+	/**
+	 * BEWARE:
+	 * this method does not call {@link Mail#notifySent()}
+	 * or {@link Mail#notifyFailed(Exception)}.
+	 */
+	public void sendMail(final Mail mail)
+		throws MessagingException
+	{
 		final MimeMessage message = createMessage(session, mail);
 		//final long start = System.currentTimeMillis();
 		Transport.send(message);
