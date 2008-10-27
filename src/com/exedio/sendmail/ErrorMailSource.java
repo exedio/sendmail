@@ -80,7 +80,17 @@ public final class ErrorMailSource implements MailSource
 	
 	public Mail createMail(final Exception exception)
 	{
+		return createMail(null, exception);
+	}
+	
+	public Mail createMail(final String text, final Exception exception)
+	{
 		final StringWriter sw = new StringWriter();
+		if(text!=null)
+		{
+			sw.write(text);
+			sw.write('\n');
+		}
 		final PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
 		pw.flush();

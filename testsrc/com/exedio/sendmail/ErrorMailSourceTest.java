@@ -61,14 +61,22 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals("error-subject", m2.getSubject());
 		assertText("java.lang.NullPointerException: test-exception-message"+System.getProperty("line.separator"), m2);
 
-		assertEquals(list(m1, m2), ep.getMailsToSend(10));
+		final Mail m3 = ep.createMail("test3-Text", new NullPointerException("test3-exception-message"));
+		assertEquals("error-mail-from@test.exedio.com", m3.getFrom());
+		assertEquals(new String[]{"error-mail-to@test.exedio.com"}, m3.getTo());
+		assertEquals(null, m3.getCarbonCopy());
+		assertEquals(null, m3.getBlindCarbonCopy());
+		assertEquals("error-subject", m3.getSubject());
+		assertText("test3-Text\njava.lang.NullPointerException: test3-exception-message"+System.getProperty("line.separator"), m3);
+
+		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 		assertEquals(list(m1), ep.getMailsToSend(1));
 		
 		m2.notifySent();
-		assertEquals(list(m1), ep.getMailsToSend(10));
+		assertEquals(list(m1, m3), ep.getMailsToSend(10));
 		
 		m1.notifySent();
-		assertEquals(list(), ep.getMailsToSend(10));
+		assertEquals(list(m3), ep.getMailsToSend(10));
 	}
 	
 	public void testOverflow()
