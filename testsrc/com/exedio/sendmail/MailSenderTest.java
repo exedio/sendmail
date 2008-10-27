@@ -631,7 +631,7 @@ public class MailSenderTest extends SendmailTest
 				return result;
 			}
 		};
-		assertEquals(11, mailSender.sendMails(p, MAXIMUM_RESULT_SIZE));
+		assertEquals(11, mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, null));
 
 		assertEquals(null, mp.failedException);
 		assertEquals(1, mp.sentCounter);

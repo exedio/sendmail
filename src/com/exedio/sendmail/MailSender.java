@@ -99,6 +99,11 @@ public final class MailSender
 		return debug;
 	}
 	
+	public interface Interrupter
+	{
+		boolean isRequested();
+	}
+	
 	/**
 	 * @return the number of successfully sent mails
 	 * @deprecated Use {@link #sendMails(MailSource, int)} instead
@@ -110,15 +115,16 @@ public final class MailSender
 			final int connectTimeout,
 			final int readTimeout,
 			final boolean debug,
-			final int maximumResultSize)
+			final int maximumResultSize,
+			final Interrupter interrupter)
 	{
-		return new MailSender(host, connectTimeout, readTimeout, debug).sendMails(source, maximumResultSize);
+		return new MailSender(host, connectTimeout, readTimeout, debug).sendMails(source, maximumResultSize, interrupter);
 	}
 	
 	/**
 	 * @return the number of successfully sent mails
 	 */
-	public int sendMails(final MailSource source, final int maximumResultSize)
+	public int sendMails(final MailSource source, final int maximumResultSize, final Interrupter interrupter)
 	{
 		int result = 0;
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
@@ -127,6 +133,9 @@ public final class MailSender
 			if(mails.isEmpty())
 				return result;
 
+			if(interrupter!=null && interrupter.isRequested())
+				return result;
+			
 			final Transport transport;
 			try
 			{
@@ -148,6 +157,9 @@ public final class MailSender
 			
 				for(final Mail mail : mails)
 				{
+					if(interrupter!=null && interrupter.isRequested())
+						return result;
+					
 					try
 					{
 						final MimeMessage message = createMessage(session, mail);
