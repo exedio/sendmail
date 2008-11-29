@@ -322,14 +322,14 @@ public final class MailSender
 				if(textPlain!=null)
 				{
 					part.setContent(textPlain, plainContentType);
-					if(contentTransferEncoding!=null)			
+					if(contentTransferEncoding!=null)
 						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 				}
 				else if(textHtml!=null)
 				{
 					part.setContent(textHtml, htmlContentType);
-					if(contentTransferEncoding!=null)			
-						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);					
+					if(contentTransferEncoding!=null)
+						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 				}
 				else
 					assert false;
@@ -340,7 +340,7 @@ public final class MailSender
 			{
 				final MimeBodyPart alternativePart = new MimeBodyPart();
 				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding));
-				if(contentTransferEncoding!=null)			
+				if(contentTransferEncoding!=null)
 					alternativePart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
 				mixed.addBodyPart(alternativePart);
 			}
@@ -382,7 +382,7 @@ public final class MailSender
 		{
 			super.updateHeaders();
 			setHeader("Message-ID", id);
-			if(contentTransferEncoding!=null)			
+			if(contentTransferEncoding!=null)
 				setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 		}
 	}
@@ -414,16 +414,16 @@ public final class MailSender
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
 			textPart.setContent(plain, plainContentType);
-			if(contentTransferEncoding!=null)			
-				textPart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );			
+			if(contentTransferEncoding!=null)
+				textPart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
 			textPart.setDisposition(Part.INLINE);
 			result.addBodyPart(textPart);
 		}
 		{
 			final MimeBodyPart htmlPart = new MimeBodyPart();
 			htmlPart.setContent(html, htmlContentType);
-			if(contentTransferEncoding!=null)			
-				htmlPart.setHeader("Content-Transfer-Encoding", contentTransferEncoding);			
+			if(contentTransferEncoding!=null)
+				htmlPart.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 			htmlPart.setDisposition(Part.INLINE);
 			result.addBodyPart(htmlPart);
 		}

@@ -133,12 +133,12 @@ public class SmtpTerror extends SendmailTest
 					public String getContentTransferEncoding()
 					{
 						return null;
-					}	
+					}
 					
 					public Date getDate()
 					{
 						return new Date(timestamp);
-					}					
+					}
 					
 					public void notifySent()
 					{

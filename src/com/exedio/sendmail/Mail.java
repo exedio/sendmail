@@ -60,7 +60,7 @@ public interface Mail
 	 * Returns the value the Content-Transfer-Encoding header of the mail should be set to.
 	 * May return null, then the Content-Transfer-Encoding header won't be set.
 	 * @return the desired content-transfer-encoding
-	 */	
+	 */
 	String getContentTransferEncoding();
 	
 	/**
@@ -80,7 +80,7 @@ public interface Mail
 	 * for delivery.  The origination date is intended to contain the date
 	 * and time that the user queued the message, not the time when the user
 	 * connected to the network to send the message.)
-	 * 
+	 *
 	 * @return the creation date of the mail
 	 */
 	Date getDate();

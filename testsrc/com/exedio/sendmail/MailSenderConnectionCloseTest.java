@@ -128,12 +128,12 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		public String getContentTransferEncoding()
 		{
 			return null;
-		}		
+		}
 		
 		public Date getDate()
 		{
 			return new Date(timestamp);
-		}			
+		}
 		
 		public void notifySent()
 		{

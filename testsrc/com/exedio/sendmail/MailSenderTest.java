@@ -257,7 +257,7 @@ public class MailSenderTest extends SendmailTest
 		public Date getDate()
 		{
 			return new Date(timestamp);
-		}		
+		}
 		
 		public void notifySent()
 		{

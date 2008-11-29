@@ -234,12 +234,12 @@ public class CascadingMailSourceTest extends TestCase
 		public String getContentTransferEncoding()
 		{
 			throw new RuntimeException(code);
-		}		
+		}
 		
 		public Date getDate()
 		{
 			return new Date(timestamp);
-		}		
+		}
 		
 		public void notifySent()
 		{
