@@ -1,3 +1,6 @@
+
+TODO for sendmail
+
 * send mails multithreaded for more throughput
 * send to multiple smtp servers for fail-over / load balancing
 * ErrorMail
