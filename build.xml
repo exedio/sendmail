@@ -27,6 +27,8 @@
 				<pathelement location="lib/activation.jar" />
 			</classpath>
 			<compilerarg value="-Xlint" />
+			<compilerarg value="-encoding" />
+			<compilerarg value="ascii" />
 		</javac>
 	</target>
 	
@@ -67,6 +69,8 @@
 				<pathelement location="lib/activation.jar" />
 			</classpath>
 			<compilerarg value="-Xlint" />
+			<compilerarg value="-encoding" />
+			<compilerarg value="ascii" />
 		</javac>
 		<copy todir="build/testclasses/com/exedio/sendmail">
 			<fileset dir="testresources" />
