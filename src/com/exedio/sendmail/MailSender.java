@@ -106,7 +106,7 @@ public final class MailSender
 	
 	/**
 	 * @return the number of successfully sent mails
-	 * @deprecated Use {@link #sendMails(MailSource, int)} instead
+	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
 	 */
 	@Deprecated
 	public static final int sendMails(
