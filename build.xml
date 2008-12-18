@@ -160,6 +160,7 @@
 	
 	<target name="clean">
 		<delete dir="build" />
+		<delete dir="cruise" />
 	</target>
 	
 	<target name="api" depends="properties">
