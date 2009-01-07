@@ -206,6 +206,7 @@
 			</fileset>
 			<fileset file="${basedir}/lib/activation.jar" />
 			<fileset file="${basedir}/lib/mail.jar" />
+			<fileset file="getlib.properties" />
 		</copy>
 		<copy file="CHANGELOG" tofile="${basedir}/cruise/exedio-sendmail.jar-CHANGELOG" />
 	</target>
