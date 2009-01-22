@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<project name="copedemo getlib" default="getlib" basedir=".">
+
+	<import file="getlib/getlib-contrib.xml"/>
+
+	<target name="getlib" depends="activation, mail" />
+
+</project>
