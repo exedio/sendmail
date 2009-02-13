@@ -4,6 +4,6 @@
 
 	<import file="getlib/getlib-contrib.xml"/>
 
-	<target name="getlib" depends="activation, mail" />
+	<target name="getlib" depends="activation, mail, exedio-cope-util" />
 
 </project>

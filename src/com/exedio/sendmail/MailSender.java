@@ -39,6 +39,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.exedio.cope.util.Interrupter;
+
 public final class MailSender
 {
 	public static final String DEFAULT_CHARSET = "UTF-8";
@@ -97,11 +99,6 @@ public final class MailSender
 	public boolean isDebug()
 	{
 		return debug;
-	}
-	
-	public interface Interrupter
-	{
-		boolean isRequested();
 	}
 	
 	/**
