@@ -189,6 +189,7 @@
 			<link href="${api.link.jdk}"  packagelistLoc="package-list/jdk"  offline="true" />
 			<link href="${api.link.j2ee}" packagelistLoc="package-list/j2ee" offline="true" />
 			<classpath>
+				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
 				<pathelement location="lib/activation.jar" />
 			</classpath>
