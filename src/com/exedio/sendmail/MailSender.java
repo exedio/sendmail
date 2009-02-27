@@ -257,7 +257,7 @@ public final class MailSender
 		//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 	}
 	
-	private static final MimeMessage createMessage(final Session session, final Mail mail) throws MessagingException
+	public static final MimeMessage createMessage(final Session session, final Mail mail) throws MessagingException
 	{
 		//System.err.println("-------------------------------------+"+mail);
 		final String id = mail.getMessageID();
