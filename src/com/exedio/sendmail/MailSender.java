@@ -122,7 +122,11 @@ public final class MailSender
 	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
 	 */
 	@Deprecated
-	public static final int sendMails(MailSource source, String smtpHost, boolean smtpDebug, int maximumResultSize)
+	public static final int sendMails(
+			MailSource source,
+			String smtpHost,
+			boolean smtpDebug,
+			int maximumResultSize)
 	{
 		return sendMails(source, smtpHost, 60000, 60000, smtpDebug, maximumResultSize, null);
 	}
@@ -130,7 +134,10 @@ public final class MailSender
 	/**
 	 * @return the number of successfully sent mails
 	 */
-	public int sendMails(final MailSource source, final int maximumResultSize, final Interrupter interrupter)
+	public int sendMails(
+			final MailSource source,
+			final int maximumResultSize,
+			final Interrupter interrupter)
 	{
 		int result = 0;
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
@@ -256,7 +263,10 @@ public final class MailSender
 		//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 	}
 	
-	public static final MimeMessage createMessage(final Session session, final Mail mail) throws MessagingException
+	public static final MimeMessage createMessage(
+			final Session session,
+			final Mail mail)
+		throws MessagingException
 	{
 		//System.err.println("-------------------------------------+"+mail);
 		final String id = mail.getMessageID();
