@@ -127,7 +127,6 @@ public final class MailSender
 		return sendMails(source, smtpHost, 60000, 60000, smtpDebug, maximumResultSize, null);
 	}
 	
-	
 	/**
 	 * @return the number of successfully sent mails
 	 */
