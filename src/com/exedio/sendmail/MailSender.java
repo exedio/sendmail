@@ -123,10 +123,10 @@ public final class MailSender
 	 */
 	@Deprecated
 	public static final int sendMails(
-			MailSource source,
-			String smtpHost,
-			boolean smtpDebug,
-			int maximumResultSize)
+			final MailSource source,
+			final String smtpHost,
+			final boolean smtpDebug,
+			final int maximumResultSize)
 	{
 		return sendMails(source, smtpHost, 60000, 60000, smtpDebug, maximumResultSize, null);
 	}
