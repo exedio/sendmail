@@ -49,7 +49,7 @@
 	
 	<target name="jar.src">
 		<mkdir dir="build" />
-		<zip destfile="build/exedio-sendmail.jar-src.zip">
+		<zip destfile="build/exedio-sendmail.jar-src.zip" filesonly="true" whenempty="fail" duplicate="fail" level="9">
 			<zipfileset dir="${basedir}/src">
 				<include name="**/*.java" />
 			</zipfileset>
