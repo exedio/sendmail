@@ -130,6 +130,16 @@ public final class MailSender
 	{
 		return sendMails(source, smtpHost, 60000, 60000, smtpDebug, maximumResultSize, null);
 	}
+	/**
+	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
+	 */
+	@Deprecated
+    public static final int sendMails(
+    		MailSource source,
+    		String smtpHost)
+    {
+		return sendMails(source, smtpHost, false, 100);
+    }
 	
 	/**
 	 * @return the number of successfully sent mails
