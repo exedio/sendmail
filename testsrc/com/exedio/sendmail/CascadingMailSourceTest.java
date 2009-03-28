@@ -147,7 +147,7 @@ public class CascadingMailSourceTest extends TestCase
 		}
 		catch(NullPointerException e)
 		{
-			assertEquals("source 0 is null", e.getMessage());
+			assertEquals("sources[0]", e.getMessage());
 		}
 	}
 	

@@ -36,7 +36,7 @@ public class CascadingMailSource implements MailSource
 		for(int i = 0; i<sources.length; i++)
 		{
 			if(sources[i]==null)
-				throw new NullPointerException("source "+i+" is null");
+				throw new NullPointerException("sources" + '[' + i + ']');
 		}
 	}
 	
