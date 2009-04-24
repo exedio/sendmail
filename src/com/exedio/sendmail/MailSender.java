@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -318,7 +320,29 @@ public final class MailSender
 			if(textPlain==null || textHtml==null)
 			{
 				if(textPlain!=null)
-					message.setContent(textPlain, plainContentType);
+				{
+					message.setDataHandler(new DataHandler(new DataSource(){
+						public String getContentType()
+						{
+							return plainContentType;
+						}
+
+						public InputStream getInputStream()
+						{
+							return new StringInputStream( textPlain, charset );
+						}
+
+						public String getName()
+						{
+							return "";
+						}
+
+						public OutputStream getOutputStream()
+						{
+							return null;
+						}
+					}));
+				}
 				else if(textHtml!=null)
 					message.setContent(textHtml, htmlContentType);
 				else
