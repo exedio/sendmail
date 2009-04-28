@@ -31,8 +31,7 @@ public class StringInputStream extends InputStream
 			buffer = input.getBytes( charset );
 		} catch (UnsupportedEncodingException e)
 		{
-			System.err.println( "Unknown charset <" + charset + "> Use default one." );
-			buffer = input.getBytes();
+			throw new RuntimeException(e);
 		}
 		pointer = 0;
 	}
