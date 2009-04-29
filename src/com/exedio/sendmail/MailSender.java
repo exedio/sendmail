@@ -18,8 +18,6 @@
 
 package com.exedio.sendmail;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -321,27 +319,7 @@ public final class MailSender
 			{
 				if(textPlain!=null)
 				{
-					message.setDataHandler(new DataHandler(new DataSource(){
-						public String getContentType()
-						{
-							return plainContentType;
-						}
-
-						public InputStream getInputStream()
-						{
-							return new StringInputStream( textPlain, charset );
-						}
-
-						public String getName()
-						{
-							return "";
-						}
-
-						public OutputStream getOutputStream()
-						{
-							return null;
-						}
-					}));
+					message.setDataHandler( new CharsetEncodingDataHandler( textPlain, charset, plainContentType) );
 				}
 				else if(textHtml!=null)
 					message.setContent(textHtml, htmlContentType);
@@ -350,7 +328,7 @@ public final class MailSender
 			}
 			else
 			{
-				message.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding));
+				message.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding, charset));
 			}
 		}
 		else
@@ -361,7 +339,7 @@ public final class MailSender
 				final MimeBodyPart part = new MimeBodyPart();
 				if(textPlain!=null)
 				{
-					part.setContent(textPlain, plainContentType);
+					part.setDataHandler( new CharsetEncodingDataHandler( textPlain, charset, plainContentType) );
 					if(contentTransferEncoding!=null)
 						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 				}
@@ -379,7 +357,7 @@ public final class MailSender
 			else
 			{
 				final MimeBodyPart alternativePart = new MimeBodyPart();
-				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding));
+				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding, charset));
 				if(contentTransferEncoding!=null)
 					alternativePart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
 				mixed.addBodyPart(alternativePart);
@@ -445,7 +423,7 @@ public final class MailSender
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
 	
-	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding) throws MessagingException
+	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
 	{
 		assert plain!=null;
 		assert html!=null;
@@ -453,7 +431,7 @@ public final class MailSender
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();
-			textPart.setContent(plain, plainContentType);
+			textPart.setDataHandler( new CharsetEncodingDataHandler( plain, charset, plainContentType) );
 			if(contentTransferEncoding!=null)
 				textPart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
 			textPart.setDisposition(Part.INLINE);
