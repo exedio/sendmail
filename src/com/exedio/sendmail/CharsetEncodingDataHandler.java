@@ -7,8 +7,16 @@ import java.io.UnsupportedEncodingException;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.internet.MimeBodyPart;
 
-public class CharsetEncodingDataHandler extends DataHandler
+/**
+ * A DataHandler that transforms a String into a byte array using the given
+ * charset and content type. To be used by
+ * {@link MimeBodyPart#setDataHandler(DataHandler)}.
+ * 
+ * @author buecke
+ */
+class CharsetEncodingDataHandler extends DataHandler
 {
 	public CharsetEncodingDataHandler( final String plainText, final String charset, final String plainContentType )
 	{
