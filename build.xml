@@ -98,33 +98,6 @@
 		</junit>
 	</target>
 	
-	<path id="emma.lib" >
-		<pathelement location="lib/emma.jar" />
-		<pathelement location="lib/emma_ant.jar" />
-	</path>
-	
-	<taskdef resource="emma_ant.properties" classpathref="emma.lib" />
-	
-	<target name="emma" depends="test.compile">
-		<emmajava classname="junit.textui.TestRunner"
-					 libclasspathref="emma.lib"
-					 sourcepath="src:testsrc"
-					 fork="true"
-					 failonerror="true"
-					 fullmetadata="true">
-			<classpath>
-				<pathelement location="build/classes" />
-				<pathelement location="build/testclasses" />
-				<pathelement location="lib/mail.jar" />
-				<pathelement location="lib/activation.jar" />
-				<pathelement location="lib/junit.jar" />
-			</classpath>
-			<arg value="com.exedio.sendmail.PackageTest" />
-			<filter includes="com.exedio.*" excludes="com.exedio.sendmail.*Test*" />
-			<html outfile="build/emma/index.html" />
-		</emmajava>
-	</target>
-	
 	<target name="dist.tar">
 		<mkdir dir="build" />
 		<echo file="build/build.number" message="${build.tag}" />
@@ -199,7 +172,7 @@
 		</javadoc>
 	</target>
 
-	<target name="build" depends="compile, jar, test, emma, api" />
+	<target name="build" depends="compile, jar, test, api" />
 	<target name="all" depends="build, jar.src, dist" />
 
 	<target name="cruise" depends="clean, all">
@@ -207,9 +180,6 @@
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail.jar-src.zip" />
 			<fileset file="${basedir}/build/exedio-sendmail-src-${build.file.tag}.tar.gz" />
-			<fileset dir="${basedir}/build">
-				<include name="emma/**" />
-			</fileset>
 			<fileset file="getlib.properties" />
 		</copy>
 		<copy file="CHANGELOG" tofile="${basedir}/cruise/exedio-sendmail.jar-CHANGELOG" />
