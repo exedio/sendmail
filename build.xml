@@ -25,7 +25,6 @@
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
-				<pathelement location="lib/activation.jar" />
 			</classpath>
 			<compilerarg value="-Xlint" />
 			<compilerarg value="-encoding" />
@@ -42,7 +41,7 @@
 				<attribute name="Implementation-Title" value="exedio sendmail"/>
 				<attribute name="Implementation-Version" value="${build.tag}"/>
 				<attribute name="Implementation-Vendor" value="exedio GmbH"/>
-				<attribute name="Class-Path" value="mail.jar activation.jar" />
+				<attribute name="Class-Path" value="mail.jar" />
 			</manifest>
 		</jar>
 	</target>
@@ -68,7 +67,6 @@
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/junit.jar" />
 				<pathelement location="lib/mail.jar" />
-				<pathelement location="lib/activation.jar" />
 			</classpath>
 			<compilerarg value="-Xlint" />
 			<compilerarg value="-encoding" />
@@ -90,7 +88,6 @@
 				<pathelement location="build/classes" />
 				<pathelement location="build/testclasses" />
 				<pathelement location="lib/mail.jar" />
-				<pathelement location="lib/activation.jar" />
 				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail" />
@@ -167,7 +164,6 @@
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
-				<pathelement location="lib/activation.jar" />
 			</classpath>
 		</javadoc>
 	</target>
