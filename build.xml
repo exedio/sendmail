@@ -2,8 +2,6 @@
 
 <project name="sendmail" default="build" basedir=".">
 
-	<property name="build.file.tag" value="unlabeled" />
-	
 	<taskdef
 			resource="net/sf/antcontrib/antcontrib.properties"
 			classpath="lib/ant-contrib.jar" />
@@ -95,44 +93,6 @@
 		</junit>
 	</target>
 	
-	<target name="dist.tar">
-		<mkdir dir="build" />
-		<echo file="build/build.number" message="${build.tag}" />
-		<tar destfile="build/exedio-sendmail-src-${build.file.tag}.tar.gz"
-				compression="gzip">
-			<tarfileset file="${basedir}/build/build.number" />
-			<tarfileset dir="${basedir}">
-				<exclude name="getlib/**" />
-				<exclude name="getlib.xml" />
-				<exclude name="getlib.properties" />
-				<exclude name="log.xml" /><!-- created by cruise -->
-				<exclude name=".eclipse-output/**" />
-				<exclude name="build/**" />
-				<exclude name="api/**" />
-				<exclude name="cruise/**" />
-				<exclude name="test.properties" />
-			</tarfileset>
-		</tar>
-	</target>
-	
-	<target name="dist.test" depends="dist.tar">
-		<delete dir="build/dist-test" />
-		<mkdir dir="build/dist-test" />
-		<untar src="build/exedio-sendmail-src-${build.file.tag}.tar.gz"
-				dest="build/dist-test"
-				compression="gzip" />
-		<if>
-			<available file="test.properties" />
-			<then>
-				<!-- don't use failonerror="false", because this hides much more errors -->
-				<copy file="test.properties" todir="build/dist-test" />
-			</then>
-		</if>
-		<ant dir="build/dist-test" target="build" />
-	</target>
-	
-	<target name="dist" depends="dist.tar, dist.test" />
-	
 	<target name="clean">
 		<delete dir="build" />
 	</target>
@@ -169,13 +129,12 @@
 	</target>
 
 	<target name="build" depends="compile, jar, test, api" />
-	<target name="all" depends="build, jar.src, dist" />
+	<target name="all" depends="build, jar.src" />
 
 	<target name="cruise" depends="clean, all">
 		<copy todir="${basedir}/cruise">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail.jar-src.zip" />
-			<fileset file="${basedir}/build/exedio-sendmail-src-${build.file.tag}.tar.gz" />
 			<fileset file="getlib.properties" />
 		</copy>
 		<copy file="CHANGELOG" tofile="${basedir}/cruise/exedio-sendmail.jar-CHANGELOG" />
@@ -185,7 +144,6 @@
 		<copy todir="${basedir}/build/success">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail.jar-src.zip" />
-			<fileset file="${basedir}/build/exedio-sendmail-src-${build.file.tag}.tar.gz" />
 		</copy>
 	</target>
 
