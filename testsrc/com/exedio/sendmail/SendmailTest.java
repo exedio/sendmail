@@ -18,8 +18,8 @@
 
 package com.exedio.sendmail;
 
-import java.io.File;
-import java.io.FileInputStream;
+import static java.lang.System.getProperty;
+
 import java.util.Properties;
 
 import javax.mail.Flags;
@@ -36,7 +36,6 @@ import com.sun.mail.pop3.POP3Store;
 public class SendmailTest extends TestCase
 {
 	protected boolean skipTest;
-	protected Properties properties;
 
 	protected MailSender mailSender;
 
@@ -50,28 +49,25 @@ public class SendmailTest extends TestCase
 	{
 		super.setUp();
 
-		final String fileName = "test.properties";
-		final File file = new File(fileName);
-		if(!file.exists())
+		skipTest = getPropertyBoolean("skipRemote");
+		if(skipTest)
 		{
-			skipTest = true;
-			properties = null;
-			System.out.println("Skipping test " + getClass().getName() + " because " + fileName + " does not exist.");
+			System.out.println("Skipping test " + getClass().getName());
 			return;
 		}
 		
-		skipTest = false;
-		properties = new Properties();
-		properties.load(new FileInputStream(file));
+		
+		
+		
 
-		final String smtpHost = (String)properties.get("smtp.host");
-		final boolean smtpDebug = properties.get("smtp.debug")!=null;
+		final String smtpHost = getProperty("smtp.host");
+		final boolean smtpDebug = getPropertyBoolean("smtp.debug");
 		
 		mailSender = new MailSender(smtpHost, 5000, 5000, smtpDebug);
-		pop3Host=(String)properties.get("pop3.host");
-		pop3Debug=properties.get("pop3.debug")!=null;
+		pop3Host=getProperty("pop3.host");
+		pop3Debug=getPropertyBoolean("pop3.debug");
 
-		from=(String)properties.get("from");
+		from=getProperty("from");
 	}
 	
 	protected class Account
@@ -82,9 +78,9 @@ public class SendmailTest extends TestCase
 		
 		Account(final String name)
 		{
-			email=       (String)properties.get(name+".email");
-			pop3User=    (String)properties.get(name+".pop3.user");
-			pop3Password=(String)properties.get(name+".pop3.password");
+			email=       getProperty(name+".email");
+			pop3User=    getProperty(name+".pop3.user");
+			pop3Password=getProperty(name+".pop3.password");
 
 			if(email==null)
 				throw new RuntimeException(name);
@@ -93,6 +89,17 @@ public class SendmailTest extends TestCase
 			if(pop3Password==null)
 				throw new RuntimeException(name);
 		}
+	}
+	
+	private static final boolean getPropertyBoolean(final String key)
+	{
+		final String value = getProperty(key);
+		if("true".equals(value))
+			return true;
+		else if("false".equals(value))
+			return false;
+		else
+			throw new IllegalArgumentException("illegal boolean for key " + key + ": >" + value + '<');
 	}
 	
 	protected final Session getPOP3Session(final Account account)

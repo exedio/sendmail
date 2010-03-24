@@ -2,6 +2,9 @@
 
 <project name="sendmail" default="build" basedir=".">
 
+	<property file="local.properties" />
+	<property file="project.properties" />
+	
 	<taskdef
 			resource="net/sf/antcontrib/antcontrib.properties"
 			classpath="lib/ant-contrib.jar" />
@@ -89,6 +92,23 @@
 				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail" />
+			<sysproperty key="skipRemote" value="${skipRemote}" />
+			<sysproperty key="smtp.host"  value="${smtp.host}"  />
+			<sysproperty key="smtp.debug" value="${smtp.debug}" />
+			<sysproperty key="pop3.host"  value="${pop3.host}"  />
+			<sysproperty key="pop3.debug" value="${pop3.debug}" />
+			<sysproperty key="user1.email"         value="${user1.email}"         />
+			<sysproperty key="user1.pop3.user"     value="${user1.pop3.user}"     />
+			<sysproperty key="user1.pop3.password" value="${user1.pop3.password}" />
+			<sysproperty key="user2.email"         value="${user2.email}"         />
+			<sysproperty key="user2.pop3.user"     value="${user2.pop3.user}"     />
+			<sysproperty key="user2.pop3.password" value="${user2.pop3.password}" />
+			<sysproperty key="user3.email"         value="${user3.email}"         />
+			<sysproperty key="user3.pop3.user"     value="${user3.pop3.user}"     />
+			<sysproperty key="user3.pop3.password" value="${user3.pop3.password}" />
+			<sysproperty key="from"      value="${from}" />
+			<sysproperty key="fail"      value="${fail}" />
+			<sysproperty key="failclose" value="${failclose}" />
 			<assertions><enable/></assertions>
 		</junit>
 	</target>

@@ -40,7 +40,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		if(skipTest)
 			return;
 
-		failclose=(String)properties.get("failclose");
+		failclose=System.getProperty("failclose");
 	}
 	
 	public static final String[] ta(final String s)

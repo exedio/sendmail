@@ -72,8 +72,8 @@ public class MailSenderTest extends SendmailTest
 		user2 = new Account("user2");
 		user3 = new Account("user3");
 		
-		fail=(String)properties.get("fail");
-		failclose=(String)properties.get("failclose");
+		fail=System.getProperty("fail");
+		failclose=System.getProperty("failclose");
 		
 		cleanPOP3Account(user1);
 		cleanPOP3Account(user2);
