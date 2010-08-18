@@ -56,10 +56,6 @@ public class SendmailTest extends TestCase
 			return;
 		}
 		
-		
-		
-		
-
 		final String smtpHost = getProperty("smtp.host");
 		final boolean smtpDebug = getPropertyBoolean("smtp.debug");
 		
@@ -172,5 +168,4 @@ public class SendmailTest extends TestCase
 			}
 		}
 	}
-	
 }
