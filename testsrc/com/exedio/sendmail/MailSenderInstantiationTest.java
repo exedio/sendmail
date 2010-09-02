@@ -39,7 +39,7 @@ public class MailSenderInstantiationTest extends TestCase
 				public String getTextHtml() { throw new RuntimeException(); }
 				public String getTextPlain() { throw new RuntimeException(); }
 				public String[] getTo() { throw new RuntimeException(); }
-				public void notifyFailed(Exception exception) { throw new RuntimeException(); }
+				public void notifyFailed(final Exception exception) { throw new RuntimeException(); }
 				public void notifySent() { throw new RuntimeException(); }
 			};
 

@@ -907,7 +907,7 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
-	void assertEquals(byte[] expected, byte[] actual)
+	void assertEquals(final byte[] expected, final byte[] actual)
 	{
 		if(!Arrays.equals(expected, actual))
 			fail("expected " + Arrays.toString(expected) + ", but was " + Arrays.toString(actual));
