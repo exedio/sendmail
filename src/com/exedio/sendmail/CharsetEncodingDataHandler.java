@@ -49,7 +49,7 @@ class CharsetEncodingDataHandler extends DataHandler
 				try
 				{
 					return new ByteArrayInputStream( plainText.getBytes( charset ) );
-				} catch (UnsupportedEncodingException e)
+				} catch (final UnsupportedEncodingException e)
 				{
 					// don't send emails in wrong encoding; don't send at all
 					throw new RuntimeException( e );

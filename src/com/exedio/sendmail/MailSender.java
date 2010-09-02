@@ -154,7 +154,7 @@ public final class MailSender
 			{
 				transport = session.getTransport("smtp");
 			}
-			catch(NoSuchProviderException e)
+			catch(final NoSuchProviderException e)
 			{
 				throw new RuntimeException(e);
 			}
@@ -185,7 +185,7 @@ public final class MailSender
 							mailsSentInOneConnection++;
 							result++;
 						}
-						catch(IllegalStateException e)
+						catch(final IllegalStateException e)
 						{
 							log.println(MailSender.class.getName() + " encounters unexpectedly closed connection on mail #" + mailsTriedToSendInOneConnection + '/' + mailsSentInOneConnection);
 							transport.connect();
@@ -197,7 +197,7 @@ public final class MailSender
 
 						mail.notifySent();
 					}
-					catch(Exception e)
+					catch(final Exception e)
 					{
 						//System.err.println("-------------------------------------e"+mail);
 						//e.printStackTrace();
@@ -206,7 +206,7 @@ public final class MailSender
 					}
 				}
 			}
-			catch(MessagingException e)
+			catch(final MessagingException e)
 			{
 				throw new RuntimeException(e);
 			}
@@ -220,7 +220,7 @@ public final class MailSender
 						transport.close();
 						//System.out.println("Mailsender closed. ("+(System.currentTimeMillis()-start)+"ms)");
 					}
-					catch(MessagingException e)
+					catch(final MessagingException e)
 					{
 						throw new RuntimeException(e);
 					}

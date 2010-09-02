@@ -136,7 +136,7 @@ public class CascadingMailSourceTest extends TestCase
 			new CascadingMailSource((MailSource)null);
 			fail();
 		}
-		catch(RuntimeException e)
+		catch(final RuntimeException e)
 		{
 			assertEquals("must have more than one source", e.getMessage());
 		}
@@ -145,7 +145,7 @@ public class CascadingMailSourceTest extends TestCase
 			new CascadingMailSource(null, null);
 			fail();
 		}
-		catch(NullPointerException e)
+		catch(final NullPointerException e)
 		{
 			assertEquals("sources[0]", e.getMessage());
 		}

@@ -55,7 +55,7 @@ public class MailSenderInstantiationTest extends TestCase
 		{
 			new MailSender(null, -1, -1, true);
 		}
-		catch(IllegalArgumentException e)
+		catch(final IllegalArgumentException e)
 		{
 			assertEquals("host must not be null", e.getMessage());
 		}
@@ -63,7 +63,7 @@ public class MailSenderInstantiationTest extends TestCase
 		{
 			new MailSender("host", -1, -1, true);
 		}
-		catch(IllegalArgumentException e)
+		catch(final IllegalArgumentException e)
 		{
 			assertEquals("connectTimeout must not be negative", e.getMessage());
 		}
@@ -71,7 +71,7 @@ public class MailSenderInstantiationTest extends TestCase
 		{
 			new MailSender("host", 0, -1, true);
 		}
-		catch(IllegalArgumentException e)
+		catch(final IllegalArgumentException e)
 		{
 			assertEquals("readTimeout must not be negative", e.getMessage());
 		}

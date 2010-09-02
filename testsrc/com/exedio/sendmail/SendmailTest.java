@@ -141,7 +141,7 @@ public class SendmailTest extends TestCase
 			store.close();
 			store = null;
 		}
-		catch(MessagingException e)
+		catch(final MessagingException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -153,7 +153,7 @@ public class SendmailTest extends TestCase
 				{
 					inboxFolder.close(false); // not expunge, just close and release the resources
 				}
-				catch(MessagingException e)
+				catch(final MessagingException e)
 				{/*IGNORE*/}
 			}
 			if(store!=null)
@@ -162,7 +162,7 @@ public class SendmailTest extends TestCase
 				{
 					store.close();
 				}
-				catch(MessagingException e)
+				catch(final MessagingException e)
 				{/*IGNORE*/}
 			}
 		}

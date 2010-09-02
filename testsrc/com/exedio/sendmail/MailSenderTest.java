@@ -754,7 +754,7 @@ public class MailSenderTest extends SendmailTest
 			// check that the non-ascii characters in the subject are handled properly:
 			for(final Message m : actualMessages.values())
 			{
-				String subjectPart = m.getSubject().substring(
+				final String subjectPart = m.getSubject().substring(
 					m.getSubject().indexOf(" (("), m.getSubject().indexOf("))")+2
 				);
 				if ( subjectPart.startsWith(" ((utf") )
@@ -801,11 +801,11 @@ public class MailSenderTest extends SendmailTest
 			store.close();
 			store = null;
 		}
-		catch(MessagingException e)
+		catch(final MessagingException e)
 		{
 			throw new RuntimeException(e);
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -817,7 +817,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					inboxFolder.close(false);
 				}
-				catch(MessagingException e)
+				catch(final MessagingException e)
 				{/*IGNORE*/}
 			}
 			if(store!=null)
@@ -826,7 +826,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					store.close();
 				}
-				catch(MessagingException e)
+				catch(final MessagingException e)
 				{/*IGNORE*/}
 			}
 		}
@@ -859,7 +859,7 @@ public class MailSenderTest extends SendmailTest
 
 			return inboxMessages>=expected;
 		}
-		catch(MessagingException e)
+		catch(final MessagingException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -871,7 +871,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					inboxFolder.close(false);
 				}
-				catch(MessagingException e)
+				catch(final MessagingException e)
 				{/*IGNORE*/}
 			}
 			if(store!=null)
@@ -880,7 +880,7 @@ public class MailSenderTest extends SendmailTest
 				{
 					store.close();
 				}
-				catch(MessagingException e)
+				catch(final MessagingException e)
 				{/*IGNORE*/}
 			}
 		}
@@ -901,7 +901,7 @@ public class MailSenderTest extends SendmailTest
 				baos.write(buf, 0, len);
 			return baos.toByteArray();
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -919,7 +919,7 @@ public class MailSenderTest extends SendmailTest
 			return null;
 
 		final ArrayList<InternetAddress> result = new ArrayList<InternetAddress>(addresses.length);
-		for(String address : addresses)
+		for(final String address : addresses)
 			result.add(new InternetAddress(address));
 		return result;
 	}
