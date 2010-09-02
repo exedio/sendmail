@@ -105,27 +105,34 @@ public final class ErrorMailSource implements MailSource
 	
 	public Mail createMail(final String text)
 	{
+		final int overflowCount;
 		synchronized(mailsToSend)
 		{
 			if(mailsToSend.size()>=overflowThreshold)
 			{
-				overflowCount++;
+				this.overflowCount++;
 				return null;
+			}
+			else
+			{
+				overflowCount = this.overflowCount;
 			}
 		}
 
-		return new ErrorMail(text);
+		return new ErrorMail(text, overflowCount);
 	}
 	
 	private final class ErrorMail implements Mail
 	{
 		final long timestamp;
 		final String text;
+		private final int overflowCountOfMail;
 		
-		ErrorMail(final String text)
+		ErrorMail(final String text, final int overflowCountOfMail)
 		{
 			this.timestamp = System.currentTimeMillis();
 			this.text = text;
+			this.overflowCountOfMail = overflowCountOfMail;
 			
 			synchronized(mailsToSend)
 			{
@@ -160,7 +167,7 @@ public final class ErrorMailSource implements MailSource
 		
 		public final String getSubject()
 		{
-			return subject;
+			return (overflowCountOfMail>0) ? (subject + " (ov" + overflowCountOfMail + ')') : subject;
 		}
 		
 		public String getTextPlain()

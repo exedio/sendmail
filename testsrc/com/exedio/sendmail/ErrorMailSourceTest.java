@@ -114,7 +114,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(2, ep.getOverflowCount());
 
 		final Mail m4 = ep.createMail("test overflow 4");
-		assertEquals("error-subject", m4.getSubject());
+		assertEquals("error-subject (ov2)", m4.getSubject());
 		assertText("test overflow 4", m4);
 		assertEquals(list(m2, m3, m4), ep.getMailsToSend(10));
 		assertEquals(2, ep.getOverflowCount());
