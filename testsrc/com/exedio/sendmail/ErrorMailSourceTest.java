@@ -86,20 +86,25 @@ public class ErrorMailSourceTest extends TestCase
 		final Mail m1 = ep.createMail("test overflow 1");
 		assertText("test overflow 1", m1);
 		assertEquals(list(m1), ep.getMailsToSend(10));
+		assertEquals(0, ep.getOverflowCount());
 
 		final Mail m2 = ep.createMail("test overflow 2");
 		assertText("test overflow 2", m2);
 		assertEquals(list(m1, m2), ep.getMailsToSend(10));
+		assertEquals(0, ep.getOverflowCount());
 
 		final Mail m3 = ep.createMail("test overflow 3");
 		assertText("test overflow 3", m3);
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
+		assertEquals(0, ep.getOverflowCount());
 
 		assertEquals(null, ep.createMail("test overflow 4"));
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
+		assertEquals(1, ep.getOverflowCount());
 
 		assertEquals(null, ep.createMail(new NullPointerException("test overflow 5")));
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
+		assertEquals(2, ep.getOverflowCount());
 	}
 
 	protected final static List<Object> list(final Object... o)

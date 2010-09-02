@@ -37,6 +37,7 @@ public final class ErrorMailSource implements MailSource
 	final String[] to;
 	final String subject;
 	private final int overflowThreshold;
+	private int overflowCount = 0;
 	
 	public ErrorMailSource(final String from, final String to, final String subject)
 	{
@@ -78,6 +79,11 @@ public final class ErrorMailSource implements MailSource
 		}
 	}
 	
+	public int getOverflowCount()
+	{
+		return overflowCount;
+	}
+	
 	public Mail createMail(final Exception exception)
 	{
 		return createMail(null, exception);
@@ -102,7 +108,10 @@ public final class ErrorMailSource implements MailSource
 		synchronized(mailsToSend)
 		{
 			if(mailsToSend.size()>=overflowThreshold)
+			{
+				overflowCount++;
 				return null;
+			}
 		}
 
 		return new ErrorMail(text);
