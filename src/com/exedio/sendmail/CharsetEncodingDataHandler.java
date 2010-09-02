@@ -34,9 +34,9 @@ import javax.mail.internet.MimeBodyPart;
  *
  * @author buecke
  */
-class CharsetEncodingDataHandler extends DataHandler
+final class CharsetEncodingDataHandler extends DataHandler
 {
-	public CharsetEncodingDataHandler( final String plainText, final String charset, final String plainContentType )
+	CharsetEncodingDataHandler( final String plainText, final String charset, final String plainContentType )
 	{
 		super(new DataSource(){
 			public String getContentType()
