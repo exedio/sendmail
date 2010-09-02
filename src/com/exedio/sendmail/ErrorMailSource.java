@@ -201,7 +201,5 @@ public final class ErrorMailSource implements MailSource
 		{
 			return text;
 		}
-		
 	}
-	
 }
