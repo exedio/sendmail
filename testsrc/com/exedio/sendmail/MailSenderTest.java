@@ -57,24 +57,24 @@ public class MailSenderTest extends SendmailTest
 	private String fail;
 	private String failclose;
 	String timeStamp;
-	
+
 	private static boolean countDebug = false;
-	
+
 	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		
+
 		if(skipTest)
 			return;
 
 		user1 = new Account("user1");
 		user2 = new Account("user2");
 		user3 = new Account("user3");
-		
+
 		fail=System.getProperty("fail");
 		failclose=System.getProperty("failclose");
-		
+
 		cleanPOP3Account(user1);
 		cleanPOP3Account(user2);
 		cleanPOP3Account(user3);
@@ -82,12 +82,12 @@ public class MailSenderTest extends SendmailTest
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		timeStamp = df.format(new Date());
 	}
-	
+
 	public static final String[] ta(final String s)
 	{
 		return s==null ? null : new String[]{s};
 	}
-	
+
 	private final class MockMail implements Mail
 	{
 		private final MockChecker checker;
@@ -105,7 +105,7 @@ public class MailSenderTest extends SendmailTest
 		int sentCounter = 0;
 		int failedCounter = 0;
 		Exception failedException = null;
-		
+
 		MockMail(
 				final String id,
 				final String to,
@@ -114,7 +114,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
-		
+
 		MockMail(
 				final String id,
 				final String to,
@@ -124,7 +124,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, null, checker);
 		}
-		
+
 		MockMail(
 				final String id,
 				final String to,
@@ -135,7 +135,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, charset, checker);
 		}
-		
+
 		MockMail(
 				final String id,
 				final String[] to,
@@ -146,7 +146,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
-		
+
 		MockMail(
 				final String id,
 				final String to,
@@ -156,7 +156,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachement}, null, checker);
 		}
-		
+
 		MockMail(
 				final String id,
 				final String to,
@@ -168,7 +168,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, null, checker);
 		}
-		
+
 		MockMail(
 				final String id,
 				final String[] to,
@@ -198,67 +198,67 @@ public class MailSenderTest extends SendmailTest
 			this.charset = charset;
 			this.timestamp = System.currentTimeMillis();
 		}
-		
+
 		public String getMessageID()
 		{
 			return specialMessageID ? "messageid-" + id + '-' + timestamp : null;
 		}
-		
+
 		public String getFrom()
 		{
 			return from;
 		}
-		
+
 		public String[] getTo()
 		{
 			return to;
 		}
-		
+
 		public String[] getCarbonCopy()
 		{
 			return cc;
 		}
-		
+
 		public String[] getBlindCarbonCopy()
 		{
 			return bcc;
 		}
-		
+
 		public String getSubject()
 		{
 			return timeStamp + "subject " + ("ISO-8859-1".equals(charset)?NON_ASCII_TEXT_ISO:NON_ASCII_TEXT) + '[' + id + ']' ;
 		}
-		
+
 		public String getTextPlain()
 		{
 			return textPlain;
 		}
-		
+
 		public String getTextHtml()
 		{
 			return textHtml;
 		}
-		
+
 		public DataSource[] getAttachments()
 		{
 			return attachments;
 		}
-		
+
 		public String getCharset()
 		{
 			return charset;
 		}
-		
+
 		public String getContentTransferEncoding()
 		{
 			return null;
 		}
-		
+
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
-		
+
 		public void notifySent()
 		{
 			sentCounter++;
@@ -269,32 +269,32 @@ public class MailSenderTest extends SendmailTest
 			failedCounter++;
 			failedException = exception;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "MockMail(" + id + ')';
 		}
-		
+
 		void checkBody(final Message m) throws IOException, MessagingException
 		{
 			checker.checkBody(m);
 		}
-		
+
 	}
-	
+
 	/*private static final class MockURLDataSource implements DataSource
 	{
 		final String resource;
 		final String name;
 		final String contentType;
-		
+
 		TestDataSource(final Class resource, final String name, final String contentType)
 		{
 			this.resource = resource.getSimpleName();
 			this.name = name;
 			this.contentType = contentType;
-			
+
 			if(this.resource==null)
 				throw new RuntimeException();
 			if(this.name==null)
@@ -302,63 +302,63 @@ public class MailSenderTest extends SendmailTest
 			if(this.contentType==null)
 				throw new RuntimeException();
 		}
-		
+
 		public String getContentType()
 		{
 			return contentType;
 		}
-		
+
 		public String getName()
 		{
 			return name;
 		}
-		
+
 		public InputStream getInputStream()
 		{
 			return getClass().getResourceAsStream(resource);
 		}
-		
+
 		public OutputStream getOutputStream()
 		{
 			throw new RuntimeException(name);
 		}
 	}*/
-	
+
 	private static final class MockURLDataSource extends URLDataSource
 	{
 		final String name;
 		final String contentType;
-		
+
 		MockURLDataSource(final String resource, final String name, final String contentType)
 		{
 			super(MailSenderTest.class.getResource(resource));
 			this.name = name;
 			this.contentType = contentType;
-			
+
 			if(this.contentType==null)
 				throw new RuntimeException();
 		}
-		
+
 		@Override
 		public String getName()
 		{
 			return name;
 		}
-		
+
 		@Override
 		public String getContentType()
 		{
 			return contentType;
 		}
 	}
-	
+
 	private static interface MockChecker
 	{
 		void checkBody(Message m) throws IOException, MessagingException;
 	}
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
-	
+
 	private final static String NON_ASCII_TEXT =
 		" ((utf " +
 		"auml-\u00e4 " +
@@ -400,12 +400,12 @@ public class MailSenderTest extends SendmailTest
 		"and special characters" + NON_ASCII_TEXT_ISO + "." +
 		"</body>" +
 		"</html>";
-	
+
 	public void testSendMail() throws InterruptedException
 	{
 		if(skipTest)
 			return;
-		
+
 		final MockMail f1  = new MockMail("f1", fail, "text for failure test mail", new MockChecker(){
 			public void checkBody(final Message actual)
 			{
@@ -603,14 +603,14 @@ public class MailSenderTest extends SendmailTest
 		final MailSource p = new MailSource()
 		{
 			boolean done = false;
-			
+
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
-				
+
 				if(done)
 					return Collections.<Mail>emptyList();
-				
+
 				final ArrayList<MockMail> result = new ArrayList<MockMail>();
 				result.add(mp);
 				result.add(f1);
@@ -626,7 +626,7 @@ public class MailSenderTest extends SendmailTest
 				result.add(mpa);
 				result.add(mha);
 				result.add(maa);
-				
+
 				done = true;
 				return result;
 			}
@@ -658,35 +658,35 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(null, mh.failedException);
 		assertEquals(1, mh.sentCounter);
 		assertEquals(0, mh.failedCounter);
-		
+
 		assertEquals(null, ma.failedException);
 		assertEquals(1, ma.sentCounter);
 		assertEquals(0, ma.failedCounter);
-		
+
 		assertEquals(null, ma2.failedException);
 		assertEquals(1, ma2.sentCounter);
 		assertEquals(0, ma2.failedCounter);
-		
+
 		assertEquals(null, x12.failedException);
 		assertEquals(1, x12.sentCounter);
 		assertEquals(0, x12.failedCounter);
-		
+
 		assertEquals(null, x13.failedException);
 		assertEquals(1, x13.sentCounter);
 		assertEquals(0, x13.failedCounter);
-		
+
 		assertEquals(null, x14.failedException);
 		assertEquals(1, x14.sentCounter);
 		assertEquals(0, x14.failedCounter);
-		
+
 		assertEquals(null, x23.failedException);
 		assertEquals(1, x23.sentCounter);
 		assertEquals(0, x23.failedCounter);
-		
+
 		assertEquals(null, mpa.failedException);
 		assertEquals(1, mpa.sentCounter);
 		assertEquals(0, mpa.failedCounter);
-		
+
 		assertEquals(null, mha.failedException);
 		assertEquals(1, mha.sentCounter);
 		assertEquals(0, mha.failedCounter);
@@ -712,14 +712,14 @@ public class MailSenderTest extends SendmailTest
 		}
 		if(countDebug)
 			System.out.println();
-		
+
 		assertPOP3(user1, new MockMail[]{mp, mh, ma, ma2, x12, x13, x14, mpa, mha, maa});
 		assertPOP3(user2, new MockMail[]{x12, x23});
 		assertPOP3(user3, new MockMail[]{x13, x14, x23});
 	}
-	
+
 	private static final String DEFAULT_CHARSET = "UTF-8";
-	
+
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
 		final TreeMap<String, MockMail> expectedMessages = new TreeMap<String, MockMail>();
@@ -735,7 +735,7 @@ public class MailSenderTest extends SendmailTest
 		try
 		{
 			final Session session = getPOP3Session(account);
-	
+
 			store = getPOP3Store(session, account);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
@@ -744,7 +744,7 @@ public class MailSenderTest extends SendmailTest
 			assertEquals("INBOX", inboxFolder.getFullName());
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
-			
+
 			final TreeMap<String, Message> actualMessages = new TreeMap<String, Message>();
 			for(int i = 0; i<inboxMessages.length; i++)
 			{
@@ -752,7 +752,7 @@ public class MailSenderTest extends SendmailTest
 				if(actualMessages.put(m.getSubject(), m)!=null)
 					throw new RuntimeException(m.getSubject());
 			}
-			
+
 			// check that the non-ascii characters in the subject are handled properly:
 			for(final Message m : actualMessages.values())
 			{
@@ -772,13 +772,13 @@ public class MailSenderTest extends SendmailTest
 					fail( m.getSubject() );
 				}
 			}
-			
+
 			for(final String subject : expectedMessages.keySet())
 			{
 				final Message m = actualMessages.get(subject);
 				final MockMail expected = expectedMessages.get(subject);
 				final String message = account.pop3User + " - " + subject;
-				
+
 				assertNotNull("no message "+message+"; found "+actualMessages.keySet(), m);
 				assertEquals(message, expected.getSubject(), m.getSubject());
 				assertEquals(message, list(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
@@ -841,7 +841,7 @@ public class MailSenderTest extends SendmailTest
 		try
 		{
 			final Session session = getPOP3Session(account);
-	
+
 			store = getPOP3Store(session, account);
 			store.connect();
 			final Folder defaultFolder = store.getDefaultFolder();
@@ -850,7 +850,7 @@ public class MailSenderTest extends SendmailTest
 			assertEquals("INBOX", inboxFolder.getFullName());
 			inboxFolder.open(Folder.READ_ONLY);
 			final int inboxMessages = inboxFolder.getMessageCount();
-			
+
 			if(countDebug)
 				System.out.print(" "+account.pop3User+":"+inboxMessages+"/"+expected);
 
@@ -858,7 +858,7 @@ public class MailSenderTest extends SendmailTest
 			inboxFolder = null;
 			store.close();
 			store = null;
-			
+
 			return inboxMessages>=expected;
 		}
 		catch(MessagingException e)
@@ -887,12 +887,12 @@ public class MailSenderTest extends SendmailTest
 			}
 		}
 	}
-	
+
 	protected final static byte[] bytes(final String name)
 	{
 		return bytes(MailSenderTest.class.getResourceAsStream(name));
 	}
-	
+
 	protected final static byte[] bytes(final InputStream in)
 	{
 		try
@@ -908,7 +908,7 @@ public class MailSenderTest extends SendmailTest
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	void assertEquals(byte[] expected, byte[] actual)
 	{
 		if(!Arrays.equals(expected, actual))
@@ -919,7 +919,7 @@ public class MailSenderTest extends SendmailTest
 	{
 		if(addresses==null)
 			return null;
-		
+
 		final ArrayList<InternetAddress> result = new ArrayList<InternetAddress>(addresses.length);
 		for(int i = 0; i<addresses.length; i++)
 			result.add(new InternetAddress(addresses[i]));
@@ -930,7 +930,7 @@ public class MailSenderTest extends SendmailTest
 	{
 		if(addresses==null)
 			return null;
-		
+
 		return Arrays.asList(addresses);
 	}
 
@@ -938,5 +938,5 @@ public class MailSenderTest extends SendmailTest
 	{
 		return Arrays.asList(o);
 	}
-	
+
 }

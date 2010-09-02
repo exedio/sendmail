@@ -33,13 +33,13 @@ public class CascadingMailSourceTest extends TestCase
 	int maximumResultSizeE;
 	int maximumResultSizeA;
 	int maximumResultSizeB;
-	
+
 	public void testComposite() throws Exception
 	{
 		maximumResultSizeE = -1;
 		maximumResultSizeA = -1;
 		maximumResultSizeB = -1;
-		
+
 		final MailSource pe = new MailSource()
 		{
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
@@ -71,7 +71,7 @@ public class CascadingMailSourceTest extends TestCase
 				}
 			}
 		};
-		
+
 		final MockMail b1 = new MockMail("b1");
 		final MockMail b2 = new MockMail("b2");
 		final MailSource pb = new MailSource()
@@ -91,7 +91,7 @@ public class CascadingMailSourceTest extends TestCase
 				}
 			}
 		};
-		
+
 		{
 			final CascadingMailSource p = new CascadingMailSource(pe, pa);
 			assertMails(list(a1, a2), p.getMailsToSend(3), 3, 3,-1);
@@ -130,7 +130,7 @@ public class CascadingMailSourceTest extends TestCase
 			assertMails(list(), p.getMailsToSend(1), 1,-1,-1);
 			assertMails(list(), p.getMailsToSend(0),-1,-1,-1);
 		}
-		
+
 		try
 		{
 			new CascadingMailSource((MailSource)null);
@@ -150,7 +150,7 @@ public class CascadingMailSourceTest extends TestCase
 			assertEquals("sources[0]", e.getMessage());
 		}
 	}
-	
+
 	protected final void assertMails(
 			final List<? extends Mail> expectedMails, final Collection<? extends Mail> actualMails,
 			final int expectedMaximumResultSizeE, final int expectedMaximumResultSizeA, final int expectedMaximumResultSizeB)
@@ -168,79 +168,79 @@ public class CascadingMailSourceTest extends TestCase
 	{
 		final String code;
 		final long timestamp;
-		
+
 		MockMail(final String code)
 		{
 			this.code = code;
 			this.timestamp = System.currentTimeMillis();
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "mail:"+code;
 		}
-		
+
 		public String getMessageID()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String getFrom()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String[] getTo()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String[] getCarbonCopy()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String[] getBlindCarbonCopy()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String getSubject()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String getTextPlain()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String getTextHtml()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public DataSource[] getAttachments()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String getCharset()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public String getContentTransferEncoding()
 		{
 			throw new RuntimeException(code);
 		}
-		
+
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
-		
+
 		public void notifySent()
 		{
 			throw new RuntimeException(code);

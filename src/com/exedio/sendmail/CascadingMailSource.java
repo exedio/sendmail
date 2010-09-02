@@ -26,7 +26,7 @@ import java.util.Collections;
 public class CascadingMailSource implements MailSource
 {
 	private final MailSource[] sources;
-	
+
 	public CascadingMailSource(final MailSource... sources)
 	{
 		this.sources = sources;
@@ -39,21 +39,21 @@ public class CascadingMailSource implements MailSource
 				throw new NullPointerException("sources" + '[' + i + ']');
 		}
 	}
-	
+
 	public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 	{
 		Collection<? extends Mail> resultIfOne = null;
 		ArrayList<Mail> resultIfMoreThanOne = null;
-		
+
 		for(int i = 0; i<sources.length && maximumResultSize>0; i++)
 		{
 			final Collection<? extends Mail> mails = sources[i].getMailsToSend(maximumResultSize);
 			final int mailsSize = mails.size();
-			
+
 			if(mailsSize>0)
 			{
 				maximumResultSize -= mailsSize;
-				
+
 				if(resultIfOne==null)
 				{
 					if(resultIfMoreThanOne==null)
@@ -84,5 +84,5 @@ public class CascadingMailSource implements MailSource
 			return resultIfOne;
 		}
 	}
-	
+
 }

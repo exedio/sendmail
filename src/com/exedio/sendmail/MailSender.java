@@ -45,13 +45,13 @@ public final class MailSender
 {
 	public static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
-	
+
 	private final String host;
 	private final int connectTimeout;
 	private final int readTimeout;
 	private final boolean debug;
 	private final Session session;
-	
+
 	public MailSender(
 			final String host,
 			final int connectTimeout,
@@ -64,12 +64,12 @@ public final class MailSender
 			throw new IllegalArgumentException("connectTimeout must not be negative");
 		if(readTimeout<0)
 			throw new IllegalArgumentException("readTimeout must not be negative");
-		
+
 		this.host = host;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 		this.debug = debug;
-		
+
 		final Properties properties = new Properties();
 		properties.put("mail.host", host);
 		properties.put("mail.transport.protocol", "smtp");
@@ -100,7 +100,7 @@ public final class MailSender
 	{
 		return debug;
 	}
-	
+
 	/**
 	 * @return the number of successfully sent mails
 	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
@@ -117,7 +117,7 @@ public final class MailSender
 	{
 		return new MailSender(host, connectTimeout, readTimeout, debug).sendMails(source, maximumResultSize, interrupter);
 	}
-	
+
 	/**
 	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
 	 */
@@ -130,7 +130,7 @@ public final class MailSender
 	{
 		sendMails(source, smtpHost, 60000, 60000, smtpDebug, maximumResultSize, null);
 	}
-	
+
 	/**
 	 * @return the number of successfully sent mails
 	 */
@@ -148,7 +148,7 @@ public final class MailSender
 
 			if(interrupter!=null && interrupter.isRequested())
 				return result;
-			
+
 			final Transport transport;
 			try
 			{
@@ -167,12 +167,12 @@ public final class MailSender
 					transport.connect();
 					//System.out.println("Mailsender connected. ("+(System.currentTimeMillis()-start)+"ms)");
 				}
-			
+
 				for(final Mail mail : mails)
 				{
 					if(interrupter!=null && interrupter.isRequested())
 						return result;
-					
+
 					try
 					{
 						final MimeMessage message = createMessage(session, mail);
@@ -194,7 +194,7 @@ public final class MailSender
 							transport.sendMessage(message, message.getAllRecipients());
 							mailsSentInOneConnection++;
 						}
-						
+
 						mail.notifySent();
 					}
 					catch(Exception e)
@@ -230,7 +230,7 @@ public final class MailSender
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
 		return result;
 	}
-	
+
 	/**
 	 * BEWARE:
 	 * this method does not call {@link Mail#notifySent()}
@@ -248,7 +248,7 @@ public final class MailSender
 	{
 		new MailSender(host, connectTimeout, readTimeout, debug).sendMail(mail);
 	}
-	
+
 	/**
 	 * BEWARE:
 	 * this method does not call {@link Mail#notifySent()}
@@ -262,7 +262,7 @@ public final class MailSender
 		Transport.send(message);
 		//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 	}
-	
+
 	public static final MimeMessage createMessage(
 			final Session session,
 			final Mail mail)
@@ -277,7 +277,7 @@ public final class MailSender
 				throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
 			from = new InternetAddress(fromString);
 		}
-		
+
 		final InternetAddress[] to = toAdresses(mail.getTo());
 		final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
 		final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
@@ -288,16 +288,16 @@ public final class MailSender
 		final String textHtml = mail.getTextHtml();
 		if(textPlain==null && textHtml==null)
 			throw new NullPointerException("either Mail#getTextPlain() or Mail#getTextHtml() must not return null (" + mail.toString() + ')');
-		
+
 		final DataSource[] attachments = emptyToNull(mail.getAttachments());
-		
+
 		final String mailCharset = mail.getCharset();
 		final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
 		final String plainContentType = "text/plain; charset=" + charset;
 		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mailDate==null ? new java.util.Date() : mailDate );
 		final String contentTransferEncoding = mail.getContentTransferEncoding();
-		
+
 		final MimeMessage message =
 				id!=null
 				? new MimeMessageWithID(session, id, contentTransferEncoding)
@@ -376,7 +376,7 @@ public final class MailSender
 		}
 		return message;
 	}
-	
+
 	/**
 	 * See
 	 * http://java.sun.com/products/javamail/FAQ.html#msgid
@@ -386,7 +386,7 @@ public final class MailSender
 	{
 		final String id;
 		final String contentTransferEncoding;
-		
+
 		MimeMessageWithID(final Session session, final String id, final String contentTransferEncoding)
 		{
 			super(session);
@@ -394,7 +394,7 @@ public final class MailSender
 			this.id = id;
 			this.contentTransferEncoding = contentTransferEncoding;
 		}
-		
+
 		@Override
 		protected void updateHeaders() throws MessagingException
 		{
@@ -404,7 +404,7 @@ public final class MailSender
 				setHeader("Content-Transfer-Encoding", contentTransferEncoding);
 		}
 	}
-	
+
 	private static final InternetAddress[] toAdresses(final String[] s) throws AddressException
 	{
 		if(s!=null)
@@ -417,17 +417,17 @@ public final class MailSender
 		else
 			return null;
 	}
-	
+
 	private static final DataSource[] emptyToNull(final DataSource[] ds)
 	{
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
-	
+
 	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
 	{
 		assert plain!=null;
 		assert html!=null;
-		
+
 		final MimeMultipart result = new MimeMultipart("alternative");
 		{
 			final MimeBodyPart textPart = new MimeBodyPart();

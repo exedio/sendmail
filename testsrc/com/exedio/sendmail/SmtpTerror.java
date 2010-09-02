@@ -44,29 +44,29 @@ public class SmtpTerror extends SendmailTest
 
 		if(skipTest)
 			return;
-		
+
 		user = new Account("user3");
 
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
 		ts = df.format(new Date());
 		sent = 0;
-		
+
 		cleanPOP3Account(user);
 	}
-	
+
 	private static final int SIZE = 300;
-	
+
 	private class MockMailSource implements MailSource
 	{
 		private final int threadNumber;
 		int number = 0;
 		long readyTimestamp = -1;
-		
+
 		MockMailSource(final int threadNumber)
 		{
 			this.threadNumber = threadNumber;
 		}
-		
+
 		public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 		{
 			final String[] to = {user.email};
@@ -77,69 +77,69 @@ public class SmtpTerror extends SendmailTest
 			for( ; maximumResultSize>0 && number<SIZE; maximumResultSize--, number++)
 			{
 				final int mailNumber = number;
-				
+
 				result.add(new Mail()
 				{
 					public String getMessageID()
 					{
 						return null;
 					}
-					
+
 					public String getFrom()
 					{
 						return from;
 					}
-					
+
 					public String[] getTo()
 					{
 						return to;
 					}
-					
+
 					public String[] getCarbonCopy()
 					{
 						return null;
 					}
-					
+
 					public String[] getBlindCarbonCopy()
 					{
 						return null;
 					}
-					
+
 					public String getSubject()
 					{
 						return subject + mailNumber;
 					}
-					
+
 					public String getTextPlain()
 					{
 						return "terror mail";
 					}
-					
+
 					public String getTextHtml()
 					{
 						return null;
 					}
-					
+
 					public DataSource[] getAttachments()
 					{
 						return null;
 					}
-					
+
 					public String getCharset()
 					{
 						return null;
 					}
-					
+
 					public String getContentTransferEncoding()
 					{
 						return null;
 					}
-					
+
 					public Date getDate()
 					{
 						return new Date(timestamp);
 					}
-					
+
 					public void notifySent()
 					{
 						sent++;
@@ -159,14 +159,14 @@ public class SmtpTerror extends SendmailTest
 	{
 		if(skipTest)
 			return;
-		
+
 		if(terrorDebug)
 			System.out.println();
 
 		for(int i = 1; i<5; i++)
 			doTest(i);
 	}
-	
+
 	private void doTest(final int threadCount) throws InterruptedException
 	{
 		final MockMailSource[] tms = new MockMailSource[threadCount];
@@ -202,5 +202,5 @@ public class SmtpTerror extends SendmailTest
 				System.out.println("---------------------"+i+": r="+((tms[i].readyTimestamp-start))+"ms");
 		}
 	}
-	
+
 }

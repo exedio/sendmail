@@ -27,20 +27,20 @@ import junit.framework.TestCase;
 public class ErrorMailSourceTest extends TestCase
 {
 	private ErrorMailSource ep;
-	
+
 	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
 		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject", 3);
 	}
-	
+
 	private static final void assertText(final String expectedText, final Mail actualMail)
 	{
 		final String actualText = actualMail.getTextPlain();
 		assertTrue("TEXT:"+actualText, actualText.indexOf(expectedText)>0);
 	}
-	
+
 	public void testErrorMail()
 	{
 		assertEquals(list(), ep.getMailsToSend(10));
@@ -71,14 +71,14 @@ public class ErrorMailSourceTest extends TestCase
 
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 		assertEquals(list(m1), ep.getMailsToSend(1));
-		
+
 		m2.notifySent();
 		assertEquals(list(m1, m3), ep.getMailsToSend(10));
-		
+
 		m1.notifySent();
 		assertEquals(list(m3), ep.getMailsToSend(10));
 	}
-	
+
 	public void testOverflow()
 	{
 		assertEquals(list(), ep.getMailsToSend(10));
@@ -108,7 +108,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, ep.createMail(new NullPointerException("test overflow 5")));
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 		assertEquals(2, ep.getOverflowCount());
-		
+
 		m1.notifySent();
 		assertEquals(list(m2, m3), ep.getMailsToSend(10));
 		assertEquals(2, ep.getOverflowCount());
@@ -124,15 +124,15 @@ public class ErrorMailSourceTest extends TestCase
 	{
 		return Arrays.asList(o);
 	}
-	
+
 	protected void assertEquals(final Object[] expected, final Object[] actual)
 	{
 		if(expected==null && actual==null)
 			return;
-		
+
 		assertEquals(expected.length, actual.length);
 		for(int i = 0; i<expected.length; i++)
 			assertEquals(expected[i], actual[i]);
 	}
-	
+
 }

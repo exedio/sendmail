@@ -42,7 +42,7 @@ public class MailSenderInstantiationTest extends TestCase
 				public void notifyFailed(Exception exception) { throw new RuntimeException(); }
 				public void notifySent() { throw new RuntimeException(); }
 			};
-	
+
 	public void testIt() throws Exception
 	{
 		final MailSender ms = new MailSender("host", 123, 456, false);
@@ -50,7 +50,7 @@ public class MailSenderInstantiationTest extends TestCase
 		assertEquals(123, ms.getConnectTimeout());
 		assertEquals(456, ms.getReadTimeout());
 		assertEquals(false, ms.isDebug());
-		
+
 		try
 		{
 			new MailSender(null, -1, -1, true);

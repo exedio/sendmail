@@ -31,23 +31,23 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 {
 
 	private String failclose;
-	
+
 	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		
+
 		if(skipTest)
 			return;
 
 		failclose=System.getProperty("failclose");
 	}
-	
+
 	public static final String[] ta(final String s)
 	{
 		return s==null ? null : new String[]{s};
 	}
-	
+
 	private final class MockMail implements Mail
 	{
 		private final String id;
@@ -58,7 +58,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		int sentCounter = 0;
 		int failedCounter = 0;
 		Exception failedException = null;
-		
+
 		MockMail(
 				final String id,
 				final String to,
@@ -74,67 +74,67 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 			this.textPlain = textPlain;
 			this.timestamp = System.currentTimeMillis();
 		}
-		
+
 		public String getMessageID()
 		{
 			return null;
 		}
-		
+
 		public String getFrom()
 		{
 			return from;
 		}
-		
+
 		public String[] getTo()
 		{
 			return new String[]{to};
 		}
-		
+
 		public String[] getCarbonCopy()
 		{
 			return null;
 		}
-		
+
 		public String[] getBlindCarbonCopy()
 		{
 			return null;
 		}
-		
+
 		public String getSubject()
 		{
 			return "subject (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)" + '[' + id + ']' ;
 		}
-		
+
 		public String getTextPlain()
 		{
 			return textPlain;
 		}
-		
+
 		public String getTextHtml()
 		{
 			return null;
 		}
-		
+
 		public DataSource[] getAttachments()
 		{
 			return null;
 		}
-		
+
 		public String getCharset()
 		{
 			return null;
 		}
-		
+
 		public String getContentTransferEncoding()
 		{
 			return null;
 		}
-		
+
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
-		
+
 		public void notifySent()
 		{
 			sentCounter++;
@@ -145,24 +145,24 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 			failedCounter++;
 			failedException = exception;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "MockMail(" + id + ')';
 		}
-		
+
 	}
-	
+
 	private static final int MAXIMUM_RESULT_SIZE = 345;
-	
+
 	private final static String TEXT = "text for test mail";
-	
+
 	public void testSendMail()
 	{
 		if(skipTest)
 			return;
-		
+
 		final ArrayList<MockMail> mails = new ArrayList<MockMail>();
 		for(int i = 0; i<50; i++)
 			mails.add(new MockMail("mp"+i, failclose, TEXT));
@@ -170,22 +170,22 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		final MailSource p = new MailSource()
 		{
 			boolean done = false;
-			
+
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
-				
+
 				if(done)
 					return Collections.<Mail>emptyList();
-				
+
 				done = true;
 				return mails;
 			}
 		};
 		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, null);
-		
+
 		for(MockMail m : mails)
 			assertSame(SendFailedException.class, m.failedException.getClass());
 	}
-	
+
 }

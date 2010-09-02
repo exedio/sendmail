@@ -55,23 +55,23 @@ public class SendmailTest extends TestCase
 			System.out.println("Skipping test " + getClass().getName());
 			return;
 		}
-		
+
 		final String smtpHost = getProperty("smtp.host");
 		final boolean smtpDebug = getPropertyBoolean("smtp.debug");
-		
+
 		mailSender = new MailSender(smtpHost, 5000, 5000, smtpDebug);
 		pop3Host=getProperty("pop3.host");
 		pop3Debug=getPropertyBoolean("pop3.debug");
 
 		from=getProperty("from");
 	}
-	
+
 	protected class Account
 	{
 		final String email;
 		final String pop3User;
 		final String pop3Password;
-		
+
 		Account(final String name)
 		{
 			email=       getProperty(name+".email");
@@ -86,7 +86,7 @@ public class SendmailTest extends TestCase
 				throw new RuntimeException(name);
 		}
 	}
-	
+
 	private static final boolean getPropertyBoolean(final String key)
 	{
 		final String value = getProperty(key);
@@ -97,7 +97,7 @@ public class SendmailTest extends TestCase
 		else
 			throw new IllegalArgumentException("illegal boolean for key " + key + ": >" + value + '<');
 	}
-	
+
 	protected final Session getPOP3Session(final Account account)
 	{
 		final Properties sessionProperties = new Properties();
@@ -108,12 +108,12 @@ public class SendmailTest extends TestCase
 			session.setDebug(true);
 		return session;
 	}
-	
+
 	protected final POP3Store getPOP3Store(final Session session, final Account account)
 	{
 		return new POP3Store(session, new URLName("pop3://"+account.pop3User+":"+account.pop3Password+"@"+pop3Host+"/INBOX"));
 	}
-	
+
 	protected final void cleanPOP3Account(final Account account)
 	{
 		POP3Store store = null;

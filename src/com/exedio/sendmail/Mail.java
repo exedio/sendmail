@@ -28,17 +28,17 @@ public interface Mail
 	 * May return null, then javax.mail produces an ID.
 	 */
 	String getMessageID();
-	
+
 	String getFrom();
-	
+
 	String[] getTo();
-	
+
 	String[] getCarbonCopy();
-	
+
 	String[] getBlindCarbonCopy();
-	
+
 	String getTextPlain();
-	
+
 	/**
 	 * An implementation may return
 	 * both plain text and html text,
@@ -48,21 +48,21 @@ public interface Mail
 	String getTextHtml();
 
 	String getSubject();
-	
+
 	DataSource[] getAttachments();
-	
+
 	/**
 	 * May return null, then the {@link MailSender#DEFAULT_CHARSET default charset} is used.
 	 */
 	String getCharset();
-	
+
 	/**
 	 * Returns the value the Content-Transfer-Encoding header of the mail should be set to.
 	 * May return null, then the Content-Transfer-Encoding header won't be set.
 	 * @return the desired content-transfer-encoding
 	 */
 	String getContentTransferEncoding();
-	
+
 	/**
 	 * Returns the date the Date header of the mail should be set to.
 	 * According to RFC 2822 this Date should provide the creation date of the mail.
@@ -84,7 +84,7 @@ public interface Mail
 	 * @return the creation date of the mail
 	 */
 	Date getDate();
-	
+
 	void notifySent();
 
 	void notifyFailed(Exception exception);

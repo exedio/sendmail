@@ -31,7 +31,7 @@ import javax.mail.internet.MimeBodyPart;
  * A DataHandler that transforms a String into a byte array using the given
  * charset and content type. To be used by
  * {@link MimeBodyPart#setDataHandler(DataHandler)}.
- * 
+ *
  * @author buecke
  */
 class CharsetEncodingDataHandler extends DataHandler
@@ -43,7 +43,7 @@ class CharsetEncodingDataHandler extends DataHandler
 			{
 				return plainContentType;
 			}
-		
+
 			public InputStream getInputStream()
 			{
 				try
@@ -55,12 +55,12 @@ class CharsetEncodingDataHandler extends DataHandler
 					throw new RuntimeException( e );
 				}
 			}
-		
+
 			public String getName()
 			{
 				return "";
 			}
-		
+
 			public OutputStream getOutputStream()
 			{
 				return null;

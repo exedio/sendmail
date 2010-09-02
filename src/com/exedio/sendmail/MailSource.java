@@ -27,5 +27,5 @@ public interface MailSource
 	 * An implementation may return an unmodifiable collection.
 	 */
 	Collection<? extends Mail> getMailsToSend(int maximumResultSize);
-	
+
 }

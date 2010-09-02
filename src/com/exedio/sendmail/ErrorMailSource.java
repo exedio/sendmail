@@ -38,17 +38,17 @@ public final class ErrorMailSource implements MailSource
 	final String subject;
 	private final int overflowThreshold;
 	private int overflowCount = 0;
-	
+
 	public ErrorMailSource(final String from, final String to, final String subject)
 	{
 		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
 	}
-	
+
 	public ErrorMailSource(final String from, final String to, final String subject, final int overflowThreshold)
 	{
 		this(from, new String[]{to}, subject, overflowThreshold);
 	}
-	
+
 	public ErrorMailSource(final String from, final String[] to, final String subject)
 	{
 		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
@@ -61,15 +61,15 @@ public final class ErrorMailSource implements MailSource
 		this.subject = subject;
 		this.overflowThreshold = overflowThreshold;
 	}
-	
+
 	final List<ErrorMail> mailsToSend = new ArrayList<ErrorMail>();
-	
+
 	public final Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 	{
 		synchronized(mailsToSend)
 		{
 			final int size = mailsToSend.size();
-			
+
 			if(size==0)
 				return Collections.<ErrorMail>emptyList();
 			else if(size<=maximumResultSize)
@@ -78,17 +78,17 @@ public final class ErrorMailSource implements MailSource
 				return new ArrayList<ErrorMail>(mailsToSend.subList(0, maximumResultSize));
 		}
 	}
-	
+
 	public int getOverflowCount()
 	{
 		return overflowCount;
 	}
-	
+
 	public Mail createMail(final Exception exception)
 	{
 		return createMail(null, exception);
 	}
-	
+
 	public Mail createMail(final String text, final Exception exception)
 	{
 		final StringWriter sw = new StringWriter();
@@ -102,7 +102,7 @@ public final class ErrorMailSource implements MailSource
 		pw.flush();
 		return createMail(sw.getBuffer().toString());
 	}
-	
+
 	public Mail createMail(final String text)
 	{
 		final int overflowCount;
@@ -121,19 +121,19 @@ public final class ErrorMailSource implements MailSource
 
 		return new ErrorMail(text, overflowCount);
 	}
-	
+
 	private final class ErrorMail implements Mail
 	{
 		final long timestamp;
 		final String text;
 		private final int overflowCountOfMail;
-		
+
 		ErrorMail(final String text, final int overflowCountOfMail)
 		{
 			this.timestamp = System.currentTimeMillis();
 			this.text = text;
 			this.overflowCountOfMail = overflowCountOfMail;
-			
+
 			synchronized(mailsToSend)
 			{
 				mailsToSend.add(this);
@@ -144,43 +144,43 @@ public final class ErrorMailSource implements MailSource
 		{
 			return null;
 		}
-		
+
 		public String getFrom()
 		{
 			return from;
 		}
-		
+
 		public String[] getTo()
 		{
 			return to;
 		}
-		
+
 		public String[] getCarbonCopy()
 		{
 			return null;
 		}
-		
+
 		public String[] getBlindCarbonCopy()
 		{
 			return null;
 		}
-		
+
 		public final String getSubject()
 		{
 			return (overflowCountOfMail>0) ? (subject + " (ov" + overflowCountOfMail + ')') : subject;
 		}
-		
+
 		public String getTextPlain()
 		{
 			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 			return df.format(new Date(timestamp)) + '\n' + text;
 		}
-		
+
 		public String getTextHtml()
 		{
 			return null;
 		}
-		
+
 		public DataSource[] getAttachments()
 		{
 			return null;
@@ -190,17 +190,17 @@ public final class ErrorMailSource implements MailSource
 		{
 			return null;
 		}
-		
+
 		public String getContentTransferEncoding()
 		{
 			return null;
 		}
-		
+
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
-		
+
 		public void notifySent()
 		{
 			mailsToSend.remove(this);
@@ -211,7 +211,7 @@ public final class ErrorMailSource implements MailSource
 			exception.printStackTrace();
 			mailsToSend.remove(this);
 		}
-		
+
 		@Override
 		public String toString()
 		{
