@@ -130,9 +130,8 @@ public class SendmailTest extends TestCase
 			inboxFolder.open(Folder.READ_WRITE);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			//System.out.println("--------removing "+inboxMessages.length+" messages --------");
-			for(int i = 0; i<inboxMessages.length; i++)
+			for(final Message message : inboxMessages)
 			{
-				final Message message = inboxMessages[i];
 				//System.out.println("-----------------removing message "+i);
 				message.setFlag(Flags.Flag.DELETED, true);
 			}

@@ -723,9 +723,8 @@ public class MailSenderTest extends SendmailTest
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
 		final TreeMap<String, MockMail> expectedMessages = new TreeMap<String, MockMail>();
-		for(int i = 0; i<expectedMails.length; i++)
+		for(final MockMail m : expectedMails)
 		{
-			final MockMail m = expectedMails[i];
 			if(expectedMessages.put(m.getSubject(), m)!=null)
 				throw new RuntimeException(m.getSubject());
 		}
@@ -746,9 +745,8 @@ public class MailSenderTest extends SendmailTest
 			final Message[] inboxMessages = inboxFolder.getMessages();
 
 			final TreeMap<String, Message> actualMessages = new TreeMap<String, Message>();
-			for(int i = 0; i<inboxMessages.length; i++)
+			for(final Message m : inboxMessages)
 			{
-				final Message m = inboxMessages[i];
 				if(actualMessages.put(m.getSubject(), m)!=null)
 					throw new RuntimeException(m.getSubject());
 			}
@@ -921,8 +919,8 @@ public class MailSenderTest extends SendmailTest
 			return null;
 
 		final ArrayList<InternetAddress> result = new ArrayList<InternetAddress>(addresses.length);
-		for(int i = 0; i<addresses.length; i++)
-			result.add(new InternetAddress(addresses[i]));
+		for(String address : addresses)
+			result.add(new InternetAddress(address));
 		return result;
 	}
 
