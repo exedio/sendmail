@@ -35,7 +35,7 @@ public final class ErrorMailSource implements MailSource
 
 	final String from;
 	final String[] to;
-	final String subject;
+	final String fallbackSubject;
 	private final int overflowThreshold;
 	private int overflowCount = 0;
 
@@ -54,11 +54,11 @@ public final class ErrorMailSource implements MailSource
 		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
 	}
 
-	public ErrorMailSource(final String from, final String[] to, final String subject, final int overflowThreshold)
+	public ErrorMailSource(final String from, final String[] to, final String fallbackSubject, final int overflowThreshold)
 	{
 		this.from = from;
 		this.to = to;
-		this.subject = subject;
+		this.fallbackSubject = fallbackSubject;
 		this.overflowThreshold = overflowThreshold;
 	}
 
@@ -86,10 +86,20 @@ public final class ErrorMailSource implements MailSource
 
 	public Mail createMail(final Exception exception)
 	{
-		return createMail(null, exception);
+		return createMailWithSubject(null, exception);
+	}
+
+	public Mail createMailWithSubject(final String subject, final Exception exception)
+	{
+		return createMailWithSubject(subject, null, exception);
 	}
 
 	public Mail createMail(final String text, final Exception exception)
+	{
+		return createMailWithSubject(null, text, exception);
+	}
+
+	public Mail createMailWithSubject(final String subject, final String text, final Exception exception)
 	{
 		final StringWriter sw = new StringWriter();
 		if(text!=null)
@@ -100,10 +110,15 @@ public final class ErrorMailSource implements MailSource
 		final PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
 		pw.flush();
-		return createMail(sw.getBuffer().toString());
+		return createMailWithSubject(subject, sw.getBuffer().toString());
 	}
 
 	public Mail createMail(final String text)
+	{
+		return createMailWithSubject(null, text);
+	}
+
+	public Mail createMailWithSubject(final String subject, final String text)
 	{
 		final int overflowCount;
 		synchronized(mailsToSend)
@@ -119,18 +134,20 @@ public final class ErrorMailSource implements MailSource
 			}
 		}
 
-		return new ErrorMail(text, overflowCount);
+		return new ErrorMail(subject, text, overflowCount);
 	}
 
 	private final class ErrorMail implements Mail
 	{
 		final long timestamp;
+		final String mailSubject;
 		final String text;
 		private final int overflowCountOfMail;
 
-		ErrorMail(final String text, final int overflowCountOfMail)
+		ErrorMail(final String subject, final String text, final int overflowCountOfMail)
 		{
 			this.timestamp = System.currentTimeMillis();
+			this.mailSubject = subject;
 			this.text = text;
 			this.overflowCountOfMail = overflowCountOfMail;
 
@@ -167,7 +184,8 @@ public final class ErrorMailSource implements MailSource
 
 		public final String getSubject()
 		{
-			return (overflowCountOfMail>0) ? (subject + " (ov" + overflowCountOfMail + ')') : subject;
+			final String actualSubject = mailSubject==null ? fallbackSubject : mailSubject;
+			return (overflowCountOfMail>0) ? (actualSubject + " (ov" + overflowCountOfMail + ')') : actualSubject;
 		}
 
 		public String getTextPlain()

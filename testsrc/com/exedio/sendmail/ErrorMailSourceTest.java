@@ -135,4 +135,44 @@ public class ErrorMailSourceTest extends TestCase
 			assertEquals(expected[i], actual[i]);
 	}
 
+	public void testSubject()
+	{
+		final Mail m1 = ep.createMail("text");
+		assertEquals( "error-subject", m1.getSubject() );
+		m1.notifySent();
+
+		final Mail m2 = ep.createMailWithSubject("subject", "text");
+		assertEquals( "subject", m2.getSubject() );
+		m2.notifySent();
+
+		final Mail m3 = ep.createMail("text", new Exception());
+		assertEquals( "error-subject", m3.getSubject() );
+		m3.notifySent();
+
+		final Mail m4 = ep.createMailWithSubject("xyz", "text", new Exception());
+		assertEquals( "xyz", m4.getSubject() );
+		m4.notifySent();
+
+		final Mail m5 = ep.createMail(new Exception());
+		assertEquals( "error-subject", m5.getSubject() );
+		m5.notifySent();
+
+		final Mail m6 = ep.createMailWithSubject("abc", new Exception());
+		assertEquals( "abc", m6.getSubject() );
+		m6.notifySent();
+	}
+
+	public void testSubjectOverflow()
+	{
+		Mail m1 = ep.createMail("fill up");
+		Mail m2 = ep.createMail("fill up");
+		Mail m3 = ep.createMail("fill up");
+
+		assertEquals( null, ep.createMail("overflow") );
+
+		m1.notifySent();
+		Mail m4 = ep.createMailWithSubject("m4", "text m4");
+		assertEquals( "m4 (ov1)", m4.getSubject());
+	}
+
 }
