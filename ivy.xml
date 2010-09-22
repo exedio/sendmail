@@ -1,0 +1,24 @@
+<ivy-module version="2.0">
+	<info
+			organisation="com.exedio"
+			module="sendmail"
+			revision="@BUILD_REVISION@">
+		<license
+				name="GNU Lesser General Public License, Version 2.1"
+				url="http://opensource.org/licenses/lgpl-license.html" />
+	</info>
+	<configurations>
+		<conf name="runtime" />
+		<conf name="build" extends="runtime" visibility="private" />
+	</configurations>
+	<publications>
+		<artifact name="exedio-sendmail" />
+		<artifact name="exedio-sendmail" type="src" ext="zip" />
+		<artifact name="exedio-sendmail" type="log" ext="txt" />
+	</publications>
+	<dependencies>
+		<dependency org="junit" name="junit" rev="4.4" conf="build->default" />
+		<dependency org="javax.mail" name="mail" rev="1.4" />
+		<dependency org="com.exedio" name="copeutil" rev="160" />
+	</dependencies>
+</ivy-module>

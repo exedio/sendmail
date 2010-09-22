@@ -156,6 +156,15 @@
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail.jar-src.zip" />
 		</copy>
+		<copy file="ivy.xml" tofile="build/success/ivy.xml" overwrite="true">
+			<filterset>
+				<filter token="BUILD_REVISION" value="${build.revision}" />
+			</filterset>
+		</copy>
+		<copy tofile="${basedir}/build/success/exedio-sendmail-src.zip"
+				file="${basedir}/build/exedio-sendmail.jar-src.zip" />
+		<copy tofile="${basedir}/build/success/exedio-sendmail-log.txt"
+				file="CHANGELOG" />
 	</target>
 
 </project>
