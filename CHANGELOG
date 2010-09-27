@@ -7,7 +7,8 @@ omit bug fixes.
 The items are sorted inversely, i.e. lastest items are on top
 
 --------------------------------------------------------------------------
-* added support for custom mail subjects
+* added support for authentication
+* added support for custom error mail subjects
 * activation.jar is not required anymore
 	probably requires JDK 1.6
 * Interrupter from exedio-cope-util.jar is used

@@ -40,6 +40,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.exedio.cope.util.Interrupter;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 
 public final class MailSender
 {
@@ -58,6 +60,18 @@ public final class MailSender
 			final int readTimeout,
 			final boolean debug)
 	{
+		this( host, connectTimeout, readTimeout, debug, null, null );
+	}
+
+	/** @param smtpUser null and empty string denote usage without authentification */
+	public MailSender(
+			final String host,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean debug,
+			final String smtpUser,
+			final String smtpPassword )
+	{
 		if(host==null)
 			throw new IllegalArgumentException("host must not be null");
 		if(connectTimeout<0)
@@ -75,7 +89,16 @@ public final class MailSender
 		properties.put("mail.transport.protocol", "smtp");
 		properties.put("mail.smtp.connectiontimeout", connectTimeout);
 		properties.put("mail.smtp.timeout", readTimeout);
-		final Session session = Session.getInstance(properties);
+		final Session session;
+		if ( smtpUser==null || smtpUser.equals("") )
+		{
+			session = Session.getInstance(properties);
+		}
+		else
+		{
+			properties.put("mail.smtp.auth", "true");
+			session = Session.getInstance(properties, new SendmailAuthenticator(smtpUser, smtpPassword));
+		}
 		if(debug)
 			session.setDebug(true);
 		this.session = session;
@@ -446,5 +469,23 @@ public final class MailSender
 			result.addBodyPart(htmlPart);
 		}
 		return result;
+	}
+
+	private static class SendmailAuthenticator extends Authenticator
+	{
+		private final String smtpUser;
+		private final String smtpPassword;
+
+		public SendmailAuthenticator(String smtpUser, String smtpPassword)
+		{
+			this.smtpUser = smtpUser;
+			this.smtpPassword = smtpPassword;
+		}
+
+		@Override
+		protected PasswordAuthentication getPasswordAuthentication()
+		{
+			return new PasswordAuthentication(smtpUser, smtpPassword);
+		}
 	}
 }
