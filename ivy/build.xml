@@ -2,10 +2,10 @@
 <project name="ivy" default="copy">
 	<import file="common.xml" />
 	<target name="copy" depends="resolve">
-		<copy overwrite="true" file="artifacts/exedio-cope-util-160-jar.jar" tofile="../lib/exedio-cope-util.jar" />
-		<copy overwrite="true" file="artifacts/exedio-cope-util-160-log.txt" tofile="../lib/exedio-cope-util.jar-CHANGELOG" />
-		<copy overwrite="true" file="artifacts/exedio-cope-util-160-src.zip" tofile="../lib/exedio-cope-util.jar-src.zip" />
-		<copy overwrite="true" file="artifacts/mail-1.4-jar.jar" tofile="../lib/mail.jar" />
-		<copy overwrite="true" file="artifacts/junit-4.4-jar.jar" tofile="../lib/junit.jar" />
+		<copy overwrite="true" file="artifacts/exedio-cope-util-jar.jar" tofile="../lib/exedio-cope-util.jar" />
+		<copy overwrite="true" file="artifacts/exedio-cope-util-log.txt" tofile="../lib/exedio-cope-util.jar-CHANGELOG" />
+		<copy overwrite="true" file="artifacts/exedio-cope-util-src.zip" tofile="../lib/exedio-cope-util.jar-src.zip" />
+		<copy overwrite="true" file="artifacts/mail-jar.jar" tofile="../lib/mail.jar" />
+		<copy overwrite="true" file="artifacts/junit-jar.jar" tofile="../lib/junit.jar" />
 	</target>
 </project>
