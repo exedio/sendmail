@@ -162,12 +162,16 @@ public final class MailSender
 			final int maximumResultSize,
 			final Interrupter interrupter)
 	{
-		final TaskContextInterrupter ctx = new TaskContextInterrupter(interrupter);
-		sendMails(source, maximumResultSize, ctx);
-		return ctx.getProgress();
+		return InterrupterTaskContext.run(
+			interrupter,
+			new InterrupterTaskContext(){@Override void run(final ExperimentalTaskContext ctx)
+			{
+				sendMailsPrivate(source, maximumResultSize, ctx);
+			}}
+		);
 	}
 
-	private void sendMails(
+	void sendMailsPrivate(
 			final MailSource source,
 			final int maximumResultSize,
 			final ExperimentalTaskContext ctx)
@@ -215,7 +219,7 @@ public final class MailSender
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 							mailsSentInOneConnection++;
-							ctx.notifyProgress(1);
+							ctx.notifyProgress();
 						}
 						catch(final IllegalStateException e)
 						{

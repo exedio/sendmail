@@ -21,5 +21,5 @@ package com.exedio.sendmail;
 interface ExperimentalTaskContext
 {
 	boolean requestsStop();
-	void notifyProgress(int delta);
+	void notifyProgress();
 }
