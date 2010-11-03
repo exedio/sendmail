@@ -27,10 +27,12 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Part;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -40,8 +42,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.exedio.cope.util.Interrupter;
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
 
 public final class MailSender
 {
@@ -476,7 +476,7 @@ public final class MailSender
 		private final String smtpUser;
 		private final String smtpPassword;
 
-		public SendmailAuthenticator(String smtpUser, String smtpPassword)
+		public SendmailAuthenticator(final String smtpUser, final String smtpPassword)
 		{
 			this.smtpUser = smtpUser;
 			this.smtpPassword = smtpPassword;
