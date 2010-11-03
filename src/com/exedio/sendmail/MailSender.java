@@ -162,15 +162,24 @@ public final class MailSender
 			final int maximumResultSize,
 			final Interrupter interrupter)
 	{
-		int result = 0;
+		final TaskContextInterrupter ctx = new TaskContextInterrupter(interrupter);
+		sendMails(source, maximumResultSize, ctx);
+		return ctx.getProgress();
+	}
+
+	private void sendMails(
+			final MailSource source,
+			final int maximumResultSize,
+			final ExperimentalTaskContext ctx)
+	{
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
 		{
 			final Collection<? extends Mail> mails = source.getMailsToSend(maximumResultSize);
 			if(mails.isEmpty())
-				return result;
+				return;
 
-			if(interrupter!=null && interrupter.isRequested())
-				return result;
+			if(ctx.requestsStop())
+				return;
 
 			final Transport transport;
 			try
@@ -193,8 +202,8 @@ public final class MailSender
 
 				for(final Mail mail : mails)
 				{
-					if(interrupter!=null && interrupter.isRequested())
-						return result;
+					if(ctx.requestsStop())
+						return;
 
 					try
 					{
@@ -206,7 +215,7 @@ public final class MailSender
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 							mailsSentInOneConnection++;
-							result++;
+							ctx.notifyProgress(1);
 						}
 						catch(final IllegalStateException e)
 						{
@@ -251,7 +260,6 @@ public final class MailSender
 			}
 		}
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
-		return result;
 	}
 
 	/**
