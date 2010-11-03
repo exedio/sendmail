@@ -164,14 +164,14 @@ public class ErrorMailSourceTest extends TestCase
 
 	public void testSubjectOverflow()
 	{
-		Mail m1 = ep.createMail("fill up");
-		Mail m2 = ep.createMail("fill up");
-		Mail m3 = ep.createMail("fill up");
+		final Mail m1 = ep.createMail("fill up");
+		ep.createMail("fill up");
+		ep.createMail("fill up");
 
 		assertEquals( null, ep.createMail("overflow") );
 
 		m1.notifySent();
-		Mail m4 = ep.createMailWithSubject("m4", "text m4");
+		final Mail m4 = ep.createMailWithSubject("m4", "text m4");
 		assertEquals( "m4 (ov1)", m4.getSubject());
 	}
 
