@@ -20,6 +20,6 @@ package com.exedio.sendmail;
 
 interface ExperimentalTaskContext
 {
-	boolean requestsStop();
-	void notifyProgress();
+	boolean requestedToStop();
+	void incrementProgress();
 }

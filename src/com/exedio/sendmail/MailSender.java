@@ -182,7 +182,7 @@ public final class MailSender
 			if(mails.isEmpty())
 				return;
 
-			if(ctx.requestsStop())
+			if(ctx.requestedToStop())
 				return;
 
 			final Transport transport;
@@ -206,7 +206,7 @@ public final class MailSender
 
 				for(final Mail mail : mails)
 				{
-					if(ctx.requestsStop())
+					if(ctx.requestedToStop())
 						return;
 
 					try
@@ -219,7 +219,7 @@ public final class MailSender
 							transport.sendMessage(message, message.getAllRecipients());
 							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 							mailsSentInOneConnection++;
-							ctx.notifyProgress();
+							ctx.incrementProgress();
 						}
 						catch(final IllegalStateException e)
 						{
