@@ -170,12 +170,12 @@ public final class MailSender
 			interrupter,
 			new Body(){public void run(final JobContext ctx)
 			{
-				sendMailsPrivate(source, maximumResultSize, ctx);
+				sendMails(source, maximumResultSize, ctx);
 			}}
 		);
 	}
 
-	void sendMailsPrivate(
+	public void sendMails(
 			final MailSource source,
 			final int maximumResultSize,
 			final JobContext ctx)

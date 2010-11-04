@@ -44,6 +44,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
+import com.exedio.cope.util.Interrupter;
 import com.sun.mail.pop3.POP3Store;
 
 
@@ -631,7 +632,7 @@ public class MailSenderTest extends SendmailTest
 				return result;
 			}
 		};
-		assertEquals(11, mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, null));
+		assertEquals(11, mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, (Interrupter)null));
 
 		assertEquals(null, mp.failedException);
 		assertEquals(1, mp.sentCounter);

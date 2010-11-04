@@ -25,6 +25,8 @@ import java.util.Date;
 
 import javax.activation.DataSource;
 
+import com.exedio.cope.util.Interrupter;
+
 /**
  * BEWARE: this puts a lot of mails on your smtp server.
  * @author Ralf Wiebicke
@@ -181,7 +183,7 @@ public class SmtpTerror extends SendmailTest
 				{
 					public void run()
 					{
-						mailSender.sendMails(tms[threadNumber], SIZE, null);
+						mailSender.sendMails(tms[threadNumber], SIZE, (Interrupter)null);
 						tms[threadNumber].readyTimestamp = System.currentTimeMillis();
 					}
 				}
