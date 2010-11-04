@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import static com.exedio.cope.util.InterrupterJobContextAdapter.run;
+
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -42,6 +44,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.exedio.cope.util.Interrupter;
+import com.exedio.cope.util.JobContext;
+import com.exedio.cope.util.InterrupterJobContextAdapter.Body;
 
 public final class MailSender
 {
@@ -162,9 +166,9 @@ public final class MailSender
 			final int maximumResultSize,
 			final Interrupter interrupter)
 	{
-		return InterrupterTaskContext.run(
+		return run(
 			interrupter,
-			new InterrupterTaskContext(){@Override void run(final ExperimentalTaskContext ctx)
+			new Body(){public void run(final JobContext ctx)
 			{
 				sendMailsPrivate(source, maximumResultSize, ctx);
 			}}
@@ -174,7 +178,7 @@ public final class MailSender
 	void sendMailsPrivate(
 			final MailSource source,
 			final int maximumResultSize,
-			final ExperimentalTaskContext ctx)
+			final JobContext ctx)
 	{
 		for(int sessionCounter = 0; sessionCounter<30; sessionCounter++)
 		{
