@@ -84,22 +84,22 @@ public final class ErrorMailSource implements MailSource
 		return overflowCount;
 	}
 
-	public Mail createMail(final Exception exception)
+	public Mail createMail(final Throwable exception)
 	{
 		return createMailWithSubject(null, exception);
 	}
 
-	public Mail createMailWithSubject(final String subject, final Exception exception)
+	public Mail createMailWithSubject(final String subject, final Throwable exception)
 	{
 		return createMailWithSubject(subject, null, exception);
 	}
 
-	public Mail createMail(final String text, final Exception exception)
+	public Mail createMail(final String text, final Throwable exception)
 	{
 		return createMailWithSubject(null, text, exception);
 	}
 
-	public Mail createMailWithSubject(final String subject, final String text, final Exception exception)
+	public Mail createMailWithSubject(final String subject, final String text, final Throwable exception)
 	{
 		final StringWriter sw = new StringWriter();
 		if(text!=null)
