@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +45,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
+import com.exedio.cope.util.Hex;
 import com.exedio.cope.util.Interrupter;
 import com.sun.mail.pop3.POP3Store;
 
@@ -360,11 +362,20 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 
+	private final static String NEWLINES =
+		"lf-\n" +
+		"cr-\r" +
+		"crlf-\r\n";
+	private final static String NEWLINES_RECEIVE =
+		"lf-\r\n" +
+		"cr-\r\n" +
+		"crlf-\r\n";
 	private final static String NON_ASCII_TEXT =
 		" ((utf " +
 		"auml-\u00e4 " +
 		"ouml-\u00f6 " +
 		"uuml-\u00fc " +
+		NEWLINES +
 		"szlig-\u00df " +
 		"abreve-\u0102 " +
 		"hebrew-\u05d8 " +
@@ -375,6 +386,7 @@ public class MailSenderTest extends SendmailTest
 		"auml-\u00e4 " +
 		"ouml-\u00f6 " +
 		"uuml-\u00fc " +
+		NEWLINES +
 		"szlig-\u00df))";
 	private final static String TEXT_APPENDIX = "\r\n";
 	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
@@ -429,35 +441,35 @@ public class MailSenderTest extends SendmailTest
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x13 = new MockMail("x13", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x14 = new MockMail("x14", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN_ISO, null, null, "ISO-8859-1", new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
-				assertEquals(TEXT_PLAIN_ISO + TEXT_APPENDIX, m.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail x23 = new MockMail("x23", null, null, new String[]{user2.email, user3.email}, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 			}
 		});
 		final MockMail mp  = new MockMail("mp", user1.email, TEXT_PLAIN, new MockChecker(){
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEquals(TEXT_PLAIN + TEXT_APPENDIX, m.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 				assertEquals(null, m.getDisposition());
 			}
 		});
@@ -465,7 +477,7 @@ public class MailSenderTest extends SendmailTest
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEquals(TEXT_HTML + TEXT_APPENDIX, m.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_HTML) + TEXT_APPENDIX, m.getContent());
 				assertEquals(null, m.getDisposition());
 			}
 		});
@@ -478,13 +490,13 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart textBody = multipart.getBodyPart(0);
 					assertEquals("text/plain; charset="+DEFAULT_CHARSET, textBody.getContentType());
-					assertEquals(TEXT_PLAIN, textBody.getContent());
+					assertEquals(replaceNewlines(TEXT_PLAIN), textBody.getContent());
 					assertEquals(Part.INLINE, textBody.getDisposition());
 				}
 				{
 					final BodyPart htmlBody = multipart.getBodyPart(1);
 					assertEquals("text/html; charset="+DEFAULT_CHARSET, htmlBody.getContentType());
-					assertEquals(TEXT_HTML, htmlBody.getContent());
+					assertEquals(replaceNewlines(TEXT_HTML), htmlBody.getContent());
 					assertEquals(Part.INLINE, htmlBody.getDisposition());
 				}
 				assertEquals(2, multipart.getCount());
@@ -498,13 +510,13 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart textBody = multipart.getBodyPart(0);
 					assertEquals("text/plain; charset=ISO-8859-1", textBody.getContentType());
-					assertEquals(TEXT_PLAIN_ISO, textBody.getContent());
+					assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO), textBody.getContent());
 					assertEquals(Part.INLINE, textBody.getDisposition());
 				}
 				{
 					final BodyPart htmlBody = multipart.getBodyPart(1);
 					assertEquals("text/html; charset=ISO-8859-1", htmlBody.getContentType());
-					assertEquals(TEXT_HTML_ISO, htmlBody.getContent());
+					assertEqualsHex(replaceNewlines(TEXT_HTML_ISO), htmlBody.getContent());
 					assertEquals(Part.INLINE, htmlBody.getDisposition());
 				}
 				assertEquals(2, multipart.getCount());
@@ -519,7 +531,7 @@ public class MailSenderTest extends SendmailTest
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainBody.getContentType());
-				assertEquals(TEXT_PLAIN, mainBody.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN), mainBody.getContent());
 				assertEquals(Part.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
@@ -542,7 +554,7 @@ public class MailSenderTest extends SendmailTest
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/html; charset="+DEFAULT_CHARSET, mainBody.getContentType());
-				assertEquals(TEXT_HTML, mainBody.getContent());
+				assertEqualsHex(replaceNewlines(TEXT_HTML), mainBody.getContent());
 				assertEquals(Part.INLINE, mainBody.getDisposition());
 				{
 					final BodyPart attachBody = multipart.getBodyPart(1);
@@ -573,13 +585,13 @@ public class MailSenderTest extends SendmailTest
 				{
 					final BodyPart mainText = mainPart.getBodyPart(0);
 					assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainText.getContentType());
-					assertEquals(TEXT_PLAIN, mainText.getContent());
+					assertEqualsHex(replaceNewlines(TEXT_PLAIN), mainText.getContent());
 					assertEquals(Part.INLINE, mainText.getDisposition());
 				}
 				{
 					final BodyPart mainHtml = mainPart.getBodyPart(1);
 					assertEquals("text/html; charset="+DEFAULT_CHARSET, mainHtml.getContentType());
-					assertEquals(TEXT_HTML, mainHtml.getContent());
+					assertEqualsHex(replaceNewlines(TEXT_HTML), mainHtml.getContent());
 					assertEquals(Part.INLINE, mainHtml.getDisposition());
 				}
 				assertEquals(2, mainPart.getCount());
@@ -938,4 +950,26 @@ public class MailSenderTest extends SendmailTest
 		return Arrays.asList(o);
 	}
 
+	String replaceNewlines(final String s)
+	{
+		final int pos = s.indexOf(NEWLINES);
+		assertTrue(pos>0);
+		return s.substring(0, pos) + NEWLINES_RECEIVE + s.substring(pos+NEWLINES.length());
+	}
+
+	void assertEqualsHex(final String expected, final Object actual)
+	{
+		final String actualString = (String)actual;
+		try
+		{
+			assertEquals(
+					"\n" + Hex.encodeLower(expected.getBytes("utf8")) +
+					'\n' + Hex.encodeLower(actualString  .getBytes("utf8")),
+					expected, actualString);
+		}
+		catch (final UnsupportedEncodingException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 }
