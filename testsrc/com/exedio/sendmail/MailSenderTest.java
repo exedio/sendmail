@@ -793,7 +793,7 @@ public class MailSenderTest extends SendmailTest
 				assertNotNull("no message "+message+"; found "+actualMessages.keySet(), m);
 				assertEquals(message, expected.getSubject(), m.getSubject());
 				assertEquals(message, list(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
-				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? list(new InternetAddress("undisclosed-recipients:;")) : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
+				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? null : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
 				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
 				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
 				assertNotNull(message, m.getHeader("Message-ID"));
