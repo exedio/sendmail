@@ -159,8 +159,10 @@ public final class MailSender
 	}
 
 	/**
+	 * @deprecated Use {@link #sendMails(MailSource,int,JobContext)} instead.
 	 * @return the number of successfully sent mails
 	 */
+	@Deprecated
 	public int sendMails(
 			final MailSource source,
 			final int maximumResultSize,
