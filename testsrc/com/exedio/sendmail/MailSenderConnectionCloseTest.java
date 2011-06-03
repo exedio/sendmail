@@ -26,7 +26,7 @@ import java.util.Date;
 import javax.activation.DataSource;
 import javax.mail.SendFailedException;
 
-import com.exedio.cope.util.Interrupter;
+import com.exedio.cope.util.EmptyJobContext;
 
 public class MailSenderConnectionCloseTest extends SendmailTest
 {
@@ -183,7 +183,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 				return mails;
 			}
 		};
-		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, (Interrupter)null);
+		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, new EmptyJobContext());
 
 		for(final MockMail m : mails)
 			assertSame(SendFailedException.class, m.failedException.getClass());

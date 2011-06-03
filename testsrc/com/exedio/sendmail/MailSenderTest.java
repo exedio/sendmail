@@ -46,7 +46,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 import com.exedio.cope.util.Hex;
-import com.exedio.cope.util.Interrupter;
 import com.sun.mail.pop3.POP3Store;
 
 
@@ -644,7 +643,9 @@ public class MailSenderTest extends SendmailTest
 				return result;
 			}
 		};
-		assertEquals(11, mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, (Interrupter)null));
+		final CountJobContext ctx = new CountJobContext();
+		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, ctx);
+		assertEquals(11, ctx.progress);
 
 		assertEquals(null, mp.failedException);
 		assertEquals(1, mp.sentCounter);

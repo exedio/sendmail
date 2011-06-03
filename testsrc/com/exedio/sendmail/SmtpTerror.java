@@ -25,7 +25,7 @@ import java.util.Date;
 
 import javax.activation.DataSource;
 
-import com.exedio.cope.util.Interrupter;
+import com.exedio.cope.util.EmptyJobContext;
 
 /**
  * BEWARE: this puts a lot of mails on your smtp server.
@@ -183,7 +183,7 @@ public class SmtpTerror extends SendmailTest
 				{
 					public void run()
 					{
-						mailSender.sendMails(tms[threadNumber], SIZE, (Interrupter)null);
+						mailSender.sendMails(tms[threadNumber], SIZE, new EmptyJobContext());
 						tms[threadNumber].readyTimestamp = System.currentTimeMillis();
 					}
 				}
