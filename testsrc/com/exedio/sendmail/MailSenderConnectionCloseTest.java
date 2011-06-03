@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-import javax.activation.DataSource;
 import javax.mail.SendFailedException;
 
 import com.exedio.cope.util.EmptyJobContext;
@@ -49,7 +48,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		return s==null ? null : new String[]{s};
 	}
 
-	private final class MockMail implements Mail
+	private final class MockMail extends EmptyMail
 	{
 		private final String id;
 		private final String to;
@@ -76,71 +75,42 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 			this.timestamp = System.currentTimeMillis();
 		}
 
-		public String getMessageID()
-		{
-			return null;
-		}
-
 		public String getFrom()
 		{
 			return from;
 		}
 
+		@Override
 		public String[] getTo()
 		{
 			return new String[]{to};
 		}
 
-		public String[] getCarbonCopy()
-		{
-			return null;
-		}
-
-		public String[] getBlindCarbonCopy()
-		{
-			return null;
-		}
-
+		@Override
 		public String getSubject()
 		{
 			return "subject (\u00e4\u00f6\u00fc\u00df\u0102\u05d8\u20ac)" + '[' + id + ']' ;
 		}
 
+		@Override
 		public String getTextPlain()
 		{
 			return textPlain;
 		}
 
-		public String getTextHtml()
-		{
-			return null;
-		}
-
-		public DataSource[] getAttachments()
-		{
-			return null;
-		}
-
-		public String getCharset()
-		{
-			return null;
-		}
-
-		public String getContentTransferEncoding()
-		{
-			return null;
-		}
-
+		@Override
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
 
+		@Override
 		public void notifySent()
 		{
 			sentCounter++;
 		}
 
+		@Override
 		public void notifyFailed(final Exception exception)
 		{
 			failedCounter++;
@@ -152,7 +122,6 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		{
 			return "MockMail(" + id + ')';
 		}
-
 	}
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;

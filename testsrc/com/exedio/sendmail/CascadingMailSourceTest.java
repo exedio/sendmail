@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.activation.DataSource;
-
 import junit.framework.TestCase;
 
 public class CascadingMailSourceTest extends TestCase
@@ -164,7 +162,7 @@ public class CascadingMailSourceTest extends TestCase
 		maximumResultSizeB = -1;
 	}
 
-	private static class MockMail implements Mail
+	private static class MockMail extends AssertionErrorMail
 	{
 		final String code;
 		final long timestamp;
@@ -181,74 +179,10 @@ public class CascadingMailSourceTest extends TestCase
 			return "mail:"+code;
 		}
 
-		public String getMessageID()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String getFrom()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String[] getTo()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String[] getCarbonCopy()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String[] getBlindCarbonCopy()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String getSubject()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String getTextPlain()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String getTextHtml()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public DataSource[] getAttachments()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String getCharset()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public String getContentTransferEncoding()
-		{
-			throw new RuntimeException(code);
-		}
-
+		@Override
 		public Date getDate()
 		{
 			return new Date(timestamp);
-		}
-
-		public void notifySent()
-		{
-			throw new RuntimeException(code);
-		}
-
-		public void notifyFailed(final Exception exception)
-		{
-			throw new RuntimeException(code);
 		}
 	}
 
