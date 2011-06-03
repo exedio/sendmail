@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.activation.DataSource;
-
 import com.exedio.cope.util.EmptyJobContext;
 
 /**
@@ -80,73 +78,44 @@ public class SmtpTerror extends SendmailTest
 			{
 				final int mailNumber = number;
 
-				result.add(new Mail()
+				result.add(new EmptyMail()
 				{
-					public String getMessageID()
-					{
-						return null;
-					}
-
 					public String getFrom()
 					{
 						return from;
 					}
 
+					@Override
 					public String[] getTo()
 					{
 						return to;
 					}
 
-					public String[] getCarbonCopy()
-					{
-						return null;
-					}
-
-					public String[] getBlindCarbonCopy()
-					{
-						return null;
-					}
-
+					@Override
 					public String getSubject()
 					{
 						return subject + mailNumber;
 					}
 
+					@Override
 					public String getTextPlain()
 					{
 						return "terror mail";
 					}
 
-					public String getTextHtml()
-					{
-						return null;
-					}
-
-					public DataSource[] getAttachments()
-					{
-						return null;
-					}
-
-					public String getCharset()
-					{
-						return null;
-					}
-
-					public String getContentTransferEncoding()
-					{
-						return null;
-					}
-
+					@Override
 					public Date getDate()
 					{
 						return new Date(timestamp);
 					}
 
+					@Override
 					public void notifySent()
 					{
 						sent++;
 					}
 
+					@Override
 					public void notifyFailed(final Exception exception)
 					{
 						throw new RuntimeException(exception);

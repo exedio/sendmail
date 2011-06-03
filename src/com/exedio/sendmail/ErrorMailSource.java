@@ -27,8 +27,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.activation.DataSource;
-
 public final class ErrorMailSource implements MailSource
 {
 	private static final int DEFAULT_OVERFLOW_THRESHOLD = 100;
@@ -137,7 +135,7 @@ public final class ErrorMailSource implements MailSource
 		return new ErrorMail(subject, text, overflowCount);
 	}
 
-	private final class ErrorMail implements Mail
+	private final class ErrorMail extends EmptyMail
 	{
 		final long timestamp;
 		final String mailSubject;
@@ -157,73 +155,44 @@ public final class ErrorMailSource implements MailSource
 			}
 		}
 
-		public String getMessageID()
-		{
-			return null;
-		}
-
 		public String getFrom()
 		{
 			return from;
 		}
 
+		@Override
 		public String[] getTo()
 		{
 			return to;
 		}
 
-		public String[] getCarbonCopy()
-		{
-			return null;
-		}
-
-		public String[] getBlindCarbonCopy()
-		{
-			return null;
-		}
-
+		@Override
 		public final String getSubject()
 		{
 			final String actualSubject = mailSubject==null ? fallbackSubject : mailSubject;
 			return (overflowCountOfMail>0) ? (actualSubject + " (ov" + overflowCountOfMail + ')') : actualSubject;
 		}
 
+		@Override
 		public String getTextPlain()
 		{
 			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 			return df.format(new Date(timestamp)) + '\n' + text;
 		}
 
-		public String getTextHtml()
-		{
-			return null;
-		}
-
-		public DataSource[] getAttachments()
-		{
-			return null;
-		}
-
-		public String getCharset()
-		{
-			return null;
-		}
-
-		public String getContentTransferEncoding()
-		{
-			return null;
-		}
-
+		@Override
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
 
+		@Override
 		public void notifySent()
 		{
 			mailsToSend.remove(this);
 		}
 
+		@Override
 		public void notifyFailed(final Exception exception)
 		{
 			exception.printStackTrace();
