@@ -18,31 +18,10 @@
 
 package com.exedio.sendmail;
 
-import java.util.Date;
-
-import javax.activation.DataSource;
-
 import junit.framework.TestCase;
 
 public class MailSenderInstantiationTest extends TestCase
 {
-	static final Mail errorMail = new Mail(){
-				public DataSource[] getAttachments() { throw new RuntimeException(); }
-				public String[] getBlindCarbonCopy() { throw new RuntimeException(); }
-				public String[] getCarbonCopy() { throw new RuntimeException(); }
-				public String getCharset() { throw new RuntimeException(); }
-				public String getContentTransferEncoding() { throw new RuntimeException(); }
-				public Date getDate() { throw new RuntimeException(); }
-				public String getFrom() { throw new RuntimeException(); }
-				public String getMessageID() { throw new RuntimeException(); }
-				public String getSubject() { throw new RuntimeException(); }
-				public String getTextHtml() { throw new RuntimeException(); }
-				public String getTextPlain() { throw new RuntimeException(); }
-				public String[] getTo() { throw new RuntimeException(); }
-				public void notifyFailed(final Exception exception) { throw new RuntimeException(); }
-				public void notifySent() { throw new RuntimeException(); }
-			};
-
 	public void testIt() throws Exception
 	{
 		final MailSender ms = new MailSender("host", 123, 456, false);
