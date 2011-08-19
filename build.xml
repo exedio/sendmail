@@ -152,7 +152,7 @@
 	<target name="build" depends="compile, jar, test, api" />
 	<target name="all" depends="build, jar.src" />
 	
-	<target name="hudson" depends="all">
+	<target name="jenkins" depends="all">
 		<copy todir="${basedir}/build/success">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />
 			<fileset file="${basedir}/build/exedio-sendmail-src.zip" />
