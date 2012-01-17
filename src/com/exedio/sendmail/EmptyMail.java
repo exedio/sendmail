@@ -39,6 +39,14 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	public String[] getReplyTo()
+	{
+		return null;
+	}
+	
+	/**
+	 * This default implementation always returns <i>null</i>.
+	 */
 	public String[] getTo()
 	{
 		return null;

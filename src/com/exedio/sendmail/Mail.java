@@ -30,6 +30,11 @@ public interface Mail
 	String getMessageID();
 
 	String getFrom();
+	
+	/*
+	 * May return null
+	 */
+	String[] getReplyTo();
 
 	String[] getTo();
 

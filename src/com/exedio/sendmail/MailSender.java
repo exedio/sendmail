@@ -318,6 +318,8 @@ public final class MailSender
 				throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
 			from = new InternetAddress(fromString);
 		}
+		
+		final InternetAddress[] replyTo = toAdresses( mail.getReplyTo() );
 
 		final InternetAddress[] to = toAdresses(mail.getTo());
 		final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
@@ -344,6 +346,10 @@ public final class MailSender
 				? new MimeMessageWithID(session, id, contentTransferEncoding)
 				: new MimeMessage(session);
 		message.setFrom(from);
+		if( replyTo != null )
+		{
+			message.setReplyTo( replyTo );
+		}
 		if(to!=null)
 			message.setRecipients(Message.RecipientType.TO, to);
 		if(carbonCopy!=null)

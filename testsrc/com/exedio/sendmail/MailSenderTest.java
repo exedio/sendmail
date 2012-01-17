@@ -283,6 +283,11 @@ public class MailSenderTest extends SendmailTest
 			checker.checkBody(m);
 		}
 
+		public String[] getReplyTo()
+		{
+			return null;
+		}
+
 	}
 
 	/*private static final class MockURLDataSource implements DataSource

@@ -93,4 +93,9 @@ class AssertionErrorMail implements Mail
 	{
 		throw new AssertionError();
 	}
+
+	public String[] getReplyTo()
+	{
+		throw new AssertionError();
+	}
 }
