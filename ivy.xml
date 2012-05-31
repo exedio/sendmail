@@ -21,7 +21,7 @@
 	</publications>
 	<dependencies>
 		<dependency org="junit" name="junit" rev="4.4" conf="build->default" />
-		<dependency org="javax.mail-x" name="mail" rev="1.4" />
+		<dependency org="javax.mail" name="mail" rev="1.4" />
 		<dependency org="com.exedio" name="copeutil" rev="171" />
 	</dependencies>
 </ivy-module>
