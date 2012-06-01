@@ -47,7 +47,7 @@ import com.exedio.cope.util.Interrupter;
 import com.exedio.cope.util.JobContext;
 import com.exedio.cope.util.InterrupterJobContextAdapter.Body;
 
-public final class MailSender
+public class MailSender
 {
 	public static final String DEFAULT_CHARSET = "UTF-8";
 	private static PrintStream log = System.err;
@@ -221,9 +221,7 @@ public final class MailSender
 						try
 						{
 							mailsTriedToSendInOneConnection++;
-							//final long start = System.currentTimeMillis();
-							transport.sendMessage(message, message.getAllRecipients());
-							//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
+							sendMessage(transport, message);
 							mailsSentInOneConnection++;
 							ctx.incrementProgress();
 						}
@@ -233,7 +231,7 @@ public final class MailSender
 							transport.connect();
 							mailsTriedToSendInOneConnection = 1;
 							mailsSentInOneConnection = 0;
-							transport.sendMessage(message, message.getAllRecipients());
+							sendMessage(transport, message);
 							mailsSentInOneConnection++;
 						}
 
@@ -270,6 +268,13 @@ public final class MailSender
 			}
 		}
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
+	}
+
+	protected void sendMessage(final Transport transport, final MimeMessage message) throws MessagingException
+	{
+		//final long start = System.currentTimeMillis();
+		transport.sendMessage(message, message.getAllRecipients());
+		//System.out.println("Mailsender sent. ("+(System.currentTimeMillis()-start)+"ms)");
 	}
 
 	/**
@@ -318,7 +323,7 @@ public final class MailSender
 				throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
 			from = new InternetAddress(fromString);
 		}
-		
+
 		final InternetAddress[] replyTo = toAdresses( mail.getReplyTo() );
 
 		final InternetAddress[] to = toAdresses(mail.getTo());
