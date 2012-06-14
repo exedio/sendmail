@@ -108,22 +108,22 @@ public class MailSender
 		this.session = session;
 	}
 
-	public String getHost()
+	public final String getHost()
 	{
 		return host;
 	}
 
-	public int getConnectTimeout()
+	public final int getConnectTimeout()
 	{
 		return connectTimeout;
 	}
 
-	public int getReadTimeout()
+	public final int getReadTimeout()
 	{
 		return readTimeout;
 	}
 
-	public boolean isDebug()
+	public final boolean isDebug()
 	{
 		return debug;
 	}
@@ -163,7 +163,7 @@ public class MailSender
 	 * @return the number of successfully sent mails
 	 */
 	@Deprecated
-	public int sendMails(
+	public final int sendMails(
 			final MailSource source,
 			final int maximumResultSize,
 			final Interrupter interrupter)
@@ -177,7 +177,7 @@ public class MailSender
 		);
 	}
 
-	public void sendMails(
+	public final void sendMails(
 			final MailSource source,
 			final int maximumResultSize,
 			final JobContext ctx)
@@ -300,7 +300,7 @@ public class MailSender
 	 * this method does not call {@link Mail#notifySent()}
 	 * or {@link Mail#notifyFailed(Exception)}.
 	 */
-	public void sendMail(final Mail mail)
+	public final void sendMail(final Mail mail)
 		throws MessagingException
 	{
 		final MimeMessage message = createMessage(session, mail);
