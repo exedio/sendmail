@@ -55,8 +55,6 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		private final String textPlain;
 		private final long timestamp;
 
-		int sentCounter = 0;
-		int failedCounter = 0;
 		Exception failedException = null;
 
 		MockMail(
@@ -107,13 +105,12 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		@Override
 		public void notifySent()
 		{
-			sentCounter++;
+			// empty
 		}
 
 		@Override
 		public void notifyFailed(final Exception exception)
 		{
-			failedCounter++;
 			failedException = exception;
 		}
 
