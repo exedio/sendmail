@@ -21,35 +21,26 @@ package com.exedio.sendmail;
 import static com.exedio.cope.util.InterrupterJobContextAdapter.run;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Properties;
 
-import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
-import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import com.exedio.cope.util.Interrupter;
-import com.exedio.cope.util.JobContext;
 import com.exedio.cope.util.InterrupterJobContextAdapter.Body;
+import com.exedio.cope.util.JobContext;
 
 public class MailSender
 {
-	public static final String DEFAULT_CHARSET = "UTF-8";
+	public static final String DEFAULT_CHARSET = MailData.DEFAULT_CHARSET;
 	private static PrintStream log = System.err;
 
 	private final String host;
@@ -315,189 +306,70 @@ public class MailSender
 		throws MessagingException
 	{
 		//System.err.println("-------------------------------------+"+mail);
-		final String id = mail.getMessageID();
-		final InternetAddress from;
+
+		final MailData message = new MailData(mail.getFrom(), mail.getSubject());
+
 		{
-			final String fromString = mail.getFrom();
-			if(fromString==null)
-				throw new NullPointerException("Mail#getFrom() must not return null (" + mail.toString() + ')');
-			from = new InternetAddress(fromString);
+			final String id = mail.getMessageID();
+			if(id!=null)
+				message.setMessageID(id);
 		}
-
-		final InternetAddress[] replyTo = toAdresses( mail.getReplyTo() );
-
-		final InternetAddress[] to = toAdresses(mail.getTo());
-		final InternetAddress[] carbonCopy = toAdresses(mail.getCarbonCopy());
-		final InternetAddress[] blindCarbonCopy = toAdresses(mail.getBlindCarbonCopy());
-		final String subject = mail.getSubject();
-		final Date mailDate = mail.getDate();
-
-		final String textPlain = mail.getTextPlain();
-		final String textHtml = mail.getTextHtml();
-		if(textPlain==null && textHtml==null)
-			throw new NullPointerException("either Mail#getTextPlain() or Mail#getTextHtml() must not return null (" + mail.toString() + ')');
-
-		final DataSource[] attachments = emptyToNull(mail.getAttachments());
-
-		final String mailCharset = mail.getCharset();
-		final String charset = mailCharset==null ? DEFAULT_CHARSET : mailCharset;
-		final String htmlContentType = "text/html; charset=" + charset;
-		final String plainContentType = "text/plain; charset=" + charset;
-		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mailDate==null ? new java.util.Date() : mailDate );
-		final String contentTransferEncoding = mail.getContentTransferEncoding();
-
-		final MimeMessage message =
-				id!=null
-				? new MimeMessageWithID(session, id, contentTransferEncoding)
-				: new MimeMessage(session);
-		message.setFrom(from);
-		if( replyTo != null )
 		{
-			message.setReplyTo( replyTo );
+			final String[] replyTo = mail.getReplyTo();
+			if(replyTo!=null)
+				message.setReplyTo(replyTo);
 		}
-		if(to!=null)
-			message.setRecipients(Message.RecipientType.TO, to);
-		if(carbonCopy!=null)
-			message.setRecipients(Message.RecipientType.CC, carbonCopy);
-		if(blindCarbonCopy!=null)
-			message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
-		if(subject!=null)
-			message.setSubject(subject, charset);
-		message.setHeader("Date", date);
-
-		if(attachments==null)
 		{
-			if(textPlain==null || textHtml==null)
-			{
-				if(textPlain!=null)
-				{
-					message.setDataHandler( new CharsetEncodingDataHandler( textPlain, charset, plainContentType) );
-				}
-				else if(textHtml!=null)
-					message.setContent(textHtml, htmlContentType);
-				else
-					assert false;
-			}
-			else
-			{
-				message.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding, charset));
-			}
+			final String[] to = mail.getTo();
+			if(to!=null)
+				message.setTo(to);
 		}
-		else
 		{
-			final MimeMultipart mixed = new MimeMultipart("mixed");
-			if(textPlain==null || textHtml==null)
-			{
-				final MimeBodyPart part = new MimeBodyPart();
-				if(textPlain!=null)
-				{
-					part.setDataHandler( new CharsetEncodingDataHandler( textPlain, charset, plainContentType) );
-					if(contentTransferEncoding!=null)
-						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
-				}
-				else if(textHtml!=null)
-				{
-					part.setContent(textHtml, htmlContentType);
-					if(contentTransferEncoding!=null)
-						part.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
-				}
-				else
-					assert false;
-				part.setDisposition(Part.INLINE);
-				mixed.addBodyPart(part);
-			}
-			else
-			{
-				final MimeBodyPart alternativePart = new MimeBodyPart();
-				alternativePart.setContent(alternative(textPlain, textHtml, plainContentType, htmlContentType, contentTransferEncoding, charset));
-				if(contentTransferEncoding!=null)
-					alternativePart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
-				mixed.addBodyPart(alternativePart);
-			}
-			for(final DataSource attachment : attachments)
-			{
-				final MimeBodyPart attachPart = new MimeBodyPart();
-				attachPart.setDataHandler(new DataHandler(attachment));
-				attachPart.setDisposition(Part.ATTACHMENT);
-				final String attachmentName = attachment.getName();
-				if(attachmentName!=null)
-					attachPart.setFileName(attachmentName);
-				mixed.addBodyPart(attachPart);
-			}
-			message.setContent(mixed);
+			final String[] carbonCopy = mail.getCarbonCopy();
+			if(carbonCopy!=null)
+				message.setCarbonCopy(carbonCopy);
 		}
-		return message;
-	}
-
-	/**
-	 * See
-	 * http://java.sun.com/products/javamail/FAQ.html#msgid
-	 * but updateMessageID did not work, so I used updateHeaders instead.
-	 */
-	private static final class MimeMessageWithID extends MimeMessage
-	{
-		final String id;
-		final String contentTransferEncoding;
-
-		MimeMessageWithID(final Session session, final String id, final String contentTransferEncoding)
 		{
-			super(session);
-			assert id!=null;
-			this.id = id;
-			this.contentTransferEncoding = contentTransferEncoding;
+			final String[] blindCarbonCopy = mail.getBlindCarbonCopy();
+			if(blindCarbonCopy!=null)
+				message.setBlindCarbonCopy(blindCarbonCopy);
 		}
-
-		@Override
-		protected void updateHeaders() throws MessagingException
 		{
-			super.updateHeaders();
-			setHeader("Message-ID", id);
+			final Date date = mail.getDate();
+			if(date!=null)
+				message.setDate(date);
+		}
+		{
+			final String textPlain = mail.getTextPlain();
+			if(textPlain!=null)
+				message.setTextPlain(textPlain);
+		}
+		{
+			final String textHtml = mail.getTextHtml();
+			if(textHtml!=null)
+				message.setTextHtml(textHtml);
+		}
+		{
+			final DataSource[] attachments = emptyToNull(mail.getAttachments());
+			if(attachments!=null)
+				message.setAttachements(attachments);
+		}
+		{
+			final String charset = mail.getCharset();
+			if(charset!=null)
+				message.setCharset(charset);
+		}
+		{
+			final String contentTransferEncoding = mail.getContentTransferEncoding();
 			if(contentTransferEncoding!=null)
-				setHeader("Content-Transfer-Encoding", contentTransferEncoding);
+				message.setContentTransferEncoding(contentTransferEncoding);
 		}
-	}
-
-	private static final InternetAddress[] toAdresses(final String[] s) throws AddressException
-	{
-		if(s!=null)
-		{
-			final InternetAddress[] result = new InternetAddress[s.length];
-			for(int i = 0; i<s.length; i++)
-				result[i] = new InternetAddress(s[i]);
-			return result;
-		}
-		else
-			return null;
+		return message.createMessage(session);
 	}
 
 	private static final DataSource[] emptyToNull(final DataSource[] ds)
 	{
 		return ds==null ? null : ds.length==0 ? null : ds;
-	}
-
-	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
-	{
-		assert plain!=null;
-		assert html!=null;
-
-		final MimeMultipart result = new MimeMultipart("alternative");
-		{
-			final MimeBodyPart textPart = new MimeBodyPart();
-			textPart.setDataHandler( new CharsetEncodingDataHandler( plain, charset, plainContentType) );
-			if(contentTransferEncoding!=null)
-				textPart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
-			textPart.setDisposition(Part.INLINE);
-			result.addBodyPart(textPart);
-		}
-		{
-			final MimeBodyPart htmlPart = new MimeBodyPart();
-			htmlPart.setContent(html, htmlContentType);
-			if(contentTransferEncoding!=null)
-				htmlPart.setHeader("Content-Transfer-Encoding", contentTransferEncoding);
-			htmlPart.setDisposition(Part.INLINE);
-			result.addBodyPart(htmlPart);
-		}
-		return result;
 	}
 
 	private static class SendmailAuthenticator extends Authenticator
