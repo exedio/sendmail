@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
@@ -45,10 +46,10 @@ public final class MailData
 	private final String mailSubject;
 	private String messageID = null;
 	private long mailInstanceDate = NOT_A_DATE;
-	private final ArrayList<String> mailTo = new ArrayList<String>();
-	private final ArrayList<String> mailCarbonCopy = new ArrayList<String>();
-	private final ArrayList<String> mailBlindCarbonCopy = new ArrayList<String>();
-	private final ArrayList<String> mailReplyTo = new ArrayList<String>();
+	private final ArrayList<InternetAddress> mailTo = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> mailCarbonCopy = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> mailBlindCarbonCopy = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> mailReplyTo = new ArrayList<InternetAddress>();
 	private String mailTextPlain = null;
 	private String mailTextHtml = null;
 	private String mailCharset = DEFAULT_CHARSET;
@@ -71,28 +72,28 @@ public final class MailData
 		this.messageID = messageID;
 	}
 
-	void setTo(final String[] to)
+	void setTo(final String[] to) throws AddressException
 	{
 		mailTo.clear();
-		mailTo.addAll(Arrays.asList(to));
+		mailTo.addAll(toAdresses(to));
 	}
 
-	void setCarbonCopy(final String[] carbonCopy)
+	void setCarbonCopy(final String[] carbonCopy) throws AddressException
 	{
 		mailCarbonCopy.clear();
-		mailCarbonCopy.addAll(Arrays.asList(carbonCopy));
+		mailCarbonCopy.addAll(toAdresses(carbonCopy));
 	}
 
-	void setBlindCarbonCopy(final String[] blindCarbonCopy)
+	void setBlindCarbonCopy(final String[] blindCarbonCopy) throws AddressException
 	{
 		mailBlindCarbonCopy.clear();
-		mailBlindCarbonCopy.addAll(Arrays.asList(blindCarbonCopy));
+		mailBlindCarbonCopy.addAll(toAdresses(blindCarbonCopy));
 	}
 
-	void setReplyTo(final String[] replyTo)
+	void setReplyTo(final String[] replyTo) throws AddressException
 	{
 		mailReplyTo.clear();
-		mailReplyTo.addAll(Arrays.asList(replyTo));
+		mailReplyTo.addAll(toAdresses(replyTo));
 	}
 
 	void setDate(final Date date)
@@ -136,11 +137,6 @@ public final class MailData
 			from = new InternetAddress(mailFrom);
 		}
 
-		final InternetAddress[] replyTo = toAdresses(mailReplyTo);
-
-		final InternetAddress[] to = toAdresses(mailTo);
-		final InternetAddress[] carbonCopy = toAdresses(mailCarbonCopy);
-		final InternetAddress[] blindCarbonCopy = toAdresses(mailBlindCarbonCopy);
 		final String subject = mailSubject;
 		final long mailDate = mailInstanceDate;
 
@@ -162,16 +158,16 @@ public final class MailData
 				? new MimeMessageWithID(session, id, contentTransferEncoding)
 				: new MimeMessage(session);
 		message.setFrom(from);
-		if( replyTo != null )
+		if( mailReplyTo != null )
 		{
-			message.setReplyTo( replyTo );
+			message.setReplyTo(toArray(mailReplyTo));
 		}
-		if(to!=null)
-			message.setRecipients(Message.RecipientType.TO, to);
-		if(carbonCopy!=null)
-			message.setRecipients(Message.RecipientType.CC, carbonCopy);
-		if(blindCarbonCopy!=null)
-			message.setRecipients(Message.RecipientType.BCC, blindCarbonCopy);
+		if(mailTo!=null)
+			message.setRecipients(Message.RecipientType.TO, toArray(mailTo));
+		if(mailCarbonCopy!=null)
+			message.setRecipients(Message.RecipientType.CC, toArray(mailCarbonCopy));
+		if(mailBlindCarbonCopy!=null)
+			message.setRecipients(Message.RecipientType.BCC, toArray(mailBlindCarbonCopy));
 		if(subject!=null)
 			message.setSubject(subject, charset);
 		message.setHeader("Date", date);
@@ -268,18 +264,18 @@ public final class MailData
 		}
 	}
 
-	private static final InternetAddress[] toAdresses(final ArrayList<String> s) throws AddressException
+	private static final List<InternetAddress> toAdresses(final String[] s) throws AddressException
 	{
-		if(s!=null)
-		{
-			final InternetAddress[] result = new InternetAddress[s.size()];
-			int i = 0;
-			for(final String address : s)
-				result[i++] = new InternetAddress(address);
-			return result;
-		}
-		else
-			return null;
+		final InternetAddress[] result = new InternetAddress[s.length];
+		int i = 0;
+		for(final String address : s)
+			result[i++] = new InternetAddress(address);
+		return Arrays.asList(result);
+	}
+
+	private static InternetAddress[] toArray(final ArrayList<InternetAddress> l)
+	{
+		return l.toArray(new InternetAddress[l.size()]);
 	}
 
 	private static final ArrayList<DataSource> emptyToNull(final ArrayList<DataSource> ds)
