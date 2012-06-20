@@ -37,7 +37,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-public final class MailData
+final class MailData
 {
 	static final String DEFAULT_CHARSET = "UTF-8";
 	private static long NOT_A_DATE = Long.MIN_VALUE;
