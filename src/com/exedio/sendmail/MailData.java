@@ -46,10 +46,10 @@ final class MailData
 	private final String subject;
 	private String messageID = null;
 	private long mailInstanceDate = NOT_A_DATE;
-	private final ArrayList<InternetAddress> mailTo = new ArrayList<InternetAddress>();
-	private final ArrayList<InternetAddress> mailCarbonCopy = new ArrayList<InternetAddress>();
-	private final ArrayList<InternetAddress> mailBlindCarbonCopy = new ArrayList<InternetAddress>();
-	private final ArrayList<InternetAddress> mailReplyTo = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> to = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> carbonCopy = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> blindCarbonCopy = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> replyTo = new ArrayList<InternetAddress>();
 	private String mailTextPlain = null;
 	private String mailTextHtml = null;
 	private String mailCharset = DEFAULT_CHARSET;
@@ -84,22 +84,22 @@ final class MailData
 
 	void setTo(final String[] to) throws AddressException
 	{
-		set(mailTo, to);
+		set(this.to, to);
 	}
 
 	void setCarbonCopy(final String[] carbonCopy) throws AddressException
 	{
-		set(mailCarbonCopy, carbonCopy);
+		set(this.carbonCopy, carbonCopy);
 	}
 
 	void setBlindCarbonCopy(final String[] blindCarbonCopy) throws AddressException
 	{
-		set(mailBlindCarbonCopy, blindCarbonCopy);
+		set(this.blindCarbonCopy, blindCarbonCopy);
 	}
 
 	void setReplyTo(final String[] replyTo) throws AddressException
 	{
-		set(mailReplyTo, replyTo);
+		set(this.replyTo, replyTo);
 	}
 
 	void setDate(final Date date)
@@ -158,16 +158,16 @@ final class MailData
 				? new MimeMessageWithID(session, id, contentTransferEncoding)
 				: new MimeMessage(session);
 		message.setFrom(from);
-		if( mailReplyTo != null )
+		if(replyTo!=null)
 		{
-			message.setReplyTo(toArray(mailReplyTo));
+			message.setReplyTo(toArray(replyTo));
 		}
-		if(mailTo!=null)
-			message.setRecipients(Message.RecipientType.TO, toArray(mailTo));
-		if(mailCarbonCopy!=null)
-			message.setRecipients(Message.RecipientType.CC, toArray(mailCarbonCopy));
-		if(mailBlindCarbonCopy!=null)
-			message.setRecipients(Message.RecipientType.BCC, toArray(mailBlindCarbonCopy));
+		if(to!=null)
+			message.setRecipients(Message.RecipientType.TO, toArray(to));
+		if(carbonCopy!=null)
+			message.setRecipients(Message.RecipientType.CC, toArray(carbonCopy));
+		if(blindCarbonCopy!=null)
+			message.setRecipients(Message.RecipientType.BCC, toArray(blindCarbonCopy));
 		if(subject!=null)
 			message.setSubject(subject, charset);
 		message.setHeader("Date", date);
