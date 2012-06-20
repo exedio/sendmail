@@ -42,7 +42,7 @@ final class MailData
 	static final String DEFAULT_CHARSET = "UTF-8";
 	private static long NOT_A_DATE = Long.MIN_VALUE;
 
-	private final String mailFrom;
+	private final InternetAddress from;
 	private final String mailSubject;
 	private String messageID = null;
 	private long mailInstanceDate = NOT_A_DATE;
@@ -59,8 +59,9 @@ final class MailData
 	public MailData(
 			final String from,
 			final String subject)
+		throws AddressException
 	{
-		this.mailFrom = from;
+		this.from = new InternetAddress(from);
 		this.mailSubject = subject;
 
 		if(from==null)
@@ -132,11 +133,6 @@ final class MailData
 	{
 		//System.err.println("-------------------------------------+"+mail);
 		final String id = messageID;
-		final InternetAddress from;
-		{
-			from = new InternetAddress(mailFrom);
-		}
-
 		final String subject = mailSubject;
 		final long mailDate = mailInstanceDate;
 
