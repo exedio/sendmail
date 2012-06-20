@@ -73,28 +73,33 @@ final class MailData
 		this.messageID = messageID;
 	}
 
+	private static final void set(
+			final ArrayList<InternetAddress> list,
+			final String[] value)
+		throws AddressException
+	{
+		list.clear();
+		list.addAll(toAdresses(value));
+	}
+
 	void setTo(final String[] to) throws AddressException
 	{
-		mailTo.clear();
-		mailTo.addAll(toAdresses(to));
+		set(mailTo, to);
 	}
 
 	void setCarbonCopy(final String[] carbonCopy) throws AddressException
 	{
-		mailCarbonCopy.clear();
-		mailCarbonCopy.addAll(toAdresses(carbonCopy));
+		set(mailCarbonCopy, carbonCopy);
 	}
 
 	void setBlindCarbonCopy(final String[] blindCarbonCopy) throws AddressException
 	{
-		mailBlindCarbonCopy.clear();
-		mailBlindCarbonCopy.addAll(toAdresses(blindCarbonCopy));
+		set(mailBlindCarbonCopy, blindCarbonCopy);
 	}
 
 	void setReplyTo(final String[] replyTo) throws AddressException
 	{
-		mailReplyTo.clear();
-		mailReplyTo.addAll(toAdresses(replyTo));
+		set(mailReplyTo, replyTo);
 	}
 
 	void setDate(final Date date)
