@@ -6,6 +6,7 @@
 		<copy overwrite="true" file="artifacts/exedio-cope-util-log.txt" tofile="../lib/exedio-cope-util.jar-CHANGELOG" />
 		<copy overwrite="true" file="artifacts/exedio-cope-util-src.zip" tofile="../lib/exedio-cope-util.jar-src.zip" />
 		<copy overwrite="true" file="artifacts/mail-jar.jar" tofile="../lib/mail.jar" />
+		<copy overwrite="true" file="artifacts/mail-source.jar" todir="../lib" />
 		<copy overwrite="true" file="artifacts/junit-jar.jar" tofile="../lib/junit.jar" />
 	</target>
 </project>
