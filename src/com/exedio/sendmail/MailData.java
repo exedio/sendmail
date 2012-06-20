@@ -43,7 +43,7 @@ final class MailData
 	private static long NOT_A_DATE = Long.MIN_VALUE;
 
 	private final InternetAddress from;
-	private final String mailSubject;
+	private final String subject;
 	private String messageID = null;
 	private long mailInstanceDate = NOT_A_DATE;
 	private final ArrayList<InternetAddress> mailTo = new ArrayList<InternetAddress>();
@@ -62,7 +62,7 @@ final class MailData
 		throws AddressException
 	{
 		this.from = new InternetAddress(from);
-		this.mailSubject = subject;
+		this.subject = subject;
 
 		if(from==null)
 			throw new NullPointerException("from");
@@ -133,7 +133,6 @@ final class MailData
 	{
 		//System.err.println("-------------------------------------+"+mail);
 		final String id = messageID;
-		final String subject = mailSubject;
 		final long mailDate = mailInstanceDate;
 
 		final String textPlain = mailTextPlain;
