@@ -54,7 +54,7 @@ final class MailData
 	private String textHtml = null;
 	private String charset = DEFAULT_CHARSET;
 	private String contentTransferEncoding = null;
-	private final ArrayList<DataSource> mailAttachments = new ArrayList<DataSource>();
+	private final ArrayList<DataSource> attachments = new ArrayList<DataSource>();
 
 	public MailData(
 			final String from,
@@ -154,8 +154,8 @@ final class MailData
 
 	void setAttachements(final DataSource[] attachments)
 	{
-		mailAttachments.clear();
-		mailAttachments.addAll(Arrays.asList(attachments));
+		this.attachments.clear();
+		this.attachments.addAll(Arrays.asList(attachments));
 	}
 
 	public void addAttachement(final DataSource attachment)
@@ -163,7 +163,7 @@ final class MailData
 		if(attachment==null)
 			throw new NullPointerException();
 
-		mailAttachments.add(attachment);
+		this.attachments.add(attachment);
 	}
 
 	MimeMessage createMessage(final Session session)
@@ -172,7 +172,6 @@ final class MailData
 		if(textPlain==null && textHtml==null)
 			throw new NullPointerException("either textPlain or textHtml() must be set");
 
-		final ArrayList<DataSource> attachments = emptyToNull(mailAttachments);
 		final String htmlContentType = "text/html; charset=" + charset;
 		final String plainContentType = "text/plain; charset=" + charset;
 		final String dateString = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( date==NOT_A_DATE ? new java.util.Date() : new java.util.Date(date) );
@@ -194,7 +193,7 @@ final class MailData
 			message.setSubject(subject, charset);
 		message.setHeader("Date", dateString);
 
-		if(attachments==null)
+		if(attachments.isEmpty())
 		{
 			if(textPlain==null || textHtml==null)
 			{
@@ -298,11 +297,6 @@ final class MailData
 	private static InternetAddress[] toArray(final ArrayList<InternetAddress> l)
 	{
 		return l.toArray(new InternetAddress[l.size()]);
-	}
-
-	private static final ArrayList<DataSource> emptyToNull(final ArrayList<DataSource> ds)
-	{
-		return ds==null ? null : ds.size()==0 ? null : ds;
 	}
 
 	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
