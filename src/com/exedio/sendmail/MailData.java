@@ -45,7 +45,7 @@ final class MailData
 	private final InternetAddress from;
 	private final String subject;
 	private String messageID = null;
-	private long mailInstanceDate = NOT_A_DATE;
+	private long date = NOT_A_DATE;
 	private final ArrayList<InternetAddress> to = new ArrayList<InternetAddress>();
 	private final ArrayList<InternetAddress> carbonCopy = new ArrayList<InternetAddress>();
 	private final ArrayList<InternetAddress> blindCarbonCopy = new ArrayList<InternetAddress>();
@@ -104,7 +104,7 @@ final class MailData
 
 	void setDate(final Date date)
 	{
-		mailInstanceDate = date!=null ? date.getTime() : NOT_A_DATE;
+		this.date = date!=null ? date.getTime() : NOT_A_DATE;
 	}
 
 	void setTextPlain(final String textPlain)
@@ -138,7 +138,6 @@ final class MailData
 	{
 		//System.err.println("-------------------------------------+"+mail);
 		final String id = messageID;
-		final long mailDate = mailInstanceDate;
 
 		final String textPlain = mailTextPlain;
 		final String textHtml = mailTextHtml;
@@ -151,7 +150,7 @@ final class MailData
 		final String charset = mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
 		final String plainContentType = "text/plain; charset=" + charset;
-		final String date = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( mailDate==NOT_A_DATE ? new java.util.Date() : new java.util.Date(mailDate) );
+		final String dateString = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( date==NOT_A_DATE ? new java.util.Date() : new java.util.Date(date) );
 
 		final MimeMessage message =
 				id!=null
@@ -170,7 +169,7 @@ final class MailData
 			message.setRecipients(Message.RecipientType.BCC, toArray(blindCarbonCopy));
 		if(subject!=null)
 			message.setSubject(subject, charset);
-		message.setHeader("Date", date);
+		message.setHeader("Date", dateString);
 
 		if(attachments==null)
 		{
