@@ -141,23 +141,18 @@ final class MailData
 	MimeMessage createMessage(final Session session)
 		throws MessagingException
 	{
-		//System.err.println("-------------------------------------+"+mail);
-		final String id = messageID;
-
 		if(textPlain==null && textHtml==null)
 			throw new NullPointerException("either textPlain or textHtml() must be set");
 
 		final ArrayList<DataSource> attachments = emptyToNull(mailAttachments);
-
-
 		final String charset = mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
 		final String plainContentType = "text/plain; charset=" + charset;
 		final String dateString = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( date==NOT_A_DATE ? new java.util.Date() : new java.util.Date(date) );
 
 		final MimeMessage message =
-				id!=null
-				? new MimeMessageWithID(session, id, contentTransferEncoding)
+				messageID!=null
+				? new MimeMessageWithID(session, messageID, contentTransferEncoding)
 				: new MimeMessage(session);
 		message.setFrom(from);
 		if(replyTo!=null)
