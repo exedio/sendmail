@@ -50,8 +50,8 @@ final class MailData
 	private final ArrayList<InternetAddress> carbonCopy = new ArrayList<InternetAddress>();
 	private final ArrayList<InternetAddress> blindCarbonCopy = new ArrayList<InternetAddress>();
 	private final ArrayList<InternetAddress> replyTo = new ArrayList<InternetAddress>();
-	private String mailTextPlain = null;
-	private String mailTextHtml = null;
+	private String textPlain = null;
+	private String textHtml = null;
 	private String mailCharset = DEFAULT_CHARSET;
 	private String contentTransferEncoding = null;
 	private final ArrayList<DataSource> mailAttachments = new ArrayList<DataSource>();
@@ -114,12 +114,12 @@ final class MailData
 
 	void setTextPlain(final String textPlain)
 	{
-		this.mailTextPlain = textPlain;
+		this.textPlain = textPlain;
 	}
 
 	void setTextHtml(final String textHtml)
 	{
-		this.mailTextHtml = textHtml;
+		this.textHtml = textHtml;
 	}
 
 	void setCharset(final String charset)
@@ -144,8 +144,6 @@ final class MailData
 		//System.err.println("-------------------------------------+"+mail);
 		final String id = messageID;
 
-		final String textPlain = mailTextPlain;
-		final String textHtml = mailTextHtml;
 		if(textPlain==null && textHtml==null)
 			throw new NullPointerException("either textPlain or textHtml() must be set");
 
