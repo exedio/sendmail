@@ -91,4 +91,20 @@ public class MailDataTest extends TestCase
 			// ok
 		}
 	}
+
+	public void testAttachement() throws AddressException
+	{
+		final MailData d = new MailData("from", "subject");
+		d.addAttachement(new AssertionFailedDataSource());
+
+		try
+		{
+			d.addAttachement(null);
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// ok
+		}
+	}
 }

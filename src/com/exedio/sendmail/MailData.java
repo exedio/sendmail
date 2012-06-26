@@ -158,6 +158,14 @@ final class MailData
 		mailAttachments.addAll(Arrays.asList(attachments));
 	}
 
+	public void addAttachement(final DataSource attachment)
+	{
+		if(attachment==null)
+			throw new NullPointerException();
+
+		mailAttachments.add(attachment);
+	}
+
 	MimeMessage createMessage(final Session session)
 		throws MessagingException
 	{
