@@ -52,7 +52,7 @@ final class MailData
 	private final ArrayList<InternetAddress> replyTo = new ArrayList<InternetAddress>();
 	private String textPlain = null;
 	private String textHtml = null;
-	private String mailCharset = DEFAULT_CHARSET;
+	private String charset = DEFAULT_CHARSET;
 	private String contentTransferEncoding = null;
 	private final ArrayList<DataSource> mailAttachments = new ArrayList<DataSource>();
 
@@ -124,7 +124,7 @@ final class MailData
 
 	void setCharset(final String charset)
 	{
-		this.mailCharset = charset;
+		this.charset = charset;
 	}
 
 	void setContentTransferEncoding(final String contentTransferEncoding)
@@ -145,7 +145,6 @@ final class MailData
 			throw new NullPointerException("either textPlain or textHtml() must be set");
 
 		final ArrayList<DataSource> attachments = emptyToNull(mailAttachments);
-		final String charset = mailCharset;
 		final String htmlContentType = "text/html; charset=" + charset;
 		final String plainContentType = "text/plain; charset=" + charset;
 		final String dateString = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format( date==NOT_A_DATE ? new java.util.Date() : new java.util.Date(date) );
