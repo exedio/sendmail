@@ -87,9 +87,19 @@ final class MailData
 		set(this.to, to);
 	}
 
+	public void addTo(final String to) throws AddressException
+	{
+		this.to.add(new InternetAddress(to));
+	}
+
 	void setCarbonCopy(final String[] carbonCopy) throws AddressException
 	{
 		set(this.carbonCopy, carbonCopy);
+	}
+
+	public void addCarbonCopy(final String carbonCopy) throws AddressException
+	{
+		this.carbonCopy.add(new InternetAddress(carbonCopy));
 	}
 
 	void setBlindCarbonCopy(final String[] blindCarbonCopy) throws AddressException
@@ -97,9 +107,19 @@ final class MailData
 		set(this.blindCarbonCopy, blindCarbonCopy);
 	}
 
+	public void addBlindCarbonCopy(final String blindCarbonCopy) throws AddressException
+	{
+		this.blindCarbonCopy.add(new InternetAddress(blindCarbonCopy));
+	}
+
 	void setReplyTo(final String[] replyTo) throws AddressException
 	{
 		set(this.replyTo, replyTo);
+	}
+
+	public void addReplyTo(final String replyTo) throws AddressException
+	{
+		this.replyTo.add(new InternetAddress(replyTo));
 	}
 
 	public void setDate(final Date date)

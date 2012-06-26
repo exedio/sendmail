@@ -45,4 +45,50 @@ public class MailDataTest extends TestCase
 		d.setDate(null);
 		assertEquals(null, d.getDate());
 	}
+
+	public void testReceipents() throws AddressException
+	{
+		final MailData d = new MailData("from", "subject");
+		d.addTo("to");
+		d.addCarbonCopy("cc");
+		d.addBlindCarbonCopy("bcc");
+		d.addReplyTo("replyTo");
+
+		try
+		{
+			d.addTo(null);
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// ok
+		}
+		try
+		{
+			d.addCarbonCopy(null);
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// ok
+		}
+		try
+		{
+			d.addBlindCarbonCopy(null);
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// ok
+		}
+		try
+		{
+			d.addReplyTo(null);
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// ok
+		}
+	}
 }
