@@ -18,24 +18,31 @@
 
 package com.exedio.sendmail;
 
-import junit.framework.Test;
+import java.sql.Date;
+
+import javax.mail.internet.AddressException;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class PackageTest extends TestCase
+public class MailDataTest extends TestCase
 {
-
-	public static Test suite()
+	public void testDate() throws AddressException
 	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(MailDataTest.class);
-		suite.addTestSuite(MailSenderInstantiationTest.class);
-		suite.addTestSuite(MailSenderTest.class);
-		suite.addTestSuite(MailSenderConnectionCloseTest.class);
-		suite.addTestSuite(ErrorMailSourceTest.class);
-		suite.addTestSuite(CascadingMailSourceTest.class);
-		// normally disabled
-		//suite.addTestSuite(SmtpTerror.class);
-		return suite;
+		final MailData d = new MailData("from", "subject");
+		assertEquals(null, d.getDate());
+
+		final Date DATE = new Date(1234567);
+		d.setDate(DATE);
+		assertEquals(DATE, d.getDate());
+		assertNotSame(DATE, d.getDate());
+
+		final Date DATE2 = new Date(DATE.getTime());
+		DATE.setTime(7654321);
+		assertEquals(DATE2, d.getDate());
+		assertNotSame(DATE, d.getDate());
+		assertNotSame(DATE2, d.getDate());
+
+		d.setDate(null);
+		assertEquals(null, d.getDate());
 	}
 }

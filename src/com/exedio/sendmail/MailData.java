@@ -102,9 +102,14 @@ final class MailData
 		set(this.replyTo, replyTo);
 	}
 
-	void setDate(final Date date)
+	public void setDate(final Date date)
 	{
 		this.date = date!=null ? date.getTime() : NOT_A_DATE;
+	}
+
+	public Date getDate()
+	{
+		return (date!=NOT_A_DATE) ? new Date(date) : null;
 	}
 
 	void setTextPlain(final String textPlain)
