@@ -156,9 +156,7 @@ final class MailData
 				: new MimeMessage(session);
 		message.setFrom(from);
 		if(replyTo!=null)
-		{
 			message.setReplyTo(toArray(replyTo));
-		}
 		if(to!=null)
 			message.setRecipients(Message.RecipientType.TO, toArray(to));
 		if(carbonCopy!=null)
