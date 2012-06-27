@@ -68,7 +68,7 @@ final class MailData
 			throw new NullPointerException("from");
 	}
 
-	void setMessageID(final String messageID)
+	public void setMessageID(final String messageID)
 	{
 		this.messageID = messageID;
 	}
