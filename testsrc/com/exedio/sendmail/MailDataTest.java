@@ -116,14 +116,14 @@ public class MailDataTest extends TestCase
 		}
 	}
 
-	public void testAttachement() throws AddressException
+	public void testAttachment() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
-		d.addAttachement(new AssertionFailedDataSource());
+		d.addAttachment(new AssertionFailedDataSource());
 
 		try
 		{
-			d.addAttachement(null);
+			d.addAttachment(null);
 			fail();
 		}
 		catch(final NullPointerException e)

@@ -154,13 +154,13 @@ final class MailData
 		this.contentTransferEncoding = contentTransferEncoding;
 	}
 
-	void setAttachements(final DataSource[] attachments)
+	void setAttachments(final DataSource[] attachments)
 	{
 		this.attachments.clear();
 		this.attachments.addAll(Arrays.asList(attachments));
 	}
 
-	public void addAttachement(final DataSource attachment)
+	public void addAttachment(final DataSource attachment)
 	{
 		if(attachment==null)
 			throw new NullPointerException();

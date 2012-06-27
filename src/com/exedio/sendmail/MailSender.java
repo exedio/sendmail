@@ -286,6 +286,12 @@ public class MailSender
 		new MailSender(host, connectTimeout, readTimeout, debug).sendMail(mail);
 	}
 
+	final void sendMail(final MailData mail) throws MessagingException
+	{
+		final MimeMessage message = mail.createMessage(session);
+		Transport.send(message);
+	}
+
 	/**
 	 * BEWARE:
 	 * this method does not call {@link Mail#notifySent()}
@@ -352,7 +358,7 @@ public class MailSender
 		{
 			final DataSource[] attachments = emptyToNull(mail.getAttachments());
 			if(attachments!=null)
-				message.setAttachements(attachments);
+				message.setAttachments(attachments);
 		}
 		{
 			final String charset = mail.getCharset();
