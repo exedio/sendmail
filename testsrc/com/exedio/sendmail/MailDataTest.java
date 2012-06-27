@@ -114,4 +114,13 @@ public class MailDataTest extends TestCase
 		d.setMessageID("message-id");
 		d.setMessageID(null);
 	}
+
+	public void testText() throws AddressException
+	{
+		final MailData d = new MailData("from", "subject");
+		d.setTextPlain("textPlain");
+		d.setTextHtml("textHtml");
+		d.setTextPlain(null);
+		d.setTextHtml(null);
+	}
 }

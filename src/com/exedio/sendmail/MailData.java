@@ -132,12 +132,12 @@ final class MailData
 		return (date!=NOT_A_DATE) ? new Date(date) : null;
 	}
 
-	void setTextPlain(final String textPlain)
+	public void setTextPlain(final String textPlain)
 	{
 		this.textPlain = textPlain;
 	}
 
-	void setTextHtml(final String textHtml)
+	public void setTextHtml(final String textHtml)
 	{
 		this.textHtml = textHtml;
 	}
