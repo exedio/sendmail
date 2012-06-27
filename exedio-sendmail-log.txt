@@ -7,6 +7,7 @@ omit bug fixes.
 The items are sorted inversely, i.e. latest items are on top
 
 --------------------------------------------------------------------------
+* MailData added
 * added Mail#getReplyTo
 * added class EmptyMail as an default implementation of Mail
 * added MailSender#sendMails with JobContext

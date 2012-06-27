@@ -37,7 +37,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-final class MailData
+public final class MailData
 {
 	static final String DEFAULT_CHARSET = "UTF-8";
 	private static long NOT_A_DATE = Long.MIN_VALUE;
@@ -172,7 +172,7 @@ final class MailData
 		throws MessagingException
 	{
 		if(textPlain==null && textHtml==null)
-			throw new NullPointerException("either textPlain or textHtml() must be set");
+			throw new NullPointerException("either textPlain or textHtml must be set");
 
 		final String htmlContentType = "text/html; charset=" + charset;
 		final String plainContentType = "text/plain; charset=" + charset;

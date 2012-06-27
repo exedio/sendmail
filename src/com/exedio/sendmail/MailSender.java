@@ -286,17 +286,19 @@ public class MailSender
 		new MailSender(host, connectTimeout, readTimeout, debug).sendMail(mail);
 	}
 
-	final void sendMail(final MailData mail) throws MessagingException
+	public final void sendMail(final MailData mail) throws MessagingException
 	{
 		final MimeMessage message = mail.createMessage(session);
 		Transport.send(message);
 	}
 
 	/**
-	 * BEWARE:
+	 * @deprecated
 	 * this method does not call {@link Mail#notifySent()}
 	 * or {@link Mail#notifyFailed(Exception)}.
+	 * Use {@link #sendMail(MailData)} instead.
 	 */
+	@Deprecated
 	public final void sendMail(final Mail mail)
 		throws MessagingException
 	{
