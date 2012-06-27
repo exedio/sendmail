@@ -66,6 +66,8 @@ final class MailData
 
 		if(from==null)
 			throw new NullPointerException("from");
+		if(subject==null)
+			throw new NullPointerException("subject");
 	}
 
 	public void setMessageID(final String messageID)

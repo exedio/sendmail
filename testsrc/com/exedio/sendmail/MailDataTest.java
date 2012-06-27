@@ -26,6 +26,30 @@ import junit.framework.TestCase;
 
 public class MailDataTest extends TestCase
 {
+	public void testCreate() throws AddressException
+	{
+		new MailData("from", "subject");
+
+		try
+		{
+			new MailData(null, "subject");
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// empty
+		}
+		try
+		{
+			new MailData("from", null);
+			fail();
+		}
+		catch(final NullPointerException e)
+		{
+			// empty
+		}
+	}
+
 	public void testDate() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
