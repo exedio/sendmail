@@ -153,10 +153,10 @@ public class MailSenderTest extends SendmailTest
 				final String id,
 				final String to,
 				final String textPlain,
-				final DataSource attachement,
+				final DataSource attachment,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachement}, null, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachment}, null, checker);
 		}
 
 		MockMail(
@@ -164,11 +164,11 @@ public class MailSenderTest extends SendmailTest
 				final String to,
 				final String textPlain,
 				final String textHtml,
-				final DataSource attachement1,
-				final DataSource attachement2,
+				final DataSource attachment1,
+				final DataSource attachment2,
 				final MockChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachement1, attachement2}, null, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachment1, attachment2}, null, checker);
 		}
 
 		MockMail(
