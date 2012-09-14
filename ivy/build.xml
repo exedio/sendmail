@@ -8,5 +8,7 @@
 		<copy overwrite="true" file="artifacts/mail-jar.jar" tofile="../lib/mail.jar" />
 		<copy overwrite="true" file="artifacts/mail-source.jar" todir="../lib" />
 		<copy overwrite="true" file="artifacts/junit-jar.jar" tofile="../lib/junit.jar" />
+		<copy overwrite="true" file="artifacts/findbugs-dist.tar.gz" tofile="../lib/findbugs.tar.gz" />
+		<copy overwrite="true" file="artifacts/findbugs-annotations-jar.jar" tofile="../lib/findbugs-annotations.jar" />
 	</target>
 </project>
