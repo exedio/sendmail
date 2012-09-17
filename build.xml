@@ -59,9 +59,9 @@
 	</target>
 	
 	<target name="test.compile" depends="compile">
-		<mkdir dir="build/testclasses" />
+		<mkdir dir="build/classes/testsrc" />
 		<javac srcdir="testsrc"
-				destdir="build/testclasses"
+				destdir="build/classes/testsrc"
 				deprecation="on"
 				debug="on"
 				optimize="off">
@@ -75,7 +75,7 @@
 			<compilerarg value="-encoding" />
 			<compilerarg value="ascii" />
 		</javac>
-		<copy todir="build/testclasses/com/exedio/sendmail">
+		<copy todir="build/classes/testsrc/com/exedio/sendmail">
 			<fileset dir="testresources" />
 		</copy>
 	</target>
@@ -89,7 +89,7 @@
 			<formatter type="xml" />
 			<classpath>
 				<pathelement location="build/classes/src" />
-				<pathelement location="build/testclasses" />
+				<pathelement location="build/classes/testsrc" />
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
 				<pathelement location="lib/junit.jar" />
