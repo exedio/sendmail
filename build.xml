@@ -5,6 +5,7 @@
 	<property file="local.properties" />
 	<property file="project.properties" />
 	
+	<import file="macros/compile.xml" />
 	<import file="macros/findbugs.xml" />
 	
 	<taskdef
@@ -18,21 +19,12 @@
 	</target>
 
 	<target name="compile">
-		<mkdir dir="build/classes/src" />
-		<javac srcdir="src"
-				destdir="build/classes/src"
-				includeAntRuntime="false"
-				deprecation="on"
-				debug="on"
-				optimize="off">
+		<compile srcdir="src">
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
 			</classpath>
-			<compilerarg value="-Xlint" />
-			<compilerarg value="-encoding" />
-			<compilerarg value="ascii" />
-		</javac>
+		</compile>
 	</target>
 	
 	<target name="jar" depends="compile">
@@ -59,22 +51,14 @@
 	</target>
 	
 	<target name="test.compile" depends="compile">
-		<mkdir dir="build/classes/testsrc" />
-		<javac srcdir="testsrc"
-				destdir="build/classes/testsrc"
-				deprecation="on"
-				debug="on"
-				optimize="off">
+		<compile srcdir="testsrc">
 			<classpath>
 				<pathelement location="build/classes/src" />
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/junit.jar" />
 				<pathelement location="lib/mail.jar" />
 			</classpath>
-			<compilerarg value="-Xlint" />
-			<compilerarg value="-encoding" />
-			<compilerarg value="ascii" />
-		</javac>
+		</compile>
 		<copy todir="build/classes/testsrc/com/exedio/sendmail">
 			<fileset dir="testresources" />
 		</copy>
