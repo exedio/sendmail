@@ -18,9 +18,9 @@
 	</target>
 
 	<target name="compile">
-		<mkdir dir="build/classes" />
+		<mkdir dir="build/classes/src" />
 		<javac srcdir="src"
-				destdir="build/classes"
+				destdir="build/classes/src"
 				includeAntRuntime="false"
 				deprecation="on"
 				debug="on"
@@ -36,7 +36,7 @@
 	</target>
 	
 	<target name="jar" depends="compile">
-		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes" filesonly="true" duplicate="fail" strict="fail" level="9">
+		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes/src" filesonly="true" duplicate="fail" strict="fail" level="9">
 			<manifest>
 				<attribute name="Specification-Title" value="exedio sendmail"/>
 				<attribute name="Specification-Version" value="${build.tag}"/>
@@ -66,7 +66,7 @@
 				debug="on"
 				optimize="off">
 			<classpath>
-				<pathelement location="build/classes" />
+				<pathelement location="build/classes/src" />
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/junit.jar" />
 				<pathelement location="lib/mail.jar" />
@@ -88,7 +88,7 @@
 			<formatter type="brief" usefile="false" />
 			<formatter type="xml" />
 			<classpath>
-				<pathelement location="build/classes" />
+				<pathelement location="build/classes/src" />
 				<pathelement location="build/testclasses" />
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
@@ -164,7 +164,7 @@
 					excludeFilter="conf/findbugs-exclude.xml"
 					effort="max"
 					reportlevel="low">
-			<class location="${basedir}/build/classes" />
+			<class location="${basedir}/build/classes/src" />
 			<auxclasspath>
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
