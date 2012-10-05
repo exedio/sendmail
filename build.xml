@@ -132,6 +132,7 @@
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/findbugs-annotations.jar" />
 			</classpath>
 		</javadoc>
 	</target>
