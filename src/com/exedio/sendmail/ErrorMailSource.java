@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -55,7 +56,7 @@ public final class ErrorMailSource implements MailSource
 	public ErrorMailSource(final String from, final String[] to, final String fallbackSubject, final int overflowThreshold)
 	{
 		this.from = from;
-		this.to = to;
+		this.to = (to!=null) ? Arrays.copyOf(to, to.length) : null;
 		this.fallbackSubject = fallbackSubject;
 		this.overflowThreshold = overflowThreshold;
 	}
