@@ -22,6 +22,8 @@ import java.util.Date;
 
 import javax.activation.DataSource;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * An empty implementation of {@link Mail}.
  *
@@ -36,17 +38,20 @@ import javax.activation.DataSource;
  */
 public abstract class EmptyMail implements Mail
 {
+	private static final String NULL_ARRAY = "PZLA_PREFER_ZERO_LENGTH_ARRAYS";
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getReplyTo()
 	{
 		return null;
 	}
-	
+
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getTo()
 	{
 		return null;
@@ -71,6 +76,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getBlindCarbonCopy()
 	{
 		return null;
@@ -79,6 +85,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getCarbonCopy()
 	{
 		return null;
@@ -127,6 +134,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@SuppressFBWarnings(NULL_ARRAY)
 	public DataSource[] getAttachments()
 	{
 		return null;
