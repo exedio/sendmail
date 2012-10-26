@@ -80,8 +80,8 @@ public class MailSender
 		this.debug = debug;
 
 		final Properties properties = new Properties();
-		properties.put("mail.host", host);
-		properties.put("mail.transport.protocol", "smtp");
+		properties.setProperty("mail.host", host);
+		properties.setProperty("mail.transport.protocol", "smtp");
 		properties.setProperty("mail.smtp.connectiontimeout", String.valueOf(connectTimeout));
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
 		final Session session;
@@ -91,7 +91,7 @@ public class MailSender
 		}
 		else
 		{
-			properties.put("mail.smtp.auth", "true");
+			properties.setProperty("mail.smtp.auth", "true");
 			session = Session.getInstance(properties, new SendmailAuthenticator(smtpUser, smtpPassword));
 		}
 		if(debug)
