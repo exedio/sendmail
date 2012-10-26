@@ -98,7 +98,7 @@ public class MailSender
 
 		final Properties properties = new Properties();
 		properties.put("mail.host", host);
-		properties.put("mail.smtp.port", String.valueOf(port));
+		properties.setProperty("mail.smtp.port", String.valueOf(port));
 		properties.put("mail.transport.protocol", "smtp");
 		properties.put("mail.smtp.connectiontimeout", connectTimeout);
 		properties.put("mail.smtp.timeout", readTimeout);
