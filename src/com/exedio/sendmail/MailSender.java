@@ -79,6 +79,9 @@ public class MailSender
 		this.readTimeout = readTimeout;
 		this.debug = debug;
 
+		// BEWARE
+		// Always set strings as values,
+		// otherwise settings will be ignored.
 		final Properties properties = new Properties();
 		properties.setProperty("mail.host", host);
 		properties.setProperty("mail.transport.protocol", "smtp");
