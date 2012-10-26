@@ -82,8 +82,8 @@ public class MailSender
 		final Properties properties = new Properties();
 		properties.put("mail.host", host);
 		properties.put("mail.transport.protocol", "smtp");
-		properties.put("mail.smtp.connectiontimeout", connectTimeout);
-		properties.put("mail.smtp.timeout", readTimeout);
+		properties.setProperty("mail.smtp.connectiontimeout", String.valueOf(connectTimeout));
+		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
 		final Session session;
 		if ( smtpUser==null || smtpUser.equals("") )
 		{
