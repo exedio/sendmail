@@ -382,19 +382,19 @@ public class MailSender
 
 	private static class SendmailAuthenticator extends Authenticator
 	{
-		private final String smtpUser;
-		private final String smtpPassword;
+		private final String user;
+		private final String password;
 
-		public SendmailAuthenticator(final String smtpUser, final String smtpPassword)
+		public SendmailAuthenticator(final String user, final String password)
 		{
-			this.smtpUser = smtpUser;
-			this.smtpPassword = smtpPassword;
+			this.user = user;
+			this.password = password;
 		}
 
 		@Override
 		protected PasswordAuthentication getPasswordAuthentication()
 		{
-			return new PasswordAuthentication(smtpUser, smtpPassword);
+			return new PasswordAuthentication(user, password);
 		}
 	}
 }
