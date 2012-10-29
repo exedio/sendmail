@@ -40,6 +40,8 @@ import com.exedio.cope.util.JobContext;
 
 public class MailSender
 {
+	private static final int DEFAULT_PORT = 25;
+
 	public static final String DEFAULT_CHARSET = MailData.DEFAULT_CHARSET;
 	private static PrintStream log = System.err;
 
@@ -67,8 +69,23 @@ public class MailSender
 			final String smtpUser,
 			final String smtpPassword )
 	{
+		this(host, DEFAULT_PORT, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
+	}
+
+	/** @param smtpUser null and empty string denote usage without authentification */
+	public MailSender(
+			final String host,
+			final int port,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean debug,
+			final String smtpUser,
+			final String smtpPassword)
+	{
 		if(host==null)
 			throw new IllegalArgumentException("host must not be null");
+		if(port<0)
+			throw new IllegalArgumentException("port must not be negative");
 		if(connectTimeout<0)
 			throw new IllegalArgumentException("connectTimeout must not be negative");
 		if(readTimeout<0)
@@ -84,6 +101,7 @@ public class MailSender
 		// otherwise settings will be ignored.
 		final Properties properties = new Properties();
 		properties.setProperty("mail.host", host);
+		properties.setProperty("mail.smtp.port", String.valueOf(port));
 		properties.setProperty("mail.transport.protocol", "smtp");
 		properties.setProperty("mail.smtp.connectiontimeout", String.valueOf(connectTimeout));
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));

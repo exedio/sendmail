@@ -40,6 +40,14 @@ public class MailSenderInstantiationTest extends TestCase
 		}
 		try
 		{
+			new MailSender("host", -1, -1, -1, true, "authUser", "authPassword");
+		}
+		catch(final IllegalArgumentException e)
+		{
+			assertEquals("port must not be negative", e.getMessage());
+		}
+		try
+		{
 			new MailSender("host", -1, -1, true);
 		}
 		catch(final IllegalArgumentException e)
