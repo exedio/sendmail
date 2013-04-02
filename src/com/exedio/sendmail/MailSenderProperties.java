@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import com.exedio.cope.util.Properties;
 import com.exedio.sendmail.MailSender;
 
+@SuppressWarnings("synthetic-access")
 public final class MailSenderProperties extends Properties
 {
 	private final String host = value("host", (String)null);
