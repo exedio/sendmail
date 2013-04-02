@@ -40,6 +40,7 @@ public class CascadingMailSource implements MailSource
 		}
 	}
 
+	@Override
 	public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 	{
 		Collection<? extends Mail> resultIfOne = null;

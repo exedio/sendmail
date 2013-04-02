@@ -39,11 +39,13 @@ final class CharsetEncodingDataHandler extends DataHandler
 	CharsetEncodingDataHandler( final String plainText, final String charset, final String plainContentType )
 	{
 		super(new DataSource(){
+			@Override
 			public String getContentType()
 			{
 				return plainContentType;
 			}
 
+			@Override
 			public InputStream getInputStream()
 			{
 				try
@@ -56,11 +58,13 @@ final class CharsetEncodingDataHandler extends DataHandler
 				}
 			}
 
+			@Override
 			public String getName()
 			{
 				return "";
 			}
 
+			@Override
 			public OutputStream getOutputStream()
 			{
 				return null;

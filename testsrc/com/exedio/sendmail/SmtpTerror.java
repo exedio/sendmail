@@ -67,6 +67,7 @@ public class SmtpTerror extends SendmailTest
 			this.threadNumber = threadNumber;
 		}
 
+		@Override
 		public Collection<? extends Mail> getMailsToSend(int maximumResultSize)
 		{
 			final String[] to = {user.email};
@@ -80,6 +81,7 @@ public class SmtpTerror extends SendmailTest
 
 				result.add(new EmptyMail()
 				{
+					@Override
 					public String getFrom()
 					{
 						return from;
@@ -150,6 +152,7 @@ public class SmtpTerror extends SendmailTest
 			final int threadNumber = i;
 			t[i] = new Thread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						mailSender.sendMails(tms[threadNumber], SIZE, new EmptyJobContext());

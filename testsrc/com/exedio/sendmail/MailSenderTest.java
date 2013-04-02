@@ -201,71 +201,85 @@ public class MailSenderTest extends SendmailTest
 			this.timestamp = System.currentTimeMillis();
 		}
 
+		@Override
 		public String getMessageID()
 		{
 			return specialMessageID ? "messageid-" + id + '-' + timestamp : null;
 		}
 
+		@Override
 		public String getFrom()
 		{
 			return from;
 		}
 
+		@Override
 		public String[] getTo()
 		{
 			return to;
 		}
 
+		@Override
 		public String[] getCarbonCopy()
 		{
 			return cc;
 		}
 
+		@Override
 		public String[] getBlindCarbonCopy()
 		{
 			return bcc;
 		}
 
+		@Override
 		public String getSubject()
 		{
 			return timeStamp + "subject " + ("ISO-8859-1".equals(charset)?NON_ASCII_TEXT_ISO:NON_ASCII_TEXT) + '[' + id + ']' ;
 		}
 
+		@Override
 		public String getTextPlain()
 		{
 			return textPlain;
 		}
 
+		@Override
 		public String getTextHtml()
 		{
 			return textHtml;
 		}
 
+		@Override
 		public DataSource[] getAttachments()
 		{
 			return attachments;
 		}
 
+		@Override
 		public String getCharset()
 		{
 			return charset;
 		}
 
+		@Override
 		public String getContentTransferEncoding()
 		{
 			return null;
 		}
 
+		@Override
 		public Date getDate()
 		{
 			return new Date(timestamp);
 		}
 
+		@Override
 		public void notifySent()
 		{
 			sentCounter++;
 		}
 
+		@Override
 		public void notifyFailed(final Exception exception)
 		{
 			failedCounter++;
@@ -283,6 +297,7 @@ public class MailSenderTest extends SendmailTest
 			checker.checkBody(m);
 		}
 
+		@Override
 		public String[] getReplyTo()
 		{
 			return null;
@@ -424,24 +439,28 @@ public class MailSenderTest extends SendmailTest
 			return;
 
 		final MockMail f1  = new MockMail("f1", fail, "text for failure test mail", new MockChecker(){
+			@Override
 			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
 		final MockMail f2  = new MockMail("f2", (String)null, null, new MockChecker(){
+			@Override
 			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
 		final MockMail f3  = new MockMail("f3", failclose, "text for failure test mail closing the connection", new MockChecker(){
+			@Override
 			public void checkBody(final Message actual)
 			{
 				fail("should not be sent");
 			}
 		});
 		final MockMail x12 = new MockMail("x12", new String[]{user1.email, user2.email}, null, null, TEXT_PLAIN, new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
@@ -449,6 +468,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail x13 = new MockMail("x13", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN, new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
@@ -456,6 +476,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail x14 = new MockMail("x14", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN_ISO, null, null, "ISO-8859-1", new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
@@ -463,6 +484,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail x23 = new MockMail("x23", null, null, new String[]{user2.email, user3.email}, TEXT_PLAIN, new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
@@ -470,6 +492,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail mp  = new MockMail("mp", user1.email, TEXT_PLAIN, new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
@@ -478,6 +501,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail mh  = new MockMail("mh", user1.email, (String)null, TEXT_HTML, new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertEquals("text/html; charset="+DEFAULT_CHARSET, m.getContentType());
@@ -487,6 +511,7 @@ public class MailSenderTest extends SendmailTest
 		});
 		mh.specialMessageID = true;
 		final MockMail ma  = new MockMail("ma", user1.email, TEXT_PLAIN, TEXT_HTML, new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -507,6 +532,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		});
 		final MockMail ma2  = new MockMail("ma2", user1.email, TEXT_PLAIN_ISO, TEXT_HTML_ISO, "ISO-8859-1", new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
@@ -529,6 +555,7 @@ public class MailSenderTest extends SendmailTest
 		final MockMail mpa = new MockMail("mpa", user1.email, TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
@@ -552,6 +579,7 @@ public class MailSenderTest extends SendmailTest
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 				new MockURLDataSource("tree.jpg", null, "image/jpeg"),
 				new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain"), new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
@@ -580,6 +608,7 @@ public class MailSenderTest extends SendmailTest
 		final MockMail maa = new MockMail("maa", user1.email, TEXT_PLAIN, TEXT_HTML,
 				new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), new MockChecker(){
+			@Override
 			public void checkBody(final Message m) throws IOException, MessagingException
 			{
 				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
@@ -621,6 +650,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			boolean done = false;
 
+			@Override
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);

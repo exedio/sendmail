@@ -27,21 +27,25 @@ import junit.framework.AssertionFailedError;
 
 class AssertionFailedDataSource implements DataSource
 {
+	@Override
 	public String getContentType()
 	{
 		throw new AssertionFailedError();
 	}
 
+	@Override
 	public InputStream getInputStream()
 	{
 		throw new AssertionFailedError();
 	}
 
+	@Override
 	public String getName()
 	{
 		throw new AssertionFailedError();
 	}
 
+	@Override
 	public OutputStream getOutputStream()
 	{
 		throw new AssertionFailedError();

@@ -73,6 +73,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 			this.timestamp = System.currentTimeMillis();
 		}
 
+		@Override
 		public String getFrom()
 		{
 			return from;
@@ -138,6 +139,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		{
 			boolean done = false;
 
+			@Override
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);

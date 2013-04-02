@@ -24,76 +24,91 @@ import javax.activation.DataSource;
 
 class AssertionErrorMail implements Mail
 {
+	@Override
 	public String[] getTo()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getFrom()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getSubject()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getTextPlain()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String[] getBlindCarbonCopy()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String[] getCarbonCopy()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getCharset()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getContentTransferEncoding()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public Date getDate()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getMessageID()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String getTextHtml()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public DataSource[] getAttachments()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public void notifyFailed(final Exception exception)
 	{
 		throw new AssertionError(exception);
 	}
 
+	@Override
 	public void notifySent()
 	{
 		throw new AssertionError();
 	}
 
+	@Override
 	public String[] getReplyTo()
 	{
 		throw new AssertionError();

@@ -40,6 +40,7 @@ public class CascadingMailSourceTest extends TestCase
 
 		final MailSource pe = new MailSource()
 		{
+			@Override
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				if(maximumResultSize<=0)
@@ -54,6 +55,7 @@ public class CascadingMailSourceTest extends TestCase
 		final MockMail a2 = new MockMail("a2");
 		final MailSource pa = new MailSource()
 		{
+			@Override
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				if(maximumResultSize<=0)
@@ -74,6 +76,7 @@ public class CascadingMailSourceTest extends TestCase
 		final MockMail b2 = new MockMail("b2");
 		final MailSource pb = new MailSource()
 		{
+			@Override
 			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 			{
 				if(maximumResultSize<=0)

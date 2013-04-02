@@ -42,6 +42,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getReplyTo()
 	{
@@ -51,6 +52,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getTo()
 	{
@@ -60,6 +62,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public String getSubject()
 	{
 		return null;
@@ -68,6 +71,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public String getTextPlain()
 	{
 		return null;
@@ -76,6 +80,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getBlindCarbonCopy()
 	{
@@ -85,6 +90,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	@SuppressFBWarnings(NULL_ARRAY)
 	public String[] getCarbonCopy()
 	{
@@ -94,6 +100,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public String getCharset()
 	{
 		return null;
@@ -102,6 +109,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public String getContentTransferEncoding()
 	{
 		return null;
@@ -110,6 +118,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public Date getDate()
 	{
 		return null;
@@ -118,6 +127,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public String getMessageID()
 	{
 		return null;
@@ -126,6 +136,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	public String getTextHtml()
 	{
 		return null;
@@ -134,6 +145,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation always returns <i>null</i>.
 	 */
+	@Override
 	@SuppressFBWarnings(NULL_ARRAY)
 	public DataSource[] getAttachments()
 	{
@@ -143,6 +155,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation does nothing.
 	 */
+	@Override
 	public void notifyFailed(final Exception exception)
 	{
 		// empty
@@ -151,6 +164,7 @@ public abstract class EmptyMail implements Mail
 	/**
 	 * This default implementation does nothing.
 	 */
+	@Override
 	public void notifySent()
 	{
 		// empty

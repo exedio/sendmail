@@ -63,6 +63,7 @@ public final class ErrorMailSource implements MailSource
 
 	final List<ErrorMail> mailsToSend = new ArrayList<ErrorMail>();
 
+	@Override
 	public final Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 	{
 		synchronized(mailsToSend)
@@ -156,6 +157,7 @@ public final class ErrorMailSource implements MailSource
 			}
 		}
 
+		@Override
 		public String getFrom()
 		{
 			return from;

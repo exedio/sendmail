@@ -182,7 +182,7 @@ public class MailSender
 	{
 		return run(
 			interrupter,
-			new Body(){public void run(final JobContext ctx)
+			new Body(){ @Override public void run(final JobContext ctx)
 			{
 				sendMails(source, maximumResultSize, ctx);
 			}}
