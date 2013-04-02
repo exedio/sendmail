@@ -31,6 +31,7 @@ import javax.mail.URLName;
 
 import junit.framework.TestCase;
 
+import com.exedio.cope.util.PrefixSource;
 import com.sun.mail.pop3.POP3Store;
 
 public class SendmailTest extends TestCase
@@ -56,10 +57,12 @@ public class SendmailTest extends TestCase
 			return;
 		}
 
-		final String smtpHost = getProperty("smtp.host");
-		final boolean smtpDebug = getPropertyBoolean("smtp.debug");
+		final MailSenderProperties mailSenderProperties = MailSenderProperties.factory().create(
+				PrefixSource.wrap(
+						com.exedio.cope.util.Properties.SYSTEM_PROPERTY_SOURCE,
+						"smtp."));
 
-		mailSender = new MailSender(smtpHost, 5000, 5000, smtpDebug);
+		mailSender = mailSenderProperties.get();
 		pop3Host=getProperty("pop3.host");
 		pop3Debug=getPropertyBoolean("pop3.debug");
 
