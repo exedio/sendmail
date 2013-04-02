@@ -30,6 +30,6 @@
 			-->
 			<exclude org="javax.activation" module="activation" />
 		</dependency>
-		<dependency org="com.exedio" name="copeutil" rev="171" />
+		<dependency org="com.exedio" name="copeutil" rev="300" />
 	</dependencies>
 </ivy-module>
