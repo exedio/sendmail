@@ -200,8 +200,7 @@ public class MailSender
 			if(mails.isEmpty())
 				return;
 
-			if(ctx.requestedToStop())
-				return;
+			ctx.stopIfRequested();
 
 			final Transport transport;
 			try
@@ -224,8 +223,7 @@ public class MailSender
 
 				for(final Mail mail : mails)
 				{
-					if(ctx.requestedToStop())
-						return;
+					ctx.stopIfRequested();
 
 					try
 					{
