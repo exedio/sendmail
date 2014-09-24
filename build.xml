@@ -4,14 +4,14 @@
 
 	<property file="local.properties" />
 	<property file="project.properties" />
-	
+
 	<import file="macros/compile.xml" />
 	<import file="macros/findbugs.xml" />
-	
+
 	<taskdef
 			resource="net/sf/antcontrib/antcontrib.properties"
 			classpath="lib/ant-contrib.jar" />
-	
+
 	<target name="properties">
 		<property name="api.private" value="off" />
 		<property name="api.link.jdk" value="http://java.sun.com/j2se/1.5.0/docs/api" />
@@ -27,7 +27,7 @@
 			</classpath>
 		</compile>
 	</target>
-	
+
 	<target name="jar" depends="compile">
 		<jar jarfile="build/exedio-sendmail.jar" basedir="build/classes/src" filesonly="true" duplicate="fail" strict="fail" level="9">
 			<manifest>
@@ -41,7 +41,7 @@
 			</manifest>
 		</jar>
 	</target>
-	
+
 	<target name="jar.src">
 		<mkdir dir="build" />
 		<zip destfile="build/exedio-sendmail-src.zip" filesonly="true" whenempty="fail" duplicate="fail" level="9">
@@ -50,7 +50,7 @@
 			</zipfileset>
 		</zip>
 	</target>
-	
+
 	<target name="test.compile" depends="compile">
 		<compile srcdir="testsrc">
 			<classpath>
@@ -65,7 +65,7 @@
 			<fileset dir="testresources" />
 		</copy>
 	</target>
-	
+
 	<target name="test" depends="test.compile">
 		<mkdir dir="build/testresults" />
 		<junit fork="yes"
@@ -84,6 +84,7 @@
 			<sysproperty key="skipRemote" value="${skipRemote}" />
 			<sysproperty key="smtp.host"  value="${smtp.host}"  />
 			<sysproperty key="smtp.debug" value="${smtp.debug}" />
+			<sysproperty key="smtp.ssl"	value="${smtp.ssl}" />
 			<sysproperty key="pop3.host"  value="${pop3.host}"  />
 			<sysproperty key="pop3.debug" value="${pop3.debug}" />
 			<sysproperty key="user1.email"         value="${user1.email}"         />
@@ -101,11 +102,11 @@
 			<assertions><enable/></assertions>
 		</junit>
 	</target>
-	
+
 	<target name="clean">
 		<delete dir="build" />
 	</target>
-	
+
 	<target name="api" depends="properties">
 
 		<delete dir="api" />
@@ -139,7 +140,7 @@
 	</target>
 
 	<target name="build" depends="compile, jar, test, api" />
-	
+
 	<target name="findbugs" depends="compile, findbugs.taskdef">
 		<findbugs
 					home="${basedir}/build/findbugs-home"
@@ -158,9 +159,9 @@
 			</auxclasspath>
 		</findbugs>
 	</target>
-	
+
 	<target name="all" depends="build, jar.src, findbugs" />
-	
+
 	<target name="jenkins" depends="all">
 		<copy todir="${basedir}/build/success">
 			<fileset file="${basedir}/build/exedio-sendmail.jar" />

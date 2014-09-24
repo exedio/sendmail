@@ -155,7 +155,7 @@ public class MailSender
 		return debug;
 	}
 
-	public final boolean isSsl()
+	public final boolean isSSL()
 	{
 		return ssl;
 	}
