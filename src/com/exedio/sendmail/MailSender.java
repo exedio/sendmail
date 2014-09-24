@@ -46,6 +46,7 @@ public class MailSender
 	private static PrintStream log = System.err;
 
 	private final String host;
+	private final boolean ssl;
 	private final int connectTimeout;
 	private final int readTimeout;
 	private final boolean debug;
@@ -82,6 +83,19 @@ public class MailSender
 			final String smtpUser,
 			final String smtpPassword)
 	{
+		this(host, port, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
+	}
+
+	protected MailSender(
+			final String host,
+			final int port,
+			final boolean ssl,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean debug,
+			final String smtpUser,
+			final String smtpPassword)
+	{
 		if(host==null)
 			throw new IllegalArgumentException("host must not be null");
 		if(port<0)
@@ -92,6 +106,7 @@ public class MailSender
 			throw new IllegalArgumentException("readTimeout must not be negative");
 
 		this.host = host;
+		this.ssl = ssl;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 		this.debug = debug;
@@ -102,7 +117,7 @@ public class MailSender
 		final Properties properties = new Properties();
 		properties.setProperty("mail.host", host);
 		properties.setProperty("mail.smtp.port", String.valueOf(port));
-		properties.setProperty("mail.transport.protocol", "smtp");
+		properties.setProperty("mail.transport.protocol", ssl?"smpts":"smtp");
 		properties.setProperty("mail.smtp.connectiontimeout", String.valueOf(connectTimeout));
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
 		final Session session;
@@ -138,6 +153,11 @@ public class MailSender
 	public final boolean isDebug()
 	{
 		return debug;
+	}
+
+	public final boolean isSsl()
+	{
+		return ssl;
 	}
 
 	/**
@@ -205,7 +225,7 @@ public class MailSender
 			final Transport transport;
 			try
 			{
-				transport = session.getTransport("smtp");
+				transport = session.getTransport(ssl?"smtps":"smtp");
 			}
 			catch(final NoSuchProviderException e)
 			{
