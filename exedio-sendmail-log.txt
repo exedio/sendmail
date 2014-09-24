@@ -7,6 +7,7 @@ omit bug fixes.
 The items are sorted inversely, i.e. latest items are on top
 
 --------------------------------------------------------------------------
+* added ssl property to distinguish between smtp/smtps, default is smtp
 * MailSenderProperties added
 * bugfix: make MailSender timeouts actually work
 * MailData added
