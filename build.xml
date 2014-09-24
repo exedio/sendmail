@@ -84,7 +84,7 @@
 			<sysproperty key="skipRemote" value="${skipRemote}" />
 			<sysproperty key="smtp.host"  value="${smtp.host}"  />
 			<sysproperty key="smtp.debug" value="${smtp.debug}" />
-			<sysproperty key="smtp.ssl"	value="${smtp.ssl}" />
+			<sysproperty key="smtp.ssl"   value="${smtp.ssl}"   />
 			<sysproperty key="pop3.host"  value="${pop3.host}"  />
 			<sysproperty key="pop3.debug" value="${pop3.debug}" />
 			<sysproperty key="user1.email"         value="${user1.email}"         />
