@@ -11,7 +11,6 @@
 			<javac srcdir="@{srcdir}"
 					 destdir="build/classes/@{srcdir}"
 					 includeAntRuntime="false"
-					 source="1.6"
 					 deprecation="on"
 					 debug="on"
 					 optimize="off">
@@ -19,6 +18,8 @@
 				<compilerarg value="-Xlint:all,-path" />
 				<compilerarg value="-encoding" />
 				<compilerarg value="ascii" />
+				<compilerarg value="-Xmaxwarns" />
+				<compilerarg value="10000" />
 			</javac>
 			<copy todir="build/classes/@{srcdir}">
 				<fileset dir="@{srcdir}">
@@ -28,9 +29,9 @@
 			</copy>
 		</sequential>
 	</macrodef>
-	
+
 	<target name="fail">
 		<fail message="This file contains helper macros only. There are no targets." />
 	</target>
-	
+
 </project>
