@@ -4,4 +4,6 @@ jdk:
   - oraclejdk7
   - openjdk7
 
+before_script: echo "skipRemote=true" > local.properties
+
 script: "ant jenkins"
