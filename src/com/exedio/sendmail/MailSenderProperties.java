@@ -26,6 +26,7 @@ public final class MailSenderProperties extends Properties
 	private final String host = value("host", (String)null);
 	private final int port = value("port", 25, 0);
 	private final boolean ssl = value("ssl", false);
+	private final boolean enableStarttls = value("enableStarttls", false);
 	private final boolean debug = value("debug", false);
 	private final int connectTimeout = value("connectTimeout", 5000, 1000);
 	private final int    readTimeout = value(   "readTimeout", 5000, 1000);
@@ -35,6 +36,7 @@ public final class MailSenderProperties extends Properties
 					host,
 					port,
 					ssl,
+					enableStarttls,
 					connectTimeout,
 					readTimeout,
 					debug,

@@ -47,6 +47,7 @@ public class MailSender
 
 	private final String host;
 	private final boolean ssl;
+	private final boolean enableStarttls;
 	private final int connectTimeout;
 	private final int readTimeout;
 	private final boolean debug;
@@ -83,13 +84,14 @@ public class MailSender
 			final String smtpUser,
 			final String smtpPassword)
 	{
-		this(host, port, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
+		this(host, port, false, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
 	}
 
 	protected MailSender(
 			final String host,
 			final int port,
 			final boolean ssl,
+			final boolean enableStarttls,
 			final int connectTimeout,
 			final int readTimeout,
 			final boolean debug,
@@ -107,6 +109,7 @@ public class MailSender
 
 		this.host = host;
 		this.ssl = ssl;
+		this.enableStarttls = enableStarttls;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 		this.debug = debug;
@@ -115,11 +118,12 @@ public class MailSender
 		// Always set strings as values,
 		// otherwise settings will be ignored.
 		final Properties properties = new Properties();
-		properties.setProperty("mail.host", host);
+		properties.setProperty("mail.smtp.host", host);
 		properties.setProperty("mail.smtp.port", String.valueOf(port));
-		properties.setProperty("mail.transport.protocol", ssl?"smpts":"smtp");
+		properties.setProperty("mail.transport.protocol", getProtocol() );
 		properties.setProperty("mail.smtp.connectiontimeout", String.valueOf(connectTimeout));
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
+		properties.setProperty("mail.smtp.starttls.enable", String.valueOf(enableStarttls) );
 		final Session session;
 		if ( smtpUser==null || smtpUser.equals("") )
 		{
@@ -133,6 +137,11 @@ public class MailSender
 		if(debug)
 			session.setDebug(true);
 		this.session = session;
+	}
+
+	private String getProtocol()
+	{
+		return (ssl && !enableStarttls) ? "smpts" : "smtp";
 	}
 
 	public final String getHost()
@@ -158,6 +167,11 @@ public class MailSender
 	public final boolean isSSL()
 	{
 		return ssl;
+	}
+
+	public boolean isEnableStarttls()
+	{
+		return enableStarttls;
 	}
 
 	/**
@@ -225,7 +239,7 @@ public class MailSender
 			final Transport transport;
 			try
 			{
-				transport = session.getTransport(ssl?"smtps":"smtp");
+				transport = session.getTransport( getProtocol() );
 			}
 			catch(final NoSuchProviderException e)
 			{

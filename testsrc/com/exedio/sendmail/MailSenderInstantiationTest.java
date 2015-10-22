@@ -30,6 +30,7 @@ public class MailSenderInstantiationTest extends TestCase
 		assertEquals(456, ms.getReadTimeout());
 		assertEquals(false, ms.isDebug());
 		assertEquals(false, ms.isSSL());
+		assertEquals(false, ms.isEnableStarttls());
 
 		try
 		{
