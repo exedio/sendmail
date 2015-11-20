@@ -64,5 +64,13 @@ public class MailSenderInstantiationTest extends TestCase
 		{
 			assertEquals("readTimeout must not be negative", e.getMessage());
 		}
+		try
+		{
+			new MailSender("host", 0,  true, true, 0, 1, true, "", "");
+		}
+		catch(final IllegalArgumentException e)
+		{
+			assertEquals("ssl is expected to be false if enableStarttls is true", e.getMessage());
+		}
 	}
 }

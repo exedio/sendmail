@@ -87,6 +87,20 @@ public class MailSender
 		this(host, port, false, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
 	}
 
+	/** @param smtpUser null and empty string denote usage without authentification */
+	public MailSender(
+			final String host,
+			final int port,
+			final boolean ssl,
+			final int connectTimeout,
+			final int readTimeout,
+			final boolean debug,
+			final String smtpUser,
+			final String smtpPassword)
+	{
+		this(host, port, ssl, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
+	}
+
 	protected MailSender(
 			final String host,
 			final int port,
@@ -106,6 +120,8 @@ public class MailSender
 			throw new IllegalArgumentException("connectTimeout must not be negative");
 		if(readTimeout<0)
 			throw new IllegalArgumentException("readTimeout must not be negative");
+		if(ssl && enableStarttls)
+			throw new IllegalArgumentException("ssl is expected to be false if enableStarttls is true");
 
 		this.host = host;
 		this.ssl = ssl;
@@ -169,7 +185,7 @@ public class MailSender
 		return ssl;
 	}
 
-	public boolean isEnableStarttls()
+	public final boolean isEnableStarttls()
 	{
 		return enableStarttls;
 	}
