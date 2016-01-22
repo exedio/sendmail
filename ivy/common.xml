@@ -5,13 +5,15 @@
 	<target name="resolve">
 		<delete dir="artifacts" />
 		<mkdir dir="artifacts" />
-		<get src="http://download.exedio.com/artifacts/ivy.jar" dest="artifacts/ivy.jar" />
-		<get src="http://download.exedio.com/artifacts/ivysettings.xml" dest="artifacts/ivysettings.xml" />
+		<get src="http://jenkins.exedio.com/job/ivyartifacts/lastSuccessfulBuild/artifact/ivy.jar" dest="artifacts/ivy.jar" />
+		<get src="http://jenkins.exedio.com/job/ivyartifacts/lastSuccessfulBuild/artifact/ivysettings.xml" dest="artifacts/ivysettings.xml" />
 		<taskdef
-			resource="org/apache/ivy/ant/antlib.xml"
-			classpath="artifacts/ivy.jar"
-			uri="antlib:org.apache.ivy.ant" />
+				resource="org/apache/ivy/ant/antlib.xml"
+				classpath="artifacts/ivy.jar"
+				uri="antlib:org.apache.ivy.ant" />
 		<ivy:settings file="artifacts/ivysettings.xml" />
-		<ivy:retrieve file="../ivy.xml" pattern="artifacts/[artifact]-[type].[ext]" />
+		<ivy:retrieve file="../ivy.xml" pattern="artifacts/lib/[artifact]-[type].[ext]" />
+		<fixcrlf srcDir="artifacts/lib" includes="*-log.txt,*-userlog.txt" fixlast="false"/>
+		<ivy:report todir="artifacts" />
 	</target>
 </project>
