@@ -32,6 +32,8 @@
 			-->
 			<exclude org="javax.activation" module="activation" />
 		</dependency>
-		<dependency org="com.exedio" name="copeutil" rev="300" />
+		<dependency org="com.exedio" name="copeutil" rev="483" conf="runtime->runtime; build->runtime,sources,changelog">
+			<exclude org="org.slf4j" name="slf4j-api" />
+		</dependency>
 	</dependencies>
 </ivy-module>
