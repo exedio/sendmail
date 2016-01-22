@@ -1,6 +1,5 @@
 /api
 /build
-/lib
 /local.properties
 /.eclipse-output
 .idea/workspace.xml
