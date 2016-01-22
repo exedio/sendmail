@@ -12,17 +12,19 @@
 	</info>
 	<configurations>
 		<conf name="runtime" />
+		<conf name="sources" />
+		<conf name="changelog" />
 		<conf name="build" extends="runtime" visibility="private" />
 	</configurations>
 	<publications>
-		<artifact name="exedio-sendmail" />
-		<artifact name="exedio-sendmail" type="src" ext="zip" />
-		<artifact name="exedio-sendmail" type="log" ext="txt" />
+		<artifact name="exedio-sendmail" conf="runtime"   type="jar" ext="jar" />
+		<artifact name="exedio-sendmail" conf="sources"   type="src" ext="zip" />
+		<artifact name="exedio-sendmail" conf="changelog" type="log" ext="txt" />
 	</publications>
 	<dependencies>
 		<dependency org="junit" name="junit" rev="4.4" conf="build->default" />
 		<dependency org="findbugs-x" name="findbugs" rev="3.0.0" conf="build->default" />
-		<dependency org="javax.mail" name="mail" rev="1.4">
+		<dependency org="javax.mail" name="mail" rev="1.4" conf="runtime->default; build->sources">
 			<!--
 				activation is included in JDK 1.6,
 				and sendmail requires JDK 1.6,
