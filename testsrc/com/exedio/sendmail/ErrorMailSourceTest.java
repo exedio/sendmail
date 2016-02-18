@@ -23,7 +23,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-
 public class ErrorMailSourceTest extends TestCase
 {
 	private ErrorMailSource ep;
