@@ -20,6 +20,7 @@ package com.exedio.sendmail;
 
 import java.util.Arrays;
 import java.util.List;
+import static java.lang.System.lineSeparator;
 
 import junit.framework.TestCase;
 
@@ -58,7 +59,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, m2.getCarbonCopy());
 		assertEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
-		assertText("java.lang.NullPointerException: test-exception-message"+System.getProperty("line.separator"), m2);
+		assertText("java.lang.NullPointerException: test-exception-message"+lineSeparator(), m2);
 
 		final Mail m3 = ep.createMail("test3-Text", new NullPointerException("test3-exception-message"));
 		assertEquals("error-mail-from@test.exedio.com", m3.getFrom());
@@ -66,7 +67,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, m3.getCarbonCopy());
 		assertEquals(null, m3.getBlindCarbonCopy());
 		assertEquals("error-subject", m3.getSubject());
-		assertText("test3-Text\njava.lang.NullPointerException: test3-exception-message"+System.getProperty("line.separator"), m3);
+		assertText("test3-Text\njava.lang.NullPointerException: test3-exception-message"+lineSeparator(), m3);
 
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
 		assertEquals(list(m1), ep.getMailsToSend(1));
