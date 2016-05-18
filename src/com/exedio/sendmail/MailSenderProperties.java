@@ -31,7 +31,13 @@ public final class MailSenderProperties extends Properties
 	private final int connectTimeout = value("connectTimeout", 5000, 1000);
 	private final int    readTimeout = value(   "readTimeout", 5000, 1000);
 	private final Auth auth = value("auth", false, Auth.factory());
-	private final MailSender value =
+
+	private final MailSender value;
+
+	private MailSenderProperties(final Source source)
+	{
+		super(source);
+		this.value =
 			new MailSender(
 					host,
 					port,
@@ -42,6 +48,7 @@ public final class MailSenderProperties extends Properties
 					debug,
 					auth==null ? null : auth.username,
 					auth==null ? null : auth.password);
+	}
 
 	public MailSender get()
 	{
@@ -58,11 +65,6 @@ public final class MailSenderProperties extends Properties
 				return new MailSenderProperties(source);
 			}
 		};
-	}
-
-	private MailSenderProperties(final Source source)
-	{
-		super(source);
 	}
 
 	private static final class Auth extends Properties
