@@ -37,6 +37,10 @@ public final class MailSenderProperties extends Properties
 	private MailSenderProperties(final Source source)
 	{
 		super(source);
+
+		if(ssl && enableStarttls)
+			throw newException("ssl", "must be false if enableStarttls is true");
+
 		this.value =
 			new MailSender(
 					host,
