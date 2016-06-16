@@ -115,11 +115,6 @@
 		<delete dir="api" />
 		<mkdir  dir="api" />
 
-		<condition property="api.doclint" value="-Xdoclint:all,-missing" else="-nosince"> <!-- nosince is just a dummy -->
-			<available classname="java.util.Optional" /> <!-- available since JDK 1.8 -->
-		</condition>
-		<echo message="doclint //${api.doclint}//" />
-
 		<javadoc
 				sourcepath="src"
 				destdir="api"
@@ -139,7 +134,7 @@
 			<package name="com.*" />
 			<link href="${api.link.jdk}"  packagelistLoc="package-list/jdk"  offline="true" />
 			<link href="${api.link.j2ee}" packagelistLoc="package-list/j2ee" offline="true" />
-			<arg value="${api.doclint}" />
+			<arg value="-Xdoclint:all,-missing" />
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/mail.jar" />
