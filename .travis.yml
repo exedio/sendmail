@@ -7,4 +7,4 @@ before_script:
   - ant -version
   - echo "skipRemote=true" > local.properties
 
-script: "ant jenkins"
+script: "ant clean jenkins"
