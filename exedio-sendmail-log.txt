@@ -7,6 +7,9 @@ omit bug fixes.
 The items are sorted inversely, i.e. latest items are on top
 
 --------------------------------------------------------------------------
+* requires mailapi 1.6.0
+	causes 2 logs when creating Session:
+	WARNUNG: expected resource not found: /META-INF/javamail.default...
 * requires JDK 1.8.0_60
 * added ivy configurations 'sources' and 'changelog'
 	sources and changelog won't be included in 'runtime' config anymore

@@ -785,7 +785,7 @@ public class MailSenderTest extends SendmailTest
 				if(expected.specialMessageID)
 					assertEquals(message, expected.getMessageID(), m.getHeader("Message-ID")[0]);
 				else
-					assertTrue(message, m.getHeader("Message-ID")[0].indexOf(".JavaMail.")>0);
+					assertTrue(message, m.getHeader("Message-ID")[0].indexOf("@")>0);
 				assertNotNull(message, m.getHeader("Date"));
 				assertEquals(message, 1, m.getHeader("Date").length);
 				assertEquals(message, (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expected.getDate()), m.getHeader("Date")[0]);

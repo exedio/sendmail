@@ -59,13 +59,13 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/mail.jar:lib/exedio-cope-util.jar:lib/junit.jar</classpath>
+                <classpath mode="compile">lib/mailapi.jar:lib/exedio-cope-util.jar:lib/junit.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>testsrc</package-root>
                 <unit-tests/>
-                <classpath mode="compile">src:lib/junit.jar:lib/exedio-cope-util.jar:lib/mail.jar</classpath>
+                <classpath mode="compile">src:lib/junit.jar:lib/exedio-cope-util.jar:lib/mailapi.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

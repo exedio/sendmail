@@ -21,7 +21,7 @@
 		<compile srcdir="src">
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
-				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/mailapi.jar" />
 				<pathelement location="lib/findbugs-annotations.jar" />
 			</classpath>
 		</compile>
@@ -36,7 +36,6 @@
 				<attribute name="Implementation-Title" value="exedio sendmail"/>
 				<attribute name="Implementation-Version" value="${build.tag}"/>
 				<attribute name="Implementation-Vendor" value="exedio GmbH"/>
-				<attribute name="Class-Path" value="mail.jar" />
 			</manifest>
 		</jar>
 	</target>
@@ -56,7 +55,7 @@
 				<pathelement location="build/classes/src" />
 				<pathelement location="lib/exedio-cope-util.jar" />
 				<pathelement location="lib/junit.jar" />
-				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/mailapi.jar" />
 				<pathelement location="lib/findbugs-annotations.jar" />
 			</classpath>
 		</compile>
@@ -76,7 +75,9 @@
 				<pathelement location="build/classes/src" />
 				<pathelement location="build/classes/testsrc" />
 				<pathelement location="lib/exedio-cope-util.jar" />
-				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/mailapi.jar" />
+				<pathelement location="lib/smtp.jar" />
+				<pathelement location="lib/pop3.jar" />
 				<pathelement location="lib/junit.jar" />
 			</classpath>
 			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail" />
@@ -133,7 +134,7 @@
 			<arg value="-Xdoclint:all,-missing" />
 			<classpath>
 				<pathelement location="lib/exedio-cope-util.jar" />
-				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/mailapi.jar" />
 				<pathelement location="lib/findbugs-annotations.jar" />
 			</classpath>
 		</javadoc>
@@ -155,7 +156,7 @@
 			<class location="${basedir}/build/classes/src" />
 			<auxclasspath>
 				<pathelement location="lib/exedio-cope-util.jar" />
-				<pathelement location="lib/mail.jar" />
+				<pathelement location="lib/mailapi.jar" />
 			</auxclasspath>
 		</findbugs>
 	</target>
