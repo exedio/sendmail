@@ -19,7 +19,6 @@
 package com.exedio.sendmail;
 
 import com.exedio.cope.util.Hex;
-import com.sun.mail.pop3.POP3Store;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +41,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
@@ -726,7 +726,7 @@ public class MailSenderTest extends SendmailTest
 				throw new RuntimeException(m.getSubject());
 		}
 
-		POP3Store store = null;
+		Store store = null;
 		Folder inboxFolder = null;
 		try
 		{
@@ -827,7 +827,7 @@ public class MailSenderTest extends SendmailTest
 
 	private boolean countPOP3(final Account account, final int expected)
 	{
-		POP3Store store = null;
+		Store store = null;
 		Folder inboxFolder = null;
 		try
 		{

@@ -21,13 +21,14 @@ package com.exedio.sendmail;
 import static java.lang.System.getProperty;
 
 import com.exedio.cope.util.PrefixSource;
-import com.sun.mail.pop3.POP3Store;
 import java.util.Properties;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.URLName;
 import junit.framework.TestCase;
 
@@ -109,14 +110,21 @@ public class SendmailTest extends TestCase
 		return session;
 	}
 
-	protected final POP3Store getPOP3Store(final Session session, final Account account)
+	protected final Store getPOP3Store(final Session session, final Account account)
 	{
-		return new POP3Store(session, new URLName("pop3://"+account.pop3User+":"+account.pop3Password+"@"+pop3Host+"/INBOX"));
+		try
+		{
+			return session.getStore(new URLName("pop3://"+account.pop3User+":"+account.pop3Password+"@"+pop3Host+"/INBOX"));
+		}
+		catch(final NoSuchProviderException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected final void cleanPOP3Account(final Account account)
 	{
-		POP3Store store = null;
+		Store store = null;
 		Folder inboxFolder = null;
 		try
 		{
