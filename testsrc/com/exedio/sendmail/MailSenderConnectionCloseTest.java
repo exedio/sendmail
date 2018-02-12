@@ -104,7 +104,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		@Override
 		public void notifySent()
 		{
-			// empty
+			fail();
 		}
 
 		@Override
