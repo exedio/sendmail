@@ -65,7 +65,7 @@ public class CascadingMailSource implements MailSource
 				else
 				{
 					assert resultIfMoreThanOne==null;
-					resultIfMoreThanOne = new ArrayList<Mail>(resultIfOne);
+					resultIfMoreThanOne = new ArrayList<>(resultIfOne);
 					resultIfOne = null;
 					resultIfMoreThanOne.addAll(mails);
 				}

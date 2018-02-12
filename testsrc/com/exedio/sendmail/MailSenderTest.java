@@ -656,7 +656,7 @@ public class MailSenderTest extends SendmailTest
 				if(done)
 					return Collections.<Mail>emptyList();
 
-				final ArrayList<MockMail> result = new ArrayList<MockMail>();
+				final ArrayList<MockMail> result = new ArrayList<>();
 				result.add(mp);
 				result.add(f1);
 				result.add(f2);
@@ -769,7 +769,7 @@ public class MailSenderTest extends SendmailTest
 
 	private void assertPOP3(final Account account, final MockMail[] expectedMails)
 	{
-		final TreeMap<String, MockMail> expectedMessages = new TreeMap<String, MockMail>();
+		final TreeMap<String, MockMail> expectedMessages = new TreeMap<>();
 		for(final MockMail m : expectedMails)
 		{
 			if(expectedMessages.put(m.getSubject(), m)!=null)
@@ -791,7 +791,7 @@ public class MailSenderTest extends SendmailTest
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 
-			final TreeMap<String, Message> actualMessages = new TreeMap<String, Message>();
+			final TreeMap<String, Message> actualMessages = new TreeMap<>();
 			for(final Message m : inboxMessages)
 			{
 				if(actualMessages.put(m.getSubject(), m)!=null)
@@ -965,7 +965,7 @@ public class MailSenderTest extends SendmailTest
 		if(addresses==null)
 			return null;
 
-		final ArrayList<InternetAddress> result = new ArrayList<InternetAddress>(addresses.length);
+		final ArrayList<InternetAddress> result = new ArrayList<>(addresses.length);
 		for(final String address : addresses)
 			result.add(new InternetAddress(address));
 		return result;

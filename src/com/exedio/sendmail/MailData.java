@@ -45,15 +45,15 @@ public final class MailData
 	private final String subject;
 	private String messageID = null;
 	private long date = NOT_A_DATE;
-	private final ArrayList<InternetAddress> to = new ArrayList<InternetAddress>();
-	private final ArrayList<InternetAddress> carbonCopy = new ArrayList<InternetAddress>();
-	private final ArrayList<InternetAddress> blindCarbonCopy = new ArrayList<InternetAddress>();
-	private final ArrayList<InternetAddress> replyTo = new ArrayList<InternetAddress>();
+	private final ArrayList<InternetAddress> to = new ArrayList<>();
+	private final ArrayList<InternetAddress> carbonCopy = new ArrayList<>();
+	private final ArrayList<InternetAddress> blindCarbonCopy = new ArrayList<>();
+	private final ArrayList<InternetAddress> replyTo = new ArrayList<>();
 	private String textPlain = null;
 	private String textHtml = null;
 	private String charset = DEFAULT_CHARSET;
 	private String contentTransferEncoding = null;
-	private final ArrayList<DataSource> attachments = new ArrayList<DataSource>();
+	private final ArrayList<DataSource> attachments = new ArrayList<>();
 
 	public MailData(
 			final String from,

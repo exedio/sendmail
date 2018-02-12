@@ -61,7 +61,7 @@ public final class ErrorMailSource implements MailSource
 		this.overflowThreshold = overflowThreshold;
 	}
 
-	final List<ErrorMail> mailsToSend = new ArrayList<ErrorMail>();
+	final List<ErrorMail> mailsToSend = new ArrayList<>();
 
 	@Override
 	public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
@@ -73,9 +73,9 @@ public final class ErrorMailSource implements MailSource
 			if(size==0)
 				return Collections.<ErrorMail>emptyList();
 			else if(size<=maximumResultSize)
-				return new ArrayList<ErrorMail>(mailsToSend);
+				return new ArrayList<>(mailsToSend);
 			else
-				return new ArrayList<ErrorMail>(mailsToSend.subList(0, maximumResultSize));
+				return new ArrayList<>(mailsToSend.subList(0, maximumResultSize));
 		}
 	}
 

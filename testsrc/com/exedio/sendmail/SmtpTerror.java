@@ -73,7 +73,7 @@ public class SmtpTerror extends SendmailTest
 			final String subject = ts + "terror subject "+threadNumber+" - ";
 			final long timestamp =  System.currentTimeMillis();
 
-			final ArrayList<Mail> result = new ArrayList<Mail>();
+			final ArrayList<Mail> result = new ArrayList<>();
 			for( ; maximumResultSize>0 && number<SIZE; maximumResultSize--, number++)
 			{
 				final int mailNumber = number;

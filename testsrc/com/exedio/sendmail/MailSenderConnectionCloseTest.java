@@ -129,7 +129,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		if(skipTest)
 			return;
 
-		final ArrayList<MockMail> mails = new ArrayList<MockMail>();
+		final ArrayList<MockMail> mails = new ArrayList<>();
 		for(int i = 0; i<50; i++)
 			mails.add(new MockMail("mp"+i, failclose, TEXT));
 
