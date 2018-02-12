@@ -139,7 +139,7 @@ public class MailSender
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
 		properties.setProperty("mail.smtp.starttls.enable", String.valueOf(enableStarttls) );
 		final Session session;
-		if ( smtpUser==null || smtpUser.equals("") )
+		if ( smtpUser==null || smtpUser.isEmpty() )
 		{
 			session = Session.getInstance(properties);
 		}
