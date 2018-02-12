@@ -101,8 +101,8 @@ public class SendmailTest extends TestCase
 	protected final Session getPOP3Session(final Account account)
 	{
 		final Properties sessionProperties = new Properties();
-		sessionProperties.put("mail.pop3.host", pop3Host);
-		sessionProperties.put("mail.pop3.user", account.pop3User);
+		sessionProperties.setProperty("mail.pop3.host", pop3Host);
+		sessionProperties.setProperty("mail.pop3.user", account.pop3User);
 		final Session session = Session.getInstance(sessionProperties);
 		if(pop3Debug)
 			session.setDebug(true);
