@@ -848,11 +848,7 @@ public class MailSenderTest extends SendmailTest
 			store.close();
 			store = null;
 		}
-		catch(final MessagingException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch(final IOException e)
+		catch(final MessagingException | IOException e)
 		{
 			throw new RuntimeException(e);
 		}
