@@ -23,20 +23,20 @@ import com.exedio.cope.util.Properties;
 @SuppressWarnings("synthetic-access")
 public final class MailSenderProperties extends Properties
 {
-	private final String host = value("host", (String)null);
-	private final int port = value("port", 25, 0);
-	private final boolean ssl = value("ssl", false);
-	private final boolean enableStarttls = value("enableStarttls", false);
-	private final boolean debug = value("debug", false);
-	private final int connectTimeout = value("connectTimeout", 5000, 1000);
-	private final int    readTimeout = value(   "readTimeout", 5000, 1000);
-	private final Auth auth = value("auth", false, Auth::new);
-
 	private final MailSender value;
 
 	private MailSenderProperties(final Source source)
 	{
 		super(source);
+
+		final String host = value("host", (String) null);
+		final int port = value("port", 25, 0);
+		final boolean ssl = value("ssl", false);
+		final boolean enableStarttls = value("enableStarttls", false);
+		final boolean debug = value("debug", false);
+		final int connectTimeout = value("connectTimeout", 5000, 1000);
+		final int readTimeout    = value(   "readTimeout", 5000, 1000);
+		final Auth auth = value("auth", false, Auth::new);
 
 		if(ssl && enableStarttls)
 			throw newException("ssl", "must be false if enableStarttls is true");
