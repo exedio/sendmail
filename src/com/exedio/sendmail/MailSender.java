@@ -452,7 +452,7 @@ public class MailSender
 		private final String user;
 		private final String password;
 
-		public SendmailAuthenticator(final String user, final String password)
+		SendmailAuthenticator(final String user, final String password)
 		{
 			this.user = user;
 			this.password = password;
