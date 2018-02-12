@@ -122,7 +122,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 
-	private final static String TEXT = "text for test mail";
+	private static final String TEXT = "text for test mail";
 
 	public void testSendMail()
 	{

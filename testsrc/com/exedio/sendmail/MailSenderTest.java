@@ -379,15 +379,15 @@ public class MailSenderTest extends SendmailTest
 
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 
-	private final static String NEWLINES =
+	private static final String NEWLINES =
 		"lf-\n" +
 		"cr-\r" +
 		"crlf-\r\n";
-	private final static String NEWLINES_RECEIVE =
+	private static final String NEWLINES_RECEIVE =
 		"lf-\r\n" +
 		"cr-\r\n" +
 		"crlf-\r\n";
-	private final static String NON_ASCII_TEXT =
+	private static final String NON_ASCII_TEXT =
 		" ((utf " +
 		"auml-\u00e4 " +
 		"ouml-\u00f6 " +
@@ -398,17 +398,17 @@ public class MailSenderTest extends SendmailTest
 		"hebrew-\u05d8 " +
 		"euro-\u20ac " +
 		"aelig-\u00e6))";
-	private final static String NON_ASCII_TEXT_ISO =
+	private static final String NON_ASCII_TEXT_ISO =
 		" ((iso " +
 		"auml-\u00e4 " +
 		"ouml-\u00f6 " +
 		"uuml-\u00fc " +
 		NEWLINES +
 		"szlig-\u00df))";
-	private final static String TEXT_APPENDIX = "\r\n";
-	private final static String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
-	private final static String TEXT_PLAIN_ISO = "text for test mail" + NON_ASCII_TEXT_ISO;
-	private final static String TEXT_HTML =
+	private static final String TEXT_APPENDIX = "\r\n";
+	private static final String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
+	private static final String TEXT_PLAIN_ISO = "text for test mail" + NON_ASCII_TEXT_ISO;
+	private static final String TEXT_HTML =
 		"<html>" +
 		"<head>" +
 		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
@@ -419,7 +419,7 @@ public class MailSenderTest extends SendmailTest
 		"and special characters" + NON_ASCII_TEXT + "." +
 		"</body>" +
 		"</html>";
-	private final static String TEXT_HTML_ISO =
+	private static final String TEXT_HTML_ISO =
 		"<html>" +
 		"<head>" +
 		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
@@ -933,12 +933,12 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
-	protected final static byte[] bytes(final String name)
+	protected static final byte[] bytes(final String name)
 	{
 		return bytes(MailSenderTest.class.getResourceAsStream(name));
 	}
 
-	protected final static byte[] bytes(final InputStream in)
+	protected static final byte[] bytes(final InputStream in)
 	{
 		try
 		{
@@ -960,7 +960,7 @@ public class MailSenderTest extends SendmailTest
 			fail("expected " + Arrays.toString(expected) + ", but was " + Arrays.toString(actual));
 	}
 
-	protected final static ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException
+	protected static final ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException
 	{
 		if(addresses==null)
 			return null;
@@ -971,7 +971,7 @@ public class MailSenderTest extends SendmailTest
 		return result;
 	}
 
-	protected final static List<Address> addressList(final Address[] addresses)
+	protected static final List<Address> addressList(final Address[] addresses)
 	{
 		if(addresses==null)
 			return null;

@@ -120,7 +120,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(2, ep.getOverflowCount());
 	}
 
-	protected final static List<Object> list(final Object... o)
+	protected static final List<Object> list(final Object... o)
 	{
 		return Arrays.asList(o);
 	}
