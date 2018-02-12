@@ -940,10 +940,9 @@ public class MailSenderTest extends SendmailTest
 
 	protected static final byte[] bytes(final InputStream in)
 	{
-		try
+		final byte[] buf = new byte[1024];
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			final byte[] buf = new byte[1024];
-			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			for(int len = in.read(buf); len>=0; len = in.read(buf))
 				baos.write(buf, 0, len);
 			return baos.toByteArray();
