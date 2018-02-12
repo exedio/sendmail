@@ -41,7 +41,7 @@ public class MailSender
 	private static final int DEFAULT_PORT = 25;
 
 	public static final String DEFAULT_CHARSET = MailData.DEFAULT_CHARSET;
-	private static PrintStream log = System.err;
+	private static final PrintStream log = System.err;
 
 	private final String host;
 	private final boolean ssl;

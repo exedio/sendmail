@@ -58,7 +58,7 @@ public class MailSenderTest extends SendmailTest
 	private String failclose;
 	String timeStamp;
 
-	private static boolean countDebug = false;
+	private static final boolean countDebug = false;
 
 	@Override
 	public void setUp() throws Exception
