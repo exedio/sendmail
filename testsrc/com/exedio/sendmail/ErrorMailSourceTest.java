@@ -35,7 +35,7 @@ public class ErrorMailSourceTest extends TestCase
 		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject", 3);
 	}
 
-	private static final void assertText(final String expectedText, final Mail actualMail)
+	private static void assertText(final String expectedText, final Mail actualMail)
 	{
 		final String actualText = actualMail.getTextPlain();
 		assertTrue("TEXT:"+actualText, actualText.indexOf(expectedText)>0);

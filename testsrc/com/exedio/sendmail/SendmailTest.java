@@ -87,7 +87,7 @@ public class SendmailTest extends TestCase
 		}
 	}
 
-	private static final boolean getPropertyBoolean(final String key)
+	private static boolean getPropertyBoolean(final String key)
 	{
 		final String value = getProperty(key);
 		if("true".equals(value))

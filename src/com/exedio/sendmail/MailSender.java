@@ -442,7 +442,7 @@ public class MailSender
 		return message.createMessage(session);
 	}
 
-	private static final DataSource[] emptyToNull(final DataSource[] ds)
+	private static DataSource[] emptyToNull(final DataSource[] ds)
 	{
 		return ds==null ? null : ds.length==0 ? null : ds;
 	}
