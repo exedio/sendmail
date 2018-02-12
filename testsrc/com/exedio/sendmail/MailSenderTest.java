@@ -372,6 +372,7 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
+	@FunctionalInterface
 	private interface MockChecker
 	{
 		void checkBody(Message m) throws IOException, MessagingException;

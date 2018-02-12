@@ -20,6 +20,7 @@ package com.exedio.sendmail;
 
 import java.util.Collection;
 
+@FunctionalInterface
 public interface MailSource
 {
 	/**
