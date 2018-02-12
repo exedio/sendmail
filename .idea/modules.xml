@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/sendmail.iml" filepath="$PROJECT_DIR$/sendmail.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ideamod.iml" filepath="$PROJECT_DIR$/ideamod.iml" />
     </modules>
   </component>
 </project>
