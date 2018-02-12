@@ -64,7 +64,7 @@ public final class ErrorMailSource implements MailSource
 	final List<ErrorMail> mailsToSend = new ArrayList<ErrorMail>();
 
 	@Override
-	public final Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
+	public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
 	{
 		synchronized(mailsToSend)
 		{
@@ -170,7 +170,7 @@ public final class ErrorMailSource implements MailSource
 		}
 
 		@Override
-		public final String getSubject()
+		public String getSubject()
 		{
 			final String actualSubject = mailSubject==null ? fallbackSubject : mailSubject;
 			return (overflowCountOfMail>0) ? (actualSubject + " (ov" + overflowCountOfMail + ')') : actualSubject;

@@ -74,7 +74,7 @@ public final class MailData
 		this.messageID = messageID;
 	}
 
-	private static final void set(
+	private static void set(
 			final ArrayList<InternetAddress> list,
 			final String[] value)
 		throws AddressException
@@ -286,7 +286,7 @@ public final class MailData
 		}
 	}
 
-	private static final List<InternetAddress> toAdresses(final String[] s) throws AddressException
+	private static List<InternetAddress> toAdresses(final String[] s) throws AddressException
 	{
 		final InternetAddress[] result = new InternetAddress[s.length];
 		int i = 0;
@@ -300,7 +300,7 @@ public final class MailData
 		return l.toArray(new InternetAddress[l.size()]);
 	}
 
-	private static final MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
+	private static MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
 	{
 		assert plain!=null;
 		assert html!=null;
