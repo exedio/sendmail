@@ -66,7 +66,7 @@ public class SendmailTest extends TestCase
 		from=getProperty("from");
 	}
 
-	protected class Account
+	protected static class Account
 	{
 		final String email;
 		final String pop3User;
