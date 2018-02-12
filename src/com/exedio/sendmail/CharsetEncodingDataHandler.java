@@ -37,37 +37,51 @@ final class CharsetEncodingDataHandler extends DataHandler
 {
 	CharsetEncodingDataHandler( final String plainText, final String charset, final String plainContentType )
 	{
-		super(new DataSource(){
-			@Override
-			public String getContentType()
-			{
-				return plainContentType;
-			}
+		super(new MyDataSource(plainContentType, plainText, charset));
+	}
 
-			@Override
-			public InputStream getInputStream()
-			{
-				try
-				{
-					return new ByteArrayInputStream( plainText.getBytes( charset ) );
-				} catch (final UnsupportedEncodingException e)
-				{
-					// don't send emails in wrong encoding; don't send at all
-					throw new RuntimeException( e );
-				}
-			}
+	private static class MyDataSource implements DataSource
+	{
+		private final String plainContentType;
+		private final String plainText;
+		private final String charset;
 
-			@Override
-			public String getName()
-			{
-				return "";
-			}
+		MyDataSource(final String plainContentType, final String plainText, final String charset)
+		{
+			this.plainContentType = plainContentType;
+			this.plainText = plainText;
+			this.charset = charset;
+		}
 
-			@Override
-			public OutputStream getOutputStream()
+		@Override
+		public String getContentType()
+		{
+			return plainContentType;
+		}
+
+		@Override
+		public InputStream getInputStream()
+		{
+			try
 			{
-				return null;
+				return new ByteArrayInputStream( plainText.getBytes(charset) );
+			} catch (final UnsupportedEncodingException e)
+			{
+				// don't send emails in wrong encoding; don't send at all
+				throw new RuntimeException( e );
 			}
-		});
+		}
+
+		@Override
+		public String getName()
+		{
+			return "";
+		}
+
+		@Override
+		public OutputStream getOutputStream()
+		{
+			return null;
+		}
 	}
 }
