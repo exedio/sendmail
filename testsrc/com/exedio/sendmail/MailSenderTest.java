@@ -372,7 +372,7 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
-	private static interface MockChecker
+	private interface MockChecker
 	{
 		void checkBody(Message m) throws IOException, MessagingException;
 	}
