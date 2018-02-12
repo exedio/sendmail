@@ -687,7 +687,7 @@ public class MailSenderTest extends SendmailTest
 		final String fm1 = f1.failedException.getMessage();
 		assertEquals("Invalid Addresses", fm1);
 		final String fm1n = f1.failedException.getCause().getMessage();
-		assertTrue(fm1n+"--------"+fail, fm1n.indexOf(fail)>=0);
+		assertTrue(fm1n+"--------"+fail, fm1n.contains(fail));
 		assertEquals(0, f1.sentCounter);
 		assertEquals(1, f1.failedCounter);
 
@@ -698,7 +698,7 @@ public class MailSenderTest extends SendmailTest
 		final String fm3 = f3.failedException.getMessage();
 		assertEquals("Invalid Addresses", fm3);
 		final String fm3n = f3.failedException.getCause().getMessage();
-		assertTrue(fm3n+"--------"+failclose, fm3n.indexOf(failclose)>=0);
+		assertTrue(fm3n+"--------"+failclose, fm3n.contains(failclose));
 		assertEquals(0, f3.sentCounter);
 		assertEquals(1, f3.failedCounter);
 
