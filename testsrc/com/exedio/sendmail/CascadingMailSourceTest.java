@@ -37,58 +37,46 @@ public class CascadingMailSourceTest extends TestCase
 		maximumResultSizeA = -1;
 		maximumResultSizeB = -1;
 
-		final MailSource pe = new MailSource()
+		final MailSource pe = maximumResultSize -> 
 		{
-			@Override
-			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
-			{
-				if(maximumResultSize<=0)
-					throw new RuntimeException();
-				maximumResultSizeE = maximumResultSize;
+			if(maximumResultSize<=0)
+				throw new RuntimeException();
+			maximumResultSizeE = maximumResultSize;
 
-				return Collections.emptyList();
-			}
+			return Collections.emptyList();
 		};
 
 		final MockMail a1 = new MockMail("a1");
 		final MockMail a2 = new MockMail("a2");
-		final MailSource pa = new MailSource()
+		final MailSource pa = maximumResultSize -> 
 		{
-			@Override
-			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
-			{
-				if(maximumResultSize<=0)
-					throw new RuntimeException();
-				maximumResultSizeA = maximumResultSize;
+			if(maximumResultSize<=0)
+				throw new RuntimeException();
+			maximumResultSizeA = maximumResultSize;
 
-				switch(maximumResultSize)
-				{
-					case 1:
-						return list(a1);
-					default:
-						return list(a1, a2);
-				}
+			switch(maximumResultSize)
+			{
+				case 1:
+					return list(a1);
+				default:
+					return list(a1, a2);
 			}
 		};
 
 		final MockMail b1 = new MockMail("b1");
 		final MockMail b2 = new MockMail("b2");
-		final MailSource pb = new MailSource()
+		final MailSource pb = maximumResultSize -> 
 		{
-			@Override
-			public Collection<? extends Mail> getMailsToSend(final int maximumResultSize)
-			{
-				if(maximumResultSize<=0)
-					throw new RuntimeException();
-				maximumResultSizeB = maximumResultSize;
+			if(maximumResultSize<=0)
+				throw new RuntimeException();
+			maximumResultSizeB = maximumResultSize;
 
-				switch(maximumResultSize)
-				{
-					case 1:
-						return list(b1);
-					default:
-						return list(b1, b2);
-				}
+			switch(maximumResultSize)
+			{
+				case 1:
+					return list(b1);
+				default:
+					return list(b1, b2);
 			}
 		};
 

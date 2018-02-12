@@ -61,14 +61,7 @@ public final class MailSenderProperties extends Properties
 
 	public static Factory<MailSenderProperties> factory()
 	{
-		return new Factory<MailSenderProperties>()
-		{
-			@Override
-			public MailSenderProperties create(final Source source)
-			{
-				return new MailSenderProperties(source);
-			}
-		};
+		return source -> new MailSenderProperties(source);
 	}
 
 	private static final class Auth extends Properties
@@ -78,14 +71,7 @@ public final class MailSenderProperties extends Properties
 
 		private static Factory<Auth> factory()
 		{
-			return new Factory<Auth>()
-			{
-				@Override
-				public Auth create(final Source source)
-				{
-					return new Auth(source);
-				}
-			};
+			return source -> new Auth(source);
 		}
 
 		private Auth(final Source source)

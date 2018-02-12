@@ -21,7 +21,6 @@ package com.exedio.sendmail;
 import static com.exedio.cope.util.InterrupterJobContextAdapter.run;
 
 import com.exedio.cope.util.Interrupter;
-import com.exedio.cope.util.InterrupterJobContextAdapter.Body;
 import com.exedio.cope.util.JobContext;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -228,13 +227,7 @@ public class MailSender
 			final int maximumResultSize,
 			final Interrupter interrupter)
 	{
-		return run(
-			interrupter,
-			new Body(){ @Override public void run(final JobContext ctx)
-			{
-				sendMails(source, maximumResultSize, ctx);
-			}}
-		);
+		return run(interrupter, ctx -> sendMails(source, maximumResultSize, ctx));
 	}
 
 	public final void sendMails(

@@ -149,16 +149,11 @@ public class SmtpTerror extends SendmailTest
 		for(int i = 0; i<threadCount; i++)
 		{
 			final int threadNumber = i;
-			t[i] = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						mailSender.sendMails(tms[threadNumber], SIZE, new EmptyJobContext());
-						tms[threadNumber].readyTimestamp = System.currentTimeMillis();
-					}
-				}
-			);
+			t[i] = new Thread(() ->
+			{
+				mailSender.sendMails(tms[threadNumber], SIZE, new EmptyJobContext());
+				tms[threadNumber].readyTimestamp = System.currentTimeMillis();
+			});
 		}
 
 		final long start = System.currentTimeMillis();
