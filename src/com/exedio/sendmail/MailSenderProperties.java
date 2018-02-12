@@ -30,7 +30,7 @@ public final class MailSenderProperties extends Properties
 	private final boolean debug = value("debug", false);
 	private final int connectTimeout = value("connectTimeout", 5000, 1000);
 	private final int    readTimeout = value(   "readTimeout", 5000, 1000);
-	private final Auth auth = value("auth", false, Auth.factory());
+	private final Auth auth = value("auth", false, Auth::new);
 
 	private final MailSender value;
 
@@ -61,18 +61,13 @@ public final class MailSenderProperties extends Properties
 
 	public static Factory<MailSenderProperties> factory()
 	{
-		return source -> new MailSenderProperties(source);
+		return MailSenderProperties::new;
 	}
 
 	private static final class Auth extends Properties
 	{
 		private final String username = value      ("username", (String)null);
 		private final String password = valueHidden("password", (String)null);
-
-		private static Factory<Auth> factory()
-		{
-			return source -> new Auth(source);
-		}
 
 		private Auth(final Source source)
 		{
