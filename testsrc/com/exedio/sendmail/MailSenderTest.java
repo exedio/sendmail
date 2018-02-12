@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import com.exedio.cope.util.Hex;
+import com.sun.mail.pop3.POP3Store;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeMap;
-
 import javax.activation.DataSource;
 import javax.activation.URLDataSource;
 import javax.mail.Address;
@@ -44,9 +45,6 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
-
-import com.exedio.cope.util.Hex;
-import com.sun.mail.pop3.POP3Store;
 
 
 public class MailSenderTest extends SendmailTest

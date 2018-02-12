@@ -18,10 +18,10 @@
 
 package com.exedio.sendmail;
 
-import java.util.Arrays;
-import java.util.List;
 import static java.lang.System.lineSeparator;
 
+import java.util.Arrays;
+import java.util.List;
 import junit.framework.TestCase;
 
 public class ErrorMailSourceTest extends TestCase

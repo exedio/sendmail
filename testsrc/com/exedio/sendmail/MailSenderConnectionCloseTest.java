@@ -18,14 +18,12 @@
 
 package com.exedio.sendmail;
 
+import com.exedio.cope.util.EmptyJobContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-
 import javax.mail.SendFailedException;
-
-import com.exedio.cope.util.EmptyJobContext;
 
 public class MailSenderConnectionCloseTest extends SendmailTest
 {

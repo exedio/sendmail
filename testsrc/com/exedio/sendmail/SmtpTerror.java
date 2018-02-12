@@ -18,12 +18,11 @@
 
 package com.exedio.sendmail;
 
+import com.exedio.cope.util.EmptyJobContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-
-import com.exedio.cope.util.EmptyJobContext;
 
 /**
  * BEWARE: this puts a lot of mails on your smtp server.

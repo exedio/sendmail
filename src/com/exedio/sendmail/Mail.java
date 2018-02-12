@@ -19,7 +19,6 @@
 package com.exedio.sendmail;
 
 import java.util.Date;
-
 import javax.activation.DataSource;
 
 public interface Mail

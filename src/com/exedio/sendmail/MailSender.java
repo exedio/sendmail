@@ -20,11 +20,13 @@ package com.exedio.sendmail;
 
 import static com.exedio.cope.util.InterrupterJobContextAdapter.run;
 
+import com.exedio.cope.util.Interrupter;
+import com.exedio.cope.util.InterrupterJobContextAdapter.Body;
+import com.exedio.cope.util.JobContext;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
-
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -33,10 +35,6 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
-
-import com.exedio.cope.util.Interrupter;
-import com.exedio.cope.util.InterrupterJobContextAdapter.Body;
-import com.exedio.cope.util.JobContext;
 
 public class MailSender
 {

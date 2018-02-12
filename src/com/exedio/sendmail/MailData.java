@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Message;

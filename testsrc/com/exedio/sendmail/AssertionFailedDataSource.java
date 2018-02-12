@@ -20,9 +20,7 @@ package com.exedio.sendmail;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import javax.activation.DataSource;
-
 import junit.framework.AssertionFailedError;
 
 class AssertionFailedDataSource implements DataSource

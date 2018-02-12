@@ -18,11 +18,9 @@
 
 package com.exedio.sendmail;
 
-import java.util.Date;
-
-import javax.activation.DataSource;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Date;
+import javax.activation.DataSource;
 
 /**
  * An empty implementation of {@link Mail}.

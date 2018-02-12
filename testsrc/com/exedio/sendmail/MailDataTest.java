@@ -19,9 +19,7 @@
 package com.exedio.sendmail;
 
 import java.sql.Date;
-
 import javax.mail.internet.AddressException;
-
 import junit.framework.TestCase;
 
 public class MailDataTest extends TestCase

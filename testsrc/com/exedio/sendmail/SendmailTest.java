@@ -20,19 +20,16 @@ package com.exedio.sendmail;
 
 import static java.lang.System.getProperty;
 
+import com.exedio.cope.util.PrefixSource;
+import com.sun.mail.pop3.POP3Store;
 import java.util.Properties;
-
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.URLName;
-
 import junit.framework.TestCase;
-
-import com.exedio.cope.util.PrefixSource;
-import com.sun.mail.pop3.POP3Store;
 
 public class SendmailTest extends TestCase
 {
