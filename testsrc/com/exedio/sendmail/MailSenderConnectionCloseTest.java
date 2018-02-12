@@ -143,7 +143,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
 
 				if(done)
-					return Collections.<Mail>emptyList();
+					return Collections.emptyList();
 
 				done = true;
 				return mails;

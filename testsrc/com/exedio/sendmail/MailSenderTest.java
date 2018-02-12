@@ -654,7 +654,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(MAXIMUM_RESULT_SIZE, maximumResultSize);
 
 				if(done)
-					return Collections.<Mail>emptyList();
+					return Collections.emptyList();
 
 				final ArrayList<MockMail> result = new ArrayList<>();
 				result.add(mp);

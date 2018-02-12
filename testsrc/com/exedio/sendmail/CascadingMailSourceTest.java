@@ -46,7 +46,7 @@ public class CascadingMailSourceTest extends TestCase
 					throw new RuntimeException();
 				maximumResultSizeE = maximumResultSize;
 
-				return Collections.<Mail>emptyList();
+				return Collections.emptyList();
 			}
 		};
 

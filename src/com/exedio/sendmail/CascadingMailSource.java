@@ -75,7 +75,7 @@ public class CascadingMailSource implements MailSource
 		if(resultIfOne==null)
 		{
 			if(resultIfMoreThanOne==null)
-				return Collections.<Mail>emptyList();
+				return Collections.emptyList();
 			else
 				return resultIfMoreThanOne;
 		}
