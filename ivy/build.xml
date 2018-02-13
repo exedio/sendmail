@@ -5,7 +5,6 @@
 
 		<delete dir="../lib">
 			<include name="*" />
-			<exclude name="ant-contrib.jar"/>
 		</delete>
 		<copy overwrite="true" todir="../lib">
 			<firstmatchmapper>
