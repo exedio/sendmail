@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import static java.lang.System.getProperty;
 
 import com.exedio.cope.util.PrefixSource;
+import com.exedio.cope.util.Sources;
 import java.util.Properties;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -57,7 +58,7 @@ public class SendmailTest extends TestCase
 
 		final MailSenderProperties mailSenderProperties = MailSenderProperties.factory().create(
 				PrefixSource.wrap(
-						com.exedio.cope.util.Properties.SYSTEM_PROPERTY_SOURCE,
+						Sources.SYSTEM_PROPERTIES,
 						"smtp."));
 
 		mailSender = mailSenderProperties.get();
