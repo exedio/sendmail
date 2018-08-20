@@ -18,7 +18,12 @@
 
 package com.exedio.sendmail;
 
+import static java.lang.Math.toIntExact;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+
 import com.exedio.cope.util.Properties;
+import java.time.Duration;
 
 @SuppressWarnings("synthetic-access")
 public final class MailSenderProperties extends Properties
@@ -34,8 +39,8 @@ public final class MailSenderProperties extends Properties
 		final boolean ssl = value("ssl", false);
 		final boolean enableStarttls = value("enableStarttls", false);
 		final boolean debug = value("debug", false);
-		final int connectTimeout = value("connectTimeout", 5000, 1000);
-		final int readTimeout    = value(   "readTimeout", 5000, 1000);
+		final Duration connectTimeout = valueIntMillis("connectTimeout", ofSeconds(5), ofSeconds(1));
+		final Duration readTimeout    = valueIntMillis(   "readTimeout", ofSeconds(5), ofSeconds(1));
 		final Auth auth = value("auth", false, Auth::new);
 
 		if(ssl && enableStarttls)
@@ -47,11 +52,26 @@ public final class MailSenderProperties extends Properties
 					port,
 					ssl,
 					enableStarttls,
-					connectTimeout,
-					readTimeout,
+					toIntExact(connectTimeout.toMillis()), // toIntExact cannot fail because of valueIntMillis
+					toIntExact(readTimeout   .toMillis()), // toIntExact cannot fail because of valueIntMillis
 					debug,
 					auth==null ? null : auth.username,
 					auth==null ? null : auth.password);
+	}
+
+	// copied from com.exedio.cope.ConnectProperties
+	private Duration valueIntMillis(
+			final String key,
+			final Duration defaultValue,
+			final Duration minimum)
+	{
+		final Duration result = value(key, defaultValue, minimum);
+		final Duration maximum = ofMillis(Integer.MAX_VALUE);
+		if(result.compareTo(maximum)>0)
+			throw newException(key,
+					"must be a duration less or equal " + maximum + ", " +
+					"but was " + result);
+		return result;
 	}
 
 	public MailSender get()
