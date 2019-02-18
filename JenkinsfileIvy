@@ -2,7 +2,7 @@
 timestamps
 {
 	//noinspection GroovyAssignabilityCheck
-	node('OpenJdk18Debian9')
+	lock('ivy-cache') { node('OpenJdk18Debian9')
 	{
 		try
 		{
@@ -58,7 +58,7 @@ timestamps
 			echo("Delete working dir after " + currentBuild.result)
 			deleteDir()
 		}
-	}
+	}}
 }
 
 def abortable(Closure body)
