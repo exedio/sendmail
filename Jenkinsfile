@@ -2,7 +2,7 @@
 timestamps
 {
 	//noinspection GroovyAssignabilityCheck
-	node('OpenJdk18Debian9')
+	lock('sendmail-remote') { node('OpenJdk18Debian9')
 	{
 		try
 		{
@@ -66,6 +66,10 @@ timestamps
 						usePreviousBuildAsReference: false,
 						useStableBuildAsReference: false,
 				)
+				withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
+				{
+					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES
+				}
 				archive 'build/success/*'
 			}
 		}
@@ -98,7 +102,7 @@ timestamps
 				deleteDir()
 			}
 		}
-	}
+	}}
 }
 
 def abortable(Closure body)
