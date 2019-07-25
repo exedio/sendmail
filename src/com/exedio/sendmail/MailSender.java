@@ -18,8 +18,6 @@
 
 package com.exedio.sendmail;
 
-import com.exedio.cope.util.Interrupter;
-import com.exedio.cope.util.InterrupterJobContextAdapter;
 import com.exedio.cope.util.JobContext;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -187,50 +185,6 @@ public class MailSender
 	public final boolean isEnableStarttls()
 	{
 		return enableStarttls;
-	}
-
-	/**
-	 * @return the number of successfully sent mails
-	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
-	 */
-	@Deprecated
-	public static final int sendMails(
-			final MailSource source,
-			final String host,
-			final int connectTimeout,
-			final int readTimeout,
-			final boolean debug,
-			final int maximumResultSize,
-			final Interrupter interrupter)
-	{
-		return new MailSender(host, connectTimeout, readTimeout, debug).sendMails(source, maximumResultSize, interrupter);
-	}
-
-	/**
-	 * @deprecated Use {@link #sendMails(MailSource, int, Interrupter)} instead
-	 */
-	@Deprecated
-	public static final void sendMails(
-			final MailSource source,
-			final String smtpHost,
-			final boolean smtpDebug,
-			final int maximumResultSize)
-	{
-		sendMails(source, smtpHost, 60000, 60000, smtpDebug, maximumResultSize, null);
-	}
-
-	/**
-	 * @deprecated Use {@link #sendMails(MailSource,int,JobContext)} instead.
-	 * @return the number of successfully sent mails
-	 */
-	@Deprecated
-	public final int sendMails(
-			final MailSource source,
-			final int maximumResultSize,
-			final Interrupter interrupter)
-	{
-		return InterrupterJobContextAdapter.
-				run(interrupter, ctx -> sendMails(source, maximumResultSize, ctx));
 	}
 
 	public final void sendMails(
