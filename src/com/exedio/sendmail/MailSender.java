@@ -187,6 +187,34 @@ public class MailSender
 		return enableStarttls;
 	}
 
+	public final Connection openConnection() throws MessagingException
+	{
+		return new Connection(session.getTransport("smtp"));
+	}
+
+	public final class Connection implements AutoCloseable
+	{
+		final Transport transport;
+
+		Connection(final Transport transport) throws MessagingException
+		{
+			this.transport = transport;
+			transport.connect();
+		}
+
+		public void send(final MailData mail) throws MessagingException
+		{
+			sendMessage(transport, mail.createMessage(session));
+		}
+
+		@Override
+		public void close() throws MessagingException
+		{
+			if(transport.isConnected())
+				transport.close();
+		}
+	}
+
 	/**
 	 * @deprecated MailSource API is deprecated.
 	 *             Use {@link MailSender#sendMail(MailData)} instead.
@@ -207,14 +235,8 @@ public class MailSender
 
 			int mailsTriedToSendInOneConnection = 0;
 			int mailsSentInOneConnection = 0;
-			try(Transport transport = session.getTransport("smtp"))
+			try(Connection con = openConnection())
 			{
-				{
-					//final long start = System.currentTimeMillis();
-					transport.connect();
-					//System.out.println("Mailsender connected. ("+(System.currentTimeMillis()-start)+"ms)");
-				}
-
 				for(final Mail mail : mails)
 				{
 					ctx.stopIfRequested();
@@ -225,17 +247,17 @@ public class MailSender
 						try
 						{
 							mailsTriedToSendInOneConnection++;
-							sendMessage(transport, message);
+							sendMessage(con.transport, message);
 							mailsSentInOneConnection++;
 							ctx.incrementProgress();
 						}
 						catch(final IllegalStateException e)
 						{
 							log.println(MailSender.class.getName() + " encounters unexpectedly closed connection on mail #" + mailsTriedToSendInOneConnection + '/' + mailsSentInOneConnection);
-							transport.connect();
+							con.transport.connect();
 							mailsTriedToSendInOneConnection = 1;
 							mailsSentInOneConnection = 0;
-							sendMessage(transport, message);
+							sendMessage(con.transport, message);
 							mailsSentInOneConnection++;
 						}
 

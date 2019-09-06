@@ -1139,6 +1139,102 @@ public class MailSenderTest extends SendmailTest
 				.mailChecker(MailChecker.CHECK_NOTHING).execute();
 	}
 
+	@Test
+	void testConnection() throws InterruptedException, MessagingException, IOException
+	{
+		try(MailSender.Connection c = mailSender.openConnection())
+		{
+			send(c, "testConnection1", user1);
+			send(c, "testConnection2", user2);
+			send(c, "testConnection3a", user3);
+			send(c, "testConnection3b", user3);
+		}
+		boolean complete1 = false;
+		boolean complete2 = false;
+		boolean complete3 = false;
+		for(int i = 0; i<30; i++)
+		{
+			Thread.sleep(1000);
+			//noinspection ConstantConditions,NestedAssignment
+			if(
+					(complete1 || (complete1=countPOP3(user1, 1))) &&
+					(complete2 || (complete2=countPOP3(user2, 1))) &&
+					(complete3 || (complete3=countPOP3(user3, 2))) )
+			{
+				break;
+			}
+		}
+
+		check(user1, (messages)->
+		{
+			final Message m = messages.get("testConnection1");
+			assertEquals("testConnection1", m.getSubject());
+			assertEquals("plain text testConnection1" + TEXT_APPENDIX, m.getContent());
+			assertEquals(addressList(from), Arrays.asList(m.getFrom()));
+			assertEquals(addressList(user1.email), addressList(m.getRecipients(Message.RecipientType.TO)));
+			assertEquals(1, messages.size());
+		});
+		check(user2, (messages)->
+		{
+			final Message m = messages.get("testConnection2");
+			assertEquals("testConnection2", m.getSubject());
+			assertEquals("plain text testConnection2" + TEXT_APPENDIX, m.getContent());
+			assertEquals(addressList(from), Arrays.asList(m.getFrom()));
+			assertEquals(addressList(user2.email), addressList(m.getRecipients(Message.RecipientType.TO)));
+			assertEquals(1, messages.size());
+		});
+		check(user3, (messages)->
+		{
+			final Message ma = messages.get("testConnection3a");
+			final Message mb = messages.get("testConnection3b");
+			assertEquals("testConnection3a", ma.getSubject());
+			assertEquals("testConnection3b", mb.getSubject());
+			assertEquals("plain text testConnection3a" + TEXT_APPENDIX, ma.getContent());
+			assertEquals("plain text testConnection3b" + TEXT_APPENDIX, mb.getContent());
+			assertEquals(addressList(from), Arrays.asList(ma.getFrom()));
+			assertEquals(addressList(from), Arrays.asList(mb.getFrom()));
+			assertEquals(addressList(user3.email), addressList(ma.getRecipients(Message.RecipientType.TO)));
+			assertEquals(addressList(user3.email), addressList(mb.getRecipients(Message.RecipientType.TO)));
+			assertEquals(2, messages.size());
+		});
+	}
+
+	private void send(
+			final MailSender.Connection connection,
+			final String subject,
+			final Account account) throws MessagingException
+	{
+		final MailData data = new MailData(from, subject);
+		data.addTo(account.email);
+		data.setTextPlain("plain text " + subject);
+		connection.send(data);
+	}
+
+	@FunctionalInterface
+	interface Tester
+	{
+		void accept(TreeMap<String, Message> t) throws MessagingException, IOException;
+	}
+
+	private void check(
+			final Account account,
+			final Tester tester)
+			throws MessagingException, IOException
+	{
+		final Session session = getPOP3Session(account);
+		try(final Store store = getPOP3Store(session, account);
+			 final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, false))
+		{
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
+			inboxFolder.open(Folder.READ_ONLY);
+			final TreeMap<String, Message> messages = new TreeMap<>();
+			for(final Message m : inboxFolder.getMessages())
+				if(messages.put(m.getSubject(), m) != null)
+					throw new RuntimeException(m.getSubject());
+			tester.accept(messages);
+		}
+	}
+
 	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void sendAndTest(final String subject,
 									 final String[] to,
@@ -1610,7 +1706,7 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
-	protected static final ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException
+	protected static final ArrayList<InternetAddress> addressList(final String... addresses) throws MessagingException
 	{
 		if(addresses==null)
 			return null;
