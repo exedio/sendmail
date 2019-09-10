@@ -28,19 +28,25 @@
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>mailapi</artifactId>
-      <version>1.6.0</version>
+      <version>1.6.4</version>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun.activation</groupId>
+          <artifactId>jakarta.activation</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>smtp</artifactId>
-      <version>1.6.0</version>
+      <version>1.6.4</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>pop3</artifactId>
-      <version>1.6.0</version>
+      <version>1.6.4</version>
       <optional>true</optional>
     </dependency>
     <dependency>

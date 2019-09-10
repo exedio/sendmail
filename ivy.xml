@@ -25,9 +25,11 @@
 	<dependencies>
 		<dependency org="junit" name="junit" rev="4.4" conf="build->default" />
 		<dependency org="findbugs-x" name="findbugs" rev="3.0.0" conf="build->default" />
-		<dependency org="com.sun.mail" name="mailapi" rev="1.6.0" conf="runtime->default; build->sources" />
-		<dependency org="com.sun.mail" name="smtp"    rev="1.6.0" conf="runtime->default" />
-		<dependency org="com.sun.mail" name="pop3"    rev="1.6.0" conf="build->default" /><!-- just for testing -->
+		<dependency org="com.sun.mail" name="mailapi" rev="1.6.4" conf="runtime->default; build->sources">
+			<exclude org="com.sun.activation" module="jakarta.activation" />
+		</dependency>
+		<dependency org="com.sun.mail" name="smtp"    rev="1.6.4" conf="runtime->default" />
+		<dependency org="com.sun.mail" name="pop3"    rev="1.6.4" conf="build->default" /><!-- just for testing -->
 		<dependency org="com.exedio" name="copeutil" rev="823" conf="runtime->runtime; build->runtime,sources,changelog">
 			<exclude org="org.slf4j" name="slf4j-api" />
 		</dependency>
