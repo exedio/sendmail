@@ -7,6 +7,8 @@ omit bug fixes.
 The items are sorted inversely, i.e. latest items are on top
 
 --------------------------------------------------------------------------
+* get rid of logs when creating Session:
+	WARNUNG: expected resource not found: /META-INF/javamail.default...
 * requires mailapi 1.6.0
 	causes 2 logs when creating Session:
 	WARNUNG: expected resource not found: /META-INF/javamail.default...
