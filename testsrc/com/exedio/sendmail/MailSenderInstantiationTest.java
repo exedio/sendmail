@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class MailSenderInstantiationTest extends TestCase
 {
-	public void testIt() throws Exception
+	public void testIt()
 	{
 		final MailSender ms = new MailSender("host", 123, 456, false);
 		assertEquals("host", ms.getHost());

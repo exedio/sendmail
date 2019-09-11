@@ -35,7 +35,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// empty
+			assertEquals(null, e.getMessage());
 		}
 		try
 		{
@@ -44,7 +44,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// empty
+			assertEquals("subject", e.getMessage());
 		}
 	}
 
@@ -83,7 +83,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// ok
+			assertEquals(null, e.getMessage());
 		}
 		try
 		{
@@ -92,7 +92,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// ok
+			assertEquals(null, e.getMessage());
 		}
 		try
 		{
@@ -101,7 +101,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// ok
+			assertEquals(null, e.getMessage());
 		}
 		try
 		{
@@ -110,7 +110,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// ok
+			assertEquals(null, e.getMessage());
 		}
 	}
 
@@ -126,7 +126,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			// ok
+			assertEquals(null, e.getMessage());
 		}
 	}
 

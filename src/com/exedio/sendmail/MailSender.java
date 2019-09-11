@@ -38,6 +38,7 @@ public class MailSender
 {
 	private static final int DEFAULT_PORT = 25;
 
+	@SuppressWarnings("unused") // TODO
 	public static final String DEFAULT_CHARSET = MailData.DEFAULT_CHARSET;
 	private static final PrintStream log = System.err;
 
@@ -347,6 +348,7 @@ public class MailSender
 		new MailSender(host, connectTimeout, readTimeout, debug).sendMail(mail);
 	}
 
+	@SuppressWarnings("unused") // TODO
 	public final void sendMail(final MailData mail) throws MessagingException
 	{
 		final MimeMessage message = mail.createMessage(session);

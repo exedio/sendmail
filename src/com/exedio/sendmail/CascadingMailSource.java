@@ -29,6 +29,7 @@ public class CascadingMailSource implements MailSource
 
 	public CascadingMailSource(final MailSource... sources)
 	{
+		//noinspection AssignmentOrReturnOfFieldWithMutableType TODO
 		this.sources = sources;
 
 		if(sources.length<=1)
@@ -64,6 +65,7 @@ public class CascadingMailSource implements MailSource
 				}
 				else
 				{
+					//noinspection ConstantConditions OK: just an assert
 					assert resultIfMoreThanOne==null;
 					resultIfMoreThanOne = new ArrayList<>(resultIfOne);
 					resultIfOne = null;
@@ -81,6 +83,7 @@ public class CascadingMailSource implements MailSource
 		}
 		else
 		{
+			//noinspection ConstantConditions OK: just an assert
 			assert resultIfMoreThanOne==null;
 			return resultIfOne;
 		}

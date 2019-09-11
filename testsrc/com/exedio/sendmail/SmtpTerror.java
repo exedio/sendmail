@@ -58,6 +58,7 @@ public class SmtpTerror extends SendmailTest
 	private class MockMailSource implements MailSource
 	{
 		private final int threadNumber;
+		@SuppressWarnings("CanBeFinal") // OK: bug in idea
 		int number = 0;
 		long readyTimestamp = -1;
 

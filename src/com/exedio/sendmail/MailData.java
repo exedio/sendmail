@@ -164,6 +164,7 @@ public final class MailData
 		if(attachment==null)
 			throw new NullPointerException();
 
+		//noinspection UnnecessaryThis
 		this.attachments.add(attachment);
 	}
 

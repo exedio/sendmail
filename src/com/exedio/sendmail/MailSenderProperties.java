@@ -87,7 +87,7 @@ public final class MailSenderProperties extends Properties
 	private static final class Auth extends Properties
 	{
 		private final String username = value      ("username", (String)null);
-		private final String password = valueHidden("password", (String)null);
+		private final String password = valueHidden("password", null);
 
 		private Auth(final Source source)
 		{

@@ -123,7 +123,8 @@ public class SendmailTest extends TestCase
 		}
 	}
 
-	protected final void cleanPOP3Account(final Account account)
+	@SuppressWarnings("resource") // OK: just a test
+	protected final void cleanPOP3Account(final Account account) throws MessagingException
 	{
 		Store store = null;
 		Folder inboxFolder = null;
@@ -150,30 +151,12 @@ public class SendmailTest extends TestCase
 			store.close();
 			store = null;
 		}
-		catch(final MessagingException e)
-		{
-			throw new RuntimeException(e);
-		}
 		finally
 		{
 			if(inboxFolder!=null)
-			{
-				try
-				{
-					inboxFolder.close(false); // not expunge, just close and release the resources
-				}
-				catch(final MessagingException e)
-				{/*IGNORE*/}
-			}
+				inboxFolder.close(false); // not expunge, just close and release the resources
 			if(store!=null)
-			{
-				try
-				{
-					store.close();
-				}
-				catch(final MessagingException e)
-				{/*IGNORE*/}
-			}
+				store.close();
 		}
 	}
 }
