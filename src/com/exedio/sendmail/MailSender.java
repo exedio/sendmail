@@ -135,6 +135,7 @@ public class MailSender
 		properties.setProperty("mail.transport.protocol", getProtocol() );
 		properties.setProperty("mail.smtp.connectiontimeout", String.valueOf(connectTimeout));
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
+		properties.setProperty("mail.smtp.ssl.enable", String.valueOf(ssl) );
 		properties.setProperty("mail.smtp.starttls.enable", String.valueOf(enableStarttls) );
 		final Session session;
 		if ( smtpUser==null || smtpUser.isEmpty() )
@@ -246,7 +247,7 @@ public class MailSender
 			final Transport transport;
 			try
 			{
-				transport = session.getTransport( getProtocol() );
+				transport = session.getTransport("smtp");
 			}
 			catch(final NoSuchProviderException e)
 			{

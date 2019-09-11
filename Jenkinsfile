@@ -69,6 +69,7 @@ timestamps
 				withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
 				{
 					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-plain    -Dsmtp.port=25"
+					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
 					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
 					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
 				}
