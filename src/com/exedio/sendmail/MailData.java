@@ -298,8 +298,10 @@ public final class MailData
 
 	private static InternetAddress[] toArray(final ArrayList<InternetAddress> l)
 	{
-		return l.toArray(new InternetAddress[l.size()]);
+		return l.toArray(EMPTY_INTERNET_ADDRESSES);
 	}
+
+	private static final InternetAddress[] EMPTY_INTERNET_ADDRESSES = new InternetAddress[0];
 
 	private static MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
 	{
