@@ -18,11 +18,12 @@
 
 package com.exedio.sendmail;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -905,16 +906,9 @@ public class MailSenderTest extends SendmailTest
 	void assertEqualsHex(final String expected, final Object actual)
 	{
 		final String actualString = (String)actual;
-		try
-		{
-			assertEquals(
-					"\n" + Hex.encodeLower(expected.getBytes("utf8")) +
-					'\n' + Hex.encodeLower(actualString  .getBytes("utf8")),
-					expected, actualString);
-		}
-		catch (final UnsupportedEncodingException e)
-		{
-			throw new RuntimeException(e);
-		}
+		assertEquals(
+				"\n" + Hex.encodeLower(expected.getBytes(UTF_8)) +
+				'\n' + Hex.encodeLower(actualString.getBytes(UTF_8)),
+				expected, actualString);
 	}
 }
