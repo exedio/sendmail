@@ -278,7 +278,7 @@ public final class MailData
 		}
 
 		@Override
-		protected void updateHeaders() throws MessagingException
+		protected synchronized void updateHeaders() throws MessagingException
 		{
 			super.updateHeaders();
 			setHeader("Message-ID", id);
