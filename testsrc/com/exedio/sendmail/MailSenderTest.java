@@ -81,7 +81,7 @@ public class MailSenderTest extends SendmailTest
 		cleanPOP3Account(user2);
 		cleanPOP3Account(user3);
 
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", Locale.ENGLISH);
 		timeStamp = df.format(new Date());
 	}
 

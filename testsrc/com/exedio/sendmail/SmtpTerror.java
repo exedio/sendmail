@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import static java.util.Locale.ENGLISH;
+
 import com.exedio.cope.util.EmptyJobContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class SmtpTerror extends SendmailTest
 
 		user = new Account("user3");
 
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", ENGLISH);
 		ts = df.format(new Date());
 		sent = 0;
 

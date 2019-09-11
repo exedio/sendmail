@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import static java.util.Locale.ENGLISH;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -185,7 +187,7 @@ public final class ErrorMailSource implements MailSource
 		@Override
 		public String getTextPlain()
 		{
-			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", ENGLISH);
 			//noinspection HardcodedLineSeparator
 			return df.format(new Date(timestamp)) + '\n' + text;
 		}
