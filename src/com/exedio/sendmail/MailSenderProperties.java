@@ -35,16 +35,26 @@ public final class MailSenderProperties extends Properties
 		super(source);
 
 		final String host = value("host", (String) null);
-		final int port = value("port", 25, 0);
 		final boolean ssl = value("ssl", false);
 		final boolean enableStarttls = value("enableStarttls", false);
+
+		final int portDefault;
+		if(ssl)
+			if(enableStarttls)
+				throw newException("ssl", "must be false if enableStarttls is true");
+			else
+				portDefault = 465;
+		else
+			if(enableStarttls)
+				portDefault = 587;
+			else
+				portDefault = 25;
+
+		final int port = value("port", portDefault, 0);
 		final boolean debug = value("debug", false);
 		final Duration connectTimeout = valueIntMillis("connectTimeout", ofSeconds(5), ofSeconds(1));
 		final Duration readTimeout    = valueIntMillis(   "readTimeout", ofSeconds(5), ofSeconds(1));
 		final Auth auth = value("auth", false, Auth::new);
-
-		if(ssl && enableStarttls)
-			throw newException("ssl", "must be false if enableStarttls is true");
 
 		this.value =
 			new MailSender(

@@ -67,7 +67,7 @@ public class MailSenderPropertiesTest extends TestCase
 		assertEquals("testHost.invalid", sender.getHost());
 		assertEquals(true, sender.isSSL());
 		assertEquals(false, sender.isEnableStarttls());
-		assertEquals(25, sender.port);
+		assertEquals(465, sender.port);
 	}
 	public void testStarttls()
 	{
@@ -78,7 +78,7 @@ public class MailSenderPropertiesTest extends TestCase
 		assertEquals("testHost.invalid", sender.getHost());
 		assertEquals(false, sender.isSSL());
 		assertEquals(true, sender.isEnableStarttls());
-		assertEquals(25, sender.port);
+		assertEquals(587, sender.port);
 	}
 	public void testSSLandStarttls()
 	{

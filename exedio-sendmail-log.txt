@@ -7,6 +7,15 @@ omit bug fixes.
 The items are sorted inversely, i.e. latest items are on top
 
 --------------------------------------------------------------------------
+* MailSenderProperties#port default depends on ssl/enableStarttls.
+	This breaks backwards compatibility, check your deployed systems !!!
+	Default ports are as follows:
+		ssl   enableStarttls | new default port old default port
+		false false          |  25              25
+		true  false          | 465              25
+		false true           | 587              25
+		true  true           | forbidden        forbidden
+
 * bugfix: ssl was not working anymore, did cause a:
 	javax.mail.NoSuchProviderException: No provider for smpts.
 * get rid of logs when creating Session:
