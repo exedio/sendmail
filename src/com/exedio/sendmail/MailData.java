@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import static java.util.Objects.requireNonNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,11 +62,9 @@ public final class MailData
 			final String subject)
 		throws AddressException
 	{
-		this.from = new InternetAddress(from);
+		this.from = new InternetAddress(requireNonNull(from, "from"));
 		this.subject = subject;
 
-		if(from==null)
-			throw new NullPointerException("from");
 		if(subject==null)
 			throw new NullPointerException("subject");
 	}
@@ -164,6 +164,7 @@ public final class MailData
 		if(attachment==null)
 			throw new NullPointerException();
 
+		//noinspection UnnecessaryThis
 		this.attachments.add(attachment);
 	}
 
@@ -182,14 +183,10 @@ public final class MailData
 				? new MimeMessageWithID(session, messageID, contentTransferEncoding)
 				: new MimeMessage(session);
 		message.setFrom(from);
-		if(replyTo!=null)
-			message.setReplyTo(toArray(replyTo));
-		if(to!=null)
-			message.setRecipients(Message.RecipientType.TO, toArray(to));
-		if(carbonCopy!=null)
-			message.setRecipients(Message.RecipientType.CC, toArray(carbonCopy));
-		if(blindCarbonCopy!=null)
-			message.setRecipients(Message.RecipientType.BCC, toArray(blindCarbonCopy));
+		message.setReplyTo(toArray(replyTo));
+		message.setRecipients(Message.RecipientType.TO, toArray(to));
+		message.setRecipients(Message.RecipientType.CC, toArray(carbonCopy));
+		message.setRecipients(Message.RecipientType.BCC, toArray(blindCarbonCopy));
 		if(subject!=null)
 			message.setSubject(subject, charset);
 		message.setHeader("Date", dateString);
@@ -277,7 +274,7 @@ public final class MailData
 		}
 
 		@Override
-		protected void updateHeaders() throws MessagingException
+		protected synchronized void updateHeaders() throws MessagingException
 		{
 			super.updateHeaders();
 			setHeader("Message-ID", id);
@@ -297,8 +294,10 @@ public final class MailData
 
 	private static InternetAddress[] toArray(final ArrayList<InternetAddress> l)
 	{
-		return l.toArray(new InternetAddress[l.size()]);
+		return l.toArray(EMPTY_INTERNET_ADDRESSES);
 	}
+
+	private static final InternetAddress[] EMPTY_INTERNET_ADDRESSES = new InternetAddress[0];
 
 	private static MimeMultipart alternative(final String plain, final String html, final String plainContentType, final String htmlContentType, final String contentTransferEncoding, final String charset ) throws MessagingException
 	{

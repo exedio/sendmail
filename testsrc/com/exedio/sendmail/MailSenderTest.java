@@ -18,11 +18,12 @@
 
 package com.exedio.sendmail;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 
+@SuppressWarnings({"HardcodedLineSeparator", "RedundantCast"}) // OK: just a test
 public class MailSenderTest extends SendmailTest
 {
 
@@ -79,7 +81,7 @@ public class MailSenderTest extends SendmailTest
 		cleanPOP3Account(user2);
 		cleanPOP3Account(user3);
 
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ");
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", Locale.ENGLISH);
 		timeStamp = df.format(new Date());
 	}
 
@@ -88,6 +90,7 @@ public class MailSenderTest extends SendmailTest
 		return s==null ? null : new String[]{s};
 	}
 
+	@SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK: just a test
 	private final class MockMail implements Mail
 	{
 		private final MockChecker checker;
@@ -432,7 +435,8 @@ public class MailSenderTest extends SendmailTest
 		"</body>" +
 		"</html>";
 
-	public void testSendMail() throws InterruptedException
+	@SuppressWarnings("NestedAssignment")
+	public void testSendMail() throws InterruptedException, IOException, MessagingException
 	{
 		if(skipTest)
 			return;
@@ -693,12 +697,14 @@ public class MailSenderTest extends SendmailTest
 		boolean complete3 = false;
 		for(int i = 0; i<30; i++)
 		{
+			//noinspection BusyWait OK: just a test
 			Thread.sleep(1000);
 			if(countDebug)
 			{
 				System.out.println();
 				System.out.print("---------"+i+"--");
 			}
+			//noinspection ConstantConditions
 			if(
 					(complete1 || (complete1=countPOP3(user1, 5))) &&
 					(complete2 || (complete2=countPOP3(user2, 4))) &&
@@ -717,7 +723,8 @@ public class MailSenderTest extends SendmailTest
 
 	private static final String DEFAULT_CHARSET = "UTF-8";
 
-	private void assertPOP3(final Account account, final MockMail[] expectedMails)
+	@SuppressWarnings("resource") // OK: just a test
+	private void assertPOP3(final Account account, final MockMail[] expectedMails) throws IOException, MessagingException
 	{
 		final TreeMap<String, MockMail> expectedMessages = new TreeMap<>();
 		for(final MockMail m : expectedMails)
@@ -798,34 +805,17 @@ public class MailSenderTest extends SendmailTest
 			store.close();
 			store = null;
 		}
-		catch(final MessagingException | IOException e)
-		{
-			throw new RuntimeException(e);
-		}
 		finally
 		{
 			if(inboxFolder!=null)
-			{
-				try
-				{
-					inboxFolder.close(false);
-				}
-				catch(final MessagingException e)
-				{/*IGNORE*/}
-			}
+				inboxFolder.close(false);
 			if(store!=null)
-			{
-				try
-				{
-					store.close();
-				}
-				catch(final MessagingException e)
-				{/*IGNORE*/}
-			}
+				store.close();
 		}
 	}
 
-	private boolean countPOP3(final Account account, final int expected)
+	@SuppressWarnings("resource") // OK: just a test
+	private boolean countPOP3(final Account account, final int expected) throws MessagingException
 	{
 		Store store = null;
 		Folder inboxFolder = null;
@@ -852,30 +842,12 @@ public class MailSenderTest extends SendmailTest
 
 			return inboxMessages>=expected;
 		}
-		catch(final MessagingException e)
-		{
-			throw new RuntimeException(e);
-		}
 		finally
 		{
 			if(inboxFolder!=null)
-			{
-				try
-				{
-					inboxFolder.close(false);
-				}
-				catch(final MessagingException e)
-				{/*IGNORE*/}
-			}
+				inboxFolder.close(false);
 			if(store!=null)
-			{
-				try
-				{
-					store.close();
-				}
-				catch(final MessagingException e)
-				{/*IGNORE*/}
-			}
+				store.close();
 		}
 	}
 
@@ -934,16 +906,9 @@ public class MailSenderTest extends SendmailTest
 	void assertEqualsHex(final String expected, final Object actual)
 	{
 		final String actualString = (String)actual;
-		try
-		{
-			assertEquals(
-					"\n" + Hex.encodeLower(expected.getBytes("utf8")) +
-					'\n' + Hex.encodeLower(actualString  .getBytes("utf8")),
-					expected, actualString);
-		}
-		catch (final UnsupportedEncodingException e)
-		{
-			throw new RuntimeException(e);
-		}
+		assertEquals(
+				"\n" + Hex.encodeLower(expected.getBytes(UTF_8)) +
+				'\n' + Hex.encodeLower(actualString.getBytes(UTF_8)),
+				expected, actualString);
 	}
 }

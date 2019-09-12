@@ -31,7 +31,7 @@ public class CascadingMailSourceTest extends TestCase
 	int maximumResultSizeA;
 	int maximumResultSizeB;
 
-	public void testComposite() throws Exception
+	public void testComposite()
 	{
 		maximumResultSizeE = -1;
 		maximumResultSizeA = -1;
@@ -54,6 +54,7 @@ public class CascadingMailSourceTest extends TestCase
 				throw new RuntimeException();
 			maximumResultSizeA = maximumResultSize;
 
+			//noinspection SwitchStatementWithTooFewBranches
 			switch(maximumResultSize)
 			{
 				case 1:
@@ -71,6 +72,7 @@ public class CascadingMailSourceTest extends TestCase
 				throw new RuntimeException();
 			maximumResultSizeB = maximumResultSize;
 
+			//noinspection SwitchStatementWithTooFewBranches
 			switch(maximumResultSize)
 			{
 				case 1:

@@ -41,11 +41,6 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		failclose=System.getProperty("failclose");
 	}
 
-	public static final String[] ta(final String s)
-	{
-		return s==null ? null : new String[]{s};
-	}
-
 	private final class MockMail extends EmptyMail
 	{
 		private final String id;

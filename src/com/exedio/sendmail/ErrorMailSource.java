@@ -18,6 +18,8 @@
 
 package com.exedio.sendmail;
 
+import static java.util.Locale.ENGLISH;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -36,8 +38,10 @@ public final class ErrorMailSource implements MailSource
 	final String[] to;
 	final String fallbackSubject;
 	private final int overflowThreshold;
+	@SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized") // TODO
 	private int overflowCount = 0;
 
+	@SuppressWarnings("unused") // TODO
 	public ErrorMailSource(final String from, final String to, final String subject)
 	{
 		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
@@ -48,6 +52,7 @@ public final class ErrorMailSource implements MailSource
 		this(from, new String[]{to}, subject, overflowThreshold);
 	}
 
+	@SuppressWarnings("unused") // TODO
 	public ErrorMailSource(final String from, final String[] to, final String subject)
 	{
 		this(from, to, subject, DEFAULT_OVERFLOW_THRESHOLD);
@@ -105,6 +110,7 @@ public final class ErrorMailSource implements MailSource
 		if(text!=null)
 		{
 			sw.write(text);
+			//noinspection HardcodedLineSeparator
 			sw.write('\n');
 		}
 		final PrintWriter pw = new PrintWriter(sw);
@@ -153,6 +159,7 @@ public final class ErrorMailSource implements MailSource
 
 			synchronized(mailsToSend)
 			{
+				//noinspection ThisEscapedInObjectConstruction OK: at the end of the only constructor of a final class
 				mailsToSend.add(this);
 			}
 		}
@@ -164,6 +171,7 @@ public final class ErrorMailSource implements MailSource
 		}
 
 		@Override
+		@SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // TODO
 		public String[] getTo()
 		{
 			return to;
@@ -179,7 +187,8 @@ public final class ErrorMailSource implements MailSource
 		@Override
 		public String getTextPlain()
 		{
-			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", ENGLISH);
+			//noinspection HardcodedLineSeparator
 			return df.format(new Date(timestamp)) + '\n' + text;
 		}
 

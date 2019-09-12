@@ -67,6 +67,7 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(null, m3.getCarbonCopy());
 		assertEquals(null, m3.getBlindCarbonCopy());
 		assertEquals("error-subject", m3.getSubject());
+		//noinspection HardcodedLineSeparator
 		assertText("test3-Text\njava.lang.NullPointerException: test3-exception-message"+lineSeparator(), m3);
 
 		assertEquals(list(m1, m2, m3), ep.getMailsToSend(10));
@@ -130,6 +131,7 @@ public class ErrorMailSourceTest extends TestCase
 		if(expected==null && actual==null)
 			return;
 
+		//noinspection ConstantConditions
 		assertEquals(expected.length, actual.length);
 		for(int i = 0; i<expected.length; i++)
 			assertEquals(expected[i], actual[i]);
@@ -142,6 +144,7 @@ public class ErrorMailSourceTest extends TestCase
 		m1.notifySent();
 
 		final Mail m2 = ep.createMailWithSubject("subject", "text");
+		//noinspection ConstantConditions
 		assertEquals( "subject", m2.getSubject() );
 		m2.notifySent();
 
@@ -172,6 +175,7 @@ public class ErrorMailSourceTest extends TestCase
 
 		m1.notifySent();
 		final Mail m4 = ep.createMailWithSubject("m4", "text m4");
+		//noinspection ConstantConditions
 		assertEquals( "m4 (ov1)", m4.getSubject());
 	}
 
