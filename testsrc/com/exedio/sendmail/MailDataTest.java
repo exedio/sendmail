@@ -35,7 +35,7 @@ public class MailDataTest extends TestCase
 		}
 		catch(final NullPointerException e)
 		{
-			assertEquals(null, e.getMessage());
+			assertEquals("from", e.getMessage());
 		}
 		try
 		{
