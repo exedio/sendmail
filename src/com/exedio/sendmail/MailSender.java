@@ -28,7 +28,6 @@ import java.util.Properties;
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -245,18 +244,9 @@ public class MailSender
 
 			ctx.stopIfRequested();
 
-			final Transport transport;
-			try
-			{
-				transport = session.getTransport("smtp");
-			}
-			catch(final NoSuchProviderException e)
-			{
-				throw new RuntimeException(e);
-			}
 			int mailsTriedToSendInOneConnection = 0;
 			int mailsSentInOneConnection = 0;
-			try
+			try(Transport transport = session.getTransport("smtp"))
 			{
 				{
 					//final long start = System.currentTimeMillis();
@@ -302,22 +292,6 @@ public class MailSender
 			catch(final MessagingException e)
 			{
 				throw new RuntimeException(e);
-			}
-			finally
-			{
-				if(transport.isConnected())
-				{
-					try
-					{
-						//final long start = System.currentTimeMillis();
-						transport.close();
-						//System.out.println("Mailsender closed. ("+(System.currentTimeMillis()-start)+"ms)");
-					}
-					catch(final MessagingException e)
-					{
-						throw new RuntimeException(e);
-					}
-				}
 			}
 		}
 		log.println(MailSender.class.getName() + " terminates because of possibly infinite loop");
