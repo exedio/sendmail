@@ -42,6 +42,7 @@ public class MailSender
 	private static final PrintStream log = System.err;
 
 	private final String host;
+	final int port;
 	private final boolean ssl;
 	private final boolean enableStarttls;
 	private final int connectTimeout;
@@ -120,6 +121,7 @@ public class MailSender
 			throw new IllegalArgumentException("ssl is expected to be false if enableStarttls is true");
 
 		this.host = host;
+		this.port = port;
 		this.ssl = ssl;
 		this.enableStarttls = enableStarttls;
 		this.connectTimeout = connectTimeout;

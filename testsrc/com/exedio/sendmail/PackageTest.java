@@ -32,6 +32,7 @@ public class PackageTest extends TestCase
 		suite.addTestSuite(MailSenderInstantiationTest.class);
 		suite.addTestSuite(MailSenderTest.class);
 		suite.addTestSuite(MailSenderConnectionCloseTest.class);
+		suite.addTestSuite(MailSenderPropertiesTest.class);
 		suite.addTestSuite(ErrorMailSourceTest.class);
 		suite.addTestSuite(CascadingMailSourceTest.class);
 		// normally disabled
