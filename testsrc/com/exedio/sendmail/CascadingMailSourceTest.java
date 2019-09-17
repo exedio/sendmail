@@ -31,6 +31,7 @@ public class CascadingMailSourceTest extends TestCase
 	int maximumResultSizeA;
 	int maximumResultSizeB;
 
+	@SuppressWarnings("deprecation") // OK: testing MailSource API
 	public void testComposite()
 	{
 		maximumResultSizeE = -1;

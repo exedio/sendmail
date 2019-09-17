@@ -128,6 +128,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 		for(int i = 0; i<50; i++)
 			mails.add(new MockMail("mp"+i, failclose, TEXT));
 
+		@SuppressWarnings("deprecation") // OK: testing MailSource API
 		final MailSource p = new MailSource()
 		{
 			boolean done = false;
@@ -144,7 +145,7 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 				return mails;
 			}
 		};
-		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, new EmptyJobContext());
+		sendMails(p, MAXIMUM_RESULT_SIZE, new EmptyJobContext());
 
 		for(final MockMail m : mails)
 			assertSame(SendFailedException.class, m.failedException.getClass());

@@ -30,6 +30,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @deprecated MailSource API is deprecated.
+ *             Use {@link MailSender#sendMail(MailData)} instead.
+ */
+@Deprecated
 public final class ErrorMailSource implements MailSource
 {
 	private static final int DEFAULT_OVERFLOW_THRESHOLD = 100;

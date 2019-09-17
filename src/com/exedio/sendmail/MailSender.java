@@ -187,6 +187,11 @@ public class MailSender
 		return enableStarttls;
 	}
 
+	/**
+	 * @deprecated MailSource API is deprecated.
+	 *             Use {@link MailSender#sendMail(MailData)} instead.
+	 */
+	@Deprecated
 	public final void sendMails(
 			final MailSource source,
 			final int maximumResultSize,

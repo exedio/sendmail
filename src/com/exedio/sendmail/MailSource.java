@@ -20,6 +20,11 @@ package com.exedio.sendmail;
 
 import java.util.Collection;
 
+/**
+ * @deprecated MailSource API is deprecated.
+ *             Use {@link MailSender#sendMail(MailData)} instead.
+ */
+@Deprecated
 @FunctionalInterface
 public interface MailSource
 {

@@ -57,6 +57,7 @@ public class SmtpTerror extends SendmailTest
 
 	private static final int SIZE = 300;
 
+	@SuppressWarnings("deprecation") // OK: testing MailSource API
 	private class MockMailSource implements MailSource
 	{
 		private final int threadNumber;
@@ -154,7 +155,7 @@ public class SmtpTerror extends SendmailTest
 			final int threadNumber = i;
 			t[i] = new Thread(() ->
 			{
-				mailSender.sendMails(tms[threadNumber], SIZE, new EmptyJobContext());
+				sendMails(tms[threadNumber], SIZE, new EmptyJobContext());
 				tms[threadNumber].readyTimestamp = System.currentTimeMillis();
 			});
 		}

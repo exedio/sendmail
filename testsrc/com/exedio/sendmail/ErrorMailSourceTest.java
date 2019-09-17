@@ -26,9 +26,11 @@ import junit.framework.TestCase;
 
 public class ErrorMailSourceTest extends TestCase
 {
+	@SuppressWarnings("deprecation") // OK: testing MailSource API
 	private ErrorMailSource ep;
 
 	@Override
+	@SuppressWarnings("deprecation") // OK: testing MailSource API
 	protected void setUp() throws Exception
 	{
 		super.setUp();

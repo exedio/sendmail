@@ -22,7 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-
+/**
+ * @deprecated MailSource API is deprecated.
+ *             Use {@link MailSender#sendMail(MailData)} instead.
+ */
+@Deprecated
 public class CascadingMailSource implements MailSource
 {
 	private final MailSource[] sources;

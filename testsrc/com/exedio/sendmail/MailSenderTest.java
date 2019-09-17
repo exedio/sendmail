@@ -598,6 +598,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(3, multipart.getCount());
 			});
 
+		@SuppressWarnings("deprecation") // OK: testing MailSource API
 		final MailSource p = new MailSource()
 		{
 			boolean done = false;
@@ -631,7 +632,7 @@ public class MailSenderTest extends SendmailTest
 			}
 		};
 		final CountJobContext ctx = new CountJobContext();
-		mailSender.sendMails(p, MAXIMUM_RESULT_SIZE, ctx);
+		sendMails(p, MAXIMUM_RESULT_SIZE, ctx);
 		assertEquals(11, ctx.progress);
 
 		assertEquals(null, mp.failedException);

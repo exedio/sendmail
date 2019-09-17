@@ -20,6 +20,7 @@ package com.exedio.sendmail;
 
 import static java.lang.System.getProperty;
 
+import com.exedio.cope.util.JobContext;
 import com.exedio.cope.util.PrefixSource;
 import com.exedio.cope.util.Sources;
 import java.util.Properties;
@@ -158,5 +159,14 @@ public class SendmailTest extends TestCase
 			if(store!=null)
 				store.close();
 		}
+	}
+
+	@SuppressWarnings("deprecation") // OK: testing MailSource API
+	protected final void sendMails(
+			final MailSource source,
+			final int maximumResultSize,
+			final JobContext ctx)
+	{
+		mailSender.sendMails(source, maximumResultSize, ctx);
 	}
 }
