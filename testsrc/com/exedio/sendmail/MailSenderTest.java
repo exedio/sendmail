@@ -30,6 +30,8 @@ import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -325,6 +327,12 @@ public class MailSenderTest extends SendmailTest
 		private String contentTransferEncoding = null;
 		private MailChecker mailChecker = actual -> fail("should not be sent");
 		private ExceptionChecker exceptionChecker = e -> fail();
+		private final List<URI> listHelp = new ArrayList<>();
+		private final List<URI> listUnsubscribe = new ArrayList<>();
+		private final List<URI> listSubscribe = new ArrayList<>();
+		private final List<URI> listPost = new ArrayList<>();
+		private final List<URI> listOwner = new ArrayList<>();
+		private final List<URI> listArchive = new ArrayList<>();
 
 		private <T> T[] emptyToNull(final T[] o)
 		{
@@ -403,6 +411,42 @@ public class MailSenderTest extends SendmailTest
 			return this;
 		}
 
+		private ArgumentsBuilder listHelp(final URI listHelp)
+		{
+			this.listHelp.add(listHelp);
+			return this;
+		}
+
+		private ArgumentsBuilder listUnsubscribe(final URI listUnsubscribe)
+		{
+			this.listUnsubscribe.add(listUnsubscribe);
+			return this;
+		}
+
+		private ArgumentsBuilder listSubscribe(final URI listSubscribe)
+		{
+			this.listSubscribe.add(listSubscribe);
+			return this;
+		}
+
+		private ArgumentsBuilder listPost(final URI listPost)
+		{
+			this.listPost.add(listPost);
+			return this;
+		}
+
+		private ArgumentsBuilder listOwner(final URI listOwner)
+		{
+			this.listOwner.add(listOwner);
+			return this;
+		}
+
+		private ArgumentsBuilder listArchive(final URI listArchive)
+		{
+			this.listArchive.add(listArchive);
+			return this;
+		}
+
 		private void execute() throws InterruptedException, MessagingException, IOException
 		{
 			if(to != null && textPlain == null && textHtml == null)
@@ -421,7 +465,7 @@ public class MailSenderTest extends SendmailTest
 					attachments,
 					charset,
 					contentTransferEncoding,
-					mailChecker,
+					listHelp, listUnsubscribe, listSubscribe, listPost, listOwner, listArchive, mailChecker,
 					exceptionChecker
 			);
 		}
@@ -1063,6 +1107,19 @@ public class MailSenderTest extends SendmailTest
 		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MailChecker.CHECK_NOTHING).execute();
 	}
 
+	@Test
+	void testListHeaders() throws InterruptedException, MessagingException, IOException, URISyntaxException
+	{
+		new ArgumentsBuilder().to(user1.email).cc(user2.email).bcc(user3.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML)
+				.listHelp(new URI("http://dontuse.exedio.com/help")).listHelp(new URI("ftp://dontuse.exedio.com/help")).listHelp(new URI("mailto:dontuse@exedio.com?subject=Help"))
+				.listUnsubscribe(new URI("http://dontuse.exedio.com/unsubscribe")).listUnsubscribe(new URI("ftp://dontuse.exedio.com/unsubscribe")).listUnsubscribe(new URI("mailto:dontuse@exedio.com?subject=Unsubscribe"))
+				.listSubscribe(new URI("http://dontuse.exedio.com/subscribe")).listSubscribe(new URI("ftp://dontuse.exedio.com/subscribe")).listSubscribe(new URI("mailto:dontuse@exedio.com?subject=Subscribe"))
+				.listPost(new URI("http://dontuse.exedio.com/post")).listPost(new URI("ftp://dontuse.exedio.com/post")).listPost(new URI("mailto:dontuse@exedio.com?subject=Post"))
+				.listOwner(new URI("http://dontuse.exedio.com/owner")).listOwner(new URI("ftp://dontuse.exedio.com/owner")).listOwner(new URI("mailto:dontuse@exedio.com?subject=Owner"))
+				.listArchive(new URI("http://dontuse.exedio.com/archive")).listArchive(new URI("ftp://dontuse.exedio.com/archive")).listArchive(new URI("mailto:dontuse@exedio.com?subject=Archive"))
+				.mailChecker(MailChecker.CHECK_NOTHING).execute();
+	}
+
 	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void sendAndTest(final String subject,
 									 final String[] to,
@@ -1076,6 +1133,12 @@ public class MailSenderTest extends SendmailTest
 									 final DataSource[] attachments,
 									 final String charset,
 									 final String contentTransferEncoding,
+									 final List<URI> listHelp,
+									 final List<URI> listUnsubscribe,
+									 final List<URI> listSubscribe,
+									 final List<URI> listPost,
+									 final List<URI> listOwner,
+									 final List<URI> listArchive,
 									 final MailChecker mailChecker,
 									 final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
@@ -1096,6 +1159,12 @@ public class MailSenderTest extends SendmailTest
 				attachments,
 				charset,
 				contentTransferEncoding);
+		listHelp.forEach(mailData.mailingListHeaderData()::addHelp);
+		listUnsubscribe.forEach(mailData.mailingListHeaderData()::addUnsubscribe);
+		listSubscribe.forEach(mailData.mailingListHeaderData()::addSubscribe);
+		listPost.forEach(mailData.mailingListHeaderData()::addPost);
+		listOwner.forEach(mailData.mailingListHeaderData()::addOwner);
+		listArchive.forEach(mailData.mailingListHeaderData()::addArchive);
 		try
 		{
 			sendMail(mailData);
@@ -1178,6 +1247,12 @@ public class MailSenderTest extends SendmailTest
 					replyTo,
 					messageID,
 					date,
+					listHelp,
+					listUnsubscribe,
+					listSubscribe,
+					listPost,
+					listOwner,
+					listArchive,
 					mailChecker);
 		}
 		else
@@ -1193,6 +1268,12 @@ public class MailSenderTest extends SendmailTest
 					replyTo,
 					messageID,
 					date,
+					listHelp,
+					listUnsubscribe,
+					listSubscribe,
+					listPost,
+					listOwner,
+					listArchive,
 					mailChecker);
 		}
 		else
@@ -1208,6 +1289,12 @@ public class MailSenderTest extends SendmailTest
 					replyTo,
 					messageID,
 					date,
+					listHelp,
+					listUnsubscribe,
+					listSubscribe,
+					listPost,
+					listOwner,
+					listArchive,
 					mailChecker);
 		}
 		else
@@ -1336,6 +1423,12 @@ public class MailSenderTest extends SendmailTest
 									final String[] replyTo,
 									final String messageID,
 									final Date date,
+									final List<URI> listHelp,
+									final List<URI> listUnsubscribe,
+									final List<URI> listSubscribe,
+									final List<URI> listPost,
+									final List<URI> listOwner,
+									final List<URI> listArchive,
 									final MailChecker mailChecker) throws IOException, MessagingException
 	{
 		final Session session = getPOP3Session(account);
@@ -1402,7 +1495,28 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(replyTo.length, replyToHeader.length, message);
 				assertArrayEquals(replyTo, replyToHeader, message);
 			}
+			assertListHeader(m, listHelp, "List-Help", message);
+			assertListHeader(m, listUnsubscribe, "List-Unsubscribe", message);
+			assertListHeader(m, listSubscribe, "List-Subscribe", message);
+			assertListHeader(m, listPost, "List-Post", message);
+			assertListHeader(m, listOwner, "List-Owner", message);
+			assertListHeader(m, listArchive, "List-Archive", message);
 			mailChecker.checkBody(m);
+		}
+	}
+
+	private static void assertListHeader(final Message m, final List<URI> expected, final String headerName, final String message) throws MessagingException
+	{
+		final String[] header = m.getHeader(headerName);
+		if(expected.isEmpty())
+		{
+			assertNull(header, message);
+		}
+		else
+		{
+			assertNotNull(header, message);
+			assertEquals(1, header.length, message);
+			assertEquals(expected.stream().map(uri -> "<" + uri.toASCIIString() + ">").collect(Collectors.joining(",")), header[0], message);
 		}
 	}
 

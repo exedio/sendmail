@@ -19,6 +19,7 @@
 package com.exedio.sendmail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -154,5 +155,12 @@ public class MailDataTest
 		d.setTextHtml("textHtml");
 		d.setTextPlain(null);
 		d.setTextHtml(null);
+	}
+
+	@Test
+	public void testMailingListHeaderData() throws AddressException
+	{
+		final MailData d = new MailData("from", "subject");
+		assertNotNull(d.mailingListHeaderData());
 	}
 }
