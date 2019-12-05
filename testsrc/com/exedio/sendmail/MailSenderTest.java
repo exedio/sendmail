@@ -19,11 +19,11 @@
 package com.exedio.sendmail;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assert.assertEquals;
-import static org.junit.jupiter.api.Assert.assertArrayEquals;
-import static org.junit.jupiter.api.Assert.assertTrue;
-import static org.junit.jupiter.api.Assert.fail;
-import static org.junit.jupiter.api.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
@@ -479,7 +479,7 @@ public class MailSenderTest extends SendmailTest
 		mh.specialMessageID = true;
 		final MockMail ma  = new MockMail("ma", user1.email, TEXT_PLAIN, TEXT_HTML, m ->
 		{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+				assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				{
 					final BodyPart textBody = multipart.getBodyPart(0);
@@ -497,7 +497,7 @@ public class MailSenderTest extends SendmailTest
 		});
 		final MockMail ma2  = new MockMail("ma2", user1.email, TEXT_PLAIN_ISO, TEXT_HTML_ISO, "ISO-8859-1", m ->
 		{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/alternative;"));
+				assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				{
 					final BodyPart textBody = multipart.getBodyPart(0);
@@ -517,7 +517,7 @@ public class MailSenderTest extends SendmailTest
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), m ->
 			{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
+				assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainBody.getContentType());
@@ -538,7 +538,7 @@ public class MailSenderTest extends SendmailTest
 				new MockURLDataSource("tree.jpg", null, "image/jpeg"),
 				new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain"), m ->
 			{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
+				assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final BodyPart mainBody = multipart.getBodyPart(0);
 				assertEquals("text/html; charset="+DEFAULT_CHARSET, mainBody.getContentType());
@@ -564,10 +564,10 @@ public class MailSenderTest extends SendmailTest
 				new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), m ->
 			{
-				assertTrue(m.getContentType(), m.getContentType().startsWith("multipart/mixed;"));
+				assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 				final MimeMultipart multipart = (MimeMultipart)m.getContent();
 				final MimeMultipart mainPart = (MimeMultipart)((MimeBodyPart)multipart.getBodyPart(0)).getContent();
-				assertTrue(mainPart.getContentType(), mainPart.getContentType().startsWith("multipart/alternative;"));
+				assertTrue(mainPart.getContentType().startsWith("multipart/alternative;"), mainPart.getContentType());
 				{
 					final BodyPart mainText = mainPart.getBodyPart(0);
 					assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainText.getContentType());
@@ -642,7 +642,7 @@ public class MailSenderTest extends SendmailTest
 		final String fm1 = f1.failedException.getMessage();
 		assertEquals("Invalid Addresses", fm1);
 		final String fm1n = f1.failedException.getCause().getMessage();
-		assertTrue(fm1n+"--------"+fail, fm1n.contains(fail));
+		assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
 		assertEquals(0, f1.sentCounter);
 		assertEquals(1, f1.failedCounter);
 
@@ -653,7 +653,7 @@ public class MailSenderTest extends SendmailTest
 		final String fm3 = f3.failedException.getMessage();
 		assertEquals("Invalid Addresses", fm3);
 		final String fm3n = f3.failedException.getCause().getMessage();
-		assertTrue(fm3n+"--------"+failclose, fm3n.contains(failclose));
+		assertTrue(fm3n.contains(failclose), fm3n + "--------" + failclose);
 		assertEquals(0, f3.sentCounter);
 		assertEquals(1, f3.failedCounter);
 
@@ -756,11 +756,11 @@ public class MailSenderTest extends SendmailTest
 				);
 				if ( subjectPart.startsWith(" ((utf") )
 				{
-					assertEquals( m.getSubject(), NON_ASCII_TEXT, subjectPart );
+					assertEquals(NON_ASCII_TEXT, subjectPart, m.getSubject());
 				}
 				else if ( subjectPart.startsWith(" ((iso") )
 				{
-					assertEquals( m.getSubject(), NON_ASCII_TEXT_ISO, subjectPart );
+					assertEquals(NON_ASCII_TEXT_ISO, subjectPart, m.getSubject());
 				}
 				else
 				{
@@ -774,24 +774,24 @@ public class MailSenderTest extends SendmailTest
 				final MockMail expected = expectedMessages.get(subject);
 				final String message = account.pop3User + " - " + subject;
 
-				assertNotNull("no message "+message+"; found "+actualMessages.keySet(), m);
-				assertEquals(message, expected.getSubject(), m.getSubject());
-				assertEquals(message, Arrays.asList(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()));
-				assertEquals(message, ((expected.getTo()==null)&&(expected.getCarbonCopy()==null)) ? null : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)));
-				assertEquals(message, addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)));
-				assertEquals(message, null, addressList(m.getRecipients(Message.RecipientType.BCC)));
-				assertNotNull(message, m.getHeader("Message-ID"));
-				assertEquals(message, 1, m.getHeader("Message-ID").length);
+				assertNotNull(m, "no message " + message + "; found " + actualMessages.keySet());
+				assertEquals(expected.getSubject(), m.getSubject(), message);
+				assertEquals(Arrays.asList(new InternetAddress(expected.getFrom())), Arrays.asList(m.getFrom()), message);
+				assertEquals(((expected.getTo() == null) && (expected.getCarbonCopy() == null)) ? null : addressList(expected.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)), message);
+				assertEquals(addressList(expected.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)), message);
+				assertEquals(null, addressList(m.getRecipients(Message.RecipientType.BCC)), message);
+				assertNotNull(m.getHeader("Message-ID"), message);
+				assertEquals(1, m.getHeader("Message-ID").length, message);
 				if(expected.specialMessageID)
-					assertEquals(message, expected.getMessageID(), m.getHeader("Message-ID")[0]);
+					assertEquals(expected.getMessageID(), m.getHeader("Message-ID")[0], message);
 				else
-					assertTrue(message, m.getHeader("Message-ID")[0].indexOf("@")>0);
-				assertNotNull(message, m.getHeader("Date"));
-				assertEquals(message, 1, m.getHeader("Date").length);
-				assertEquals(message, (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expected.getDate()), m.getHeader("Date")[0]);
+					assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
+				assertNotNull(m.getHeader("Date"), message);
+				assertEquals(1, m.getHeader("Date").length, message);
+				assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expected.getDate()), m.getHeader("Date")[0], message);
 				expected.checkBody(m);
 			}
-			assertEquals(account.pop3User, expectedMails.length, inboxMessages.length);
+			assertEquals(expectedMails.length, inboxMessages.length, account.pop3User);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
@@ -877,8 +877,8 @@ public class MailSenderTest extends SendmailTest
 	{
 		final String actualString = (String)actual;
 		assertEquals(
-				"\n" + Hex.encodeLower(expected.getBytes(UTF_8)) +
-				'\n' + Hex.encodeLower(actualString.getBytes(UTF_8)),
-				expected, actualString);
+				expected, actualString, "\n" + Hex.encodeLower(expected.getBytes(UTF_8)) +
+												'\n' + Hex.encodeLower(actualString.getBytes(UTF_8))
+		);
 	}
 }

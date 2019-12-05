@@ -18,9 +18,9 @@
 
 package com.exedio.sendmail;
 
-import static org.junit.jupiter.api.Assert.fail;
-import static org.junit.jupiter.api.Assert.assertEquals;
-import static org.junit.jupiter.api.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import com.exedio.cope.util.EmptyJobContext;
 import java.util.ArrayList;

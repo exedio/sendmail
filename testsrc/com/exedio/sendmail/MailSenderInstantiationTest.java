@@ -18,7 +18,7 @@
 
 package com.exedio.sendmail;
 
-import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 

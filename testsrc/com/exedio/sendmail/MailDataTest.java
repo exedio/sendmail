@@ -18,9 +18,9 @@
 
 package com.exedio.sendmail;
 
-import static org.junit.jupiter.api.Assert.assertEquals;
-import static org.junit.jupiter.api.Assert.assertNotSame;
-import static org.junit.jupiter.api.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.Date;
 import javax.mail.internet.AddressException;

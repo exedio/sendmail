@@ -19,7 +19,7 @@
 package com.exedio.sendmail;
 
 import static java.lang.System.getProperty;
-import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.exedio.cope.util.JobContext;
 import com.exedio.cope.util.PrefixSource;

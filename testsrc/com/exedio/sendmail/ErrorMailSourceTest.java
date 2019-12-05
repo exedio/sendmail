@@ -19,9 +19,9 @@
 package com.exedio.sendmail;
 
 import static java.lang.System.lineSeparator;
-import static org.junit.jupiter.api.Assert.assertTrue;
-import static org.junit.jupiter.api.Assert.assertEquals;
-import static org.junit.jupiter.api.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ErrorMailSourceTest
 	private static void assertText(final String expectedText, final Mail actualMail)
 	{
 		final String actualText = actualMail.getTextPlain();
-		assertTrue("TEXT:"+actualText, actualText.indexOf(expectedText)>0);
+		assertTrue(actualText.indexOf(expectedText) > 0, "TEXT:" + actualText);
 	}
 
 	@Test
