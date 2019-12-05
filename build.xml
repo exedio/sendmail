@@ -75,7 +75,7 @@
 				<pathelement location="lib/pop3.jar" />
 				<pathelement location="lib/junit.jar" />
 			</classpath>
-			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail" />
+			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail-${test-taskname}" />
 			<sysproperty key="skipRemote" value="${skipRemote}" />
 			<sysproperty key="smtp.host"  value="${smtp.host}"  />
 			<sysproperty key="smtp.port"  value="${smtp.port}"  />
