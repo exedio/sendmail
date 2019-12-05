@@ -18,13 +18,18 @@
 
 package com.exedio.sendmail;
 
+import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assert.fail;
+
 import java.sql.Date;
 import javax.mail.internet.AddressException;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MailDataTest extends TestCase
+public class MailDataTest
 {
-	public void testCreate() throws AddressException
+	@Test
+	void testCreate() throws AddressException
 	{
 		new MailData("from", "subject");
 
@@ -48,7 +53,8 @@ public class MailDataTest extends TestCase
 		}
 	}
 
-	public void testDate() throws AddressException
+	@Test
+	void testDate() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
 		assertEquals(null, d.getDate());
@@ -68,7 +74,8 @@ public class MailDataTest extends TestCase
 		assertEquals(null, d.getDate());
 	}
 
-	public void testReceipents() throws AddressException
+	@Test
+	void testReceipents() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
 		d.addTo("to");
@@ -114,7 +121,8 @@ public class MailDataTest extends TestCase
 		}
 	}
 
-	public void testAttachment() throws AddressException
+	@Test
+	void testAttachment() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
 		d.addAttachment(new AssertionFailedDataSource());
@@ -130,14 +138,16 @@ public class MailDataTest extends TestCase
 		}
 	}
 
-	public void testMessageID() throws AddressException
+	@Test
+	void testMessageID() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
 		d.setMessageID("message-id");
 		d.setMessageID(null);
 	}
 
-	public void testText() throws AddressException
+	@Test
+	void testText() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
 		d.setTextPlain("textPlain");

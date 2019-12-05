@@ -19,6 +19,7 @@
 package com.exedio.sendmail;
 
 import static java.lang.System.getProperty;
+import static org.junit.jupiter.api.Assert.assertEquals;
 
 import com.exedio.cope.util.JobContext;
 import com.exedio.cope.util.PrefixSource;
@@ -32,12 +33,12 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.URLName;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 
-public class SendmailTest extends TestCase
+@Tag("RemoteTest")
+public class SendmailTest
 {
-	protected boolean skipTest;
-
 	protected MailSender mailSender;
 
 	protected String pop3Host;
@@ -45,18 +46,9 @@ public class SendmailTest extends TestCase
 
 	protected String from;
 
-	@Override
-	public void setUp() throws Exception
+	@BeforeEach
+	void setUpSendMailTest()
 	{
-		super.setUp();
-
-		skipTest = getPropertyBoolean("skipRemote");
-		if(skipTest)
-		{
-			System.out.println("Skipping test " + getClass().getName());
-			return;
-		}
-
 		final MailSenderProperties mailSenderProperties = MailSenderProperties.factory().create(
 				PrefixSource.wrap(
 						Sources.SYSTEM_PROPERTIES,
@@ -112,11 +104,13 @@ public class SendmailTest extends TestCase
 		return session;
 	}
 
-	protected final Store getPOP3Store(final Session session, final Account account)
+	protected final Store getPOP3Store(final Session session, final Account account) throws MessagingException
 	{
 		try
 		{
-			return session.getStore(new URLName("pop3://"+account.pop3User+":"+account.pop3Password+"@"+pop3Host+"/INBOX"));
+			final Store store = session.getStore(new URLName("pop3://" + account.pop3User + ":" + account.pop3Password + "@" + pop3Host + "/INBOX"));
+			store.connect();
+			return store;
 		}
 		catch(final NoSuchProviderException e)
 		{
@@ -124,20 +118,12 @@ public class SendmailTest extends TestCase
 		}
 	}
 
-	@SuppressWarnings("resource") // OK: just a test
 	protected final void cleanPOP3Account(final Account account) throws MessagingException
 	{
-		Store store = null;
-		Folder inboxFolder = null;
-		try
+		final Session session = getPOP3Session(account);
+		try (final Store store=getPOP3Store(session, account);
+			  final Folder inboxFolder =getInboxFolder(store))
 		{
-			final Session session = getPOP3Session(account);
-			store = getPOP3Store(session, account);
-			store.connect();
-			final Folder defaultFolder = store.getDefaultFolder();
-			assertEquals("", defaultFolder.getFullName());
-			inboxFolder = defaultFolder.getFolder("INBOX");
-			assertEquals("INBOX", inboxFolder.getFullName());
 			inboxFolder.open(Folder.READ_WRITE);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			//System.out.println("--------removing "+inboxMessages.length+" messages --------");
@@ -146,19 +132,16 @@ public class SendmailTest extends TestCase
 				//System.out.println("-----------------removing message "+i);
 				message.setFlag(Flags.Flag.DELETED, true);
 			}
+		}
+	}
 
-			inboxFolder.close(true); // expunge
-			inboxFolder = null;
-			store.close();
-			store = null;
-		}
-		finally
-		{
-			if(inboxFolder!=null)
-				inboxFolder.close(false); // not expunge, just close and release the resources
-			if(store!=null)
-				store.close();
-		}
+	protected static final Folder getInboxFolder(final Store store) throws MessagingException
+	{
+		final Folder defaultFolder = store.getDefaultFolder();
+		assertEquals("", defaultFolder.getFullName());
+		final Folder inboxFolder = defaultFolder.getFolder("INBOX");
+		assertEquals("INBOX", inboxFolder.getFullName());
+		return inboxFolder;
 	}
 
 	@SuppressWarnings("deprecation") // OK: testing MailSource API

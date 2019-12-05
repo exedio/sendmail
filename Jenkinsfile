@@ -45,7 +45,7 @@ timestamps
 						' "-Dbuild.revision=${BUILD_NUMBER}"' +
 						' "-Dbuild.tag=git ${BRANCH_NAME} ' + scmResult.GIT_COMMIT + ' ' + scmResult.GIT_TREE + ' jenkins ${BUILD_NUMBER} ${BUILD_TIMESTAMP}"' +
 						' -Dbuild.status=' + (isRelease?'release':'integration') +
-						' -DskipRemote=true' +
+						' -DtestRemote=false' +
 						' -Dfindbugs.output=xml'
 
 				warnings(
@@ -70,10 +70,10 @@ timestamps
 				)
 				withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
 				{
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-plain    -Dsmtp.port=25"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
+					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
+					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
+					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
+					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
 				}
 				archive 'build/success/*'
 			}
@@ -88,7 +88,7 @@ timestamps
 			// because junit failure aborts ant
 			junit(
 					allowEmptyResults: false,
-					testResults: 'build/testresults/*.xml',
+					testResults: 'build/testresults/**/*.xml',
 			)
 			def to = emailextrecipients([
 					[$class: 'CulpritsRecipientProvider'],

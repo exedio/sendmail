@@ -18,26 +18,27 @@
 
 package com.exedio.sendmail;
 
+import static org.junit.jupiter.api.Assert.fail;
+import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assert.assertSame;
+
 import com.exedio.cope.util.EmptyJobContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import javax.mail.SendFailedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MailSenderConnectionCloseTest extends SendmailTest
 {
 
 	private String failclose;
 
-	@Override
-	public void setUp() throws Exception
+	@BeforeEach
+	void setUp()
 	{
-		super.setUp();
-
-		if(skipTest)
-			return;
-
 		failclose=System.getProperty("failclose");
 	}
 
@@ -119,11 +120,9 @@ public class MailSenderConnectionCloseTest extends SendmailTest
 
 	private static final String TEXT = "text for test mail";
 
-	public void testSendMail()
+	@Test
+	void testSendMail()
 	{
-		if(skipTest)
-			return;
-
 		final ArrayList<MockMail> mails = new ArrayList<>();
 		for(int i = 0; i<50; i++)
 			mails.add(new MockMail("mp"+i, failclose, TEXT));

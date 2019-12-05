@@ -25,6 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import javax.mail.MessagingException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * BEWARE: this puts a lot of mails on your smtp server.
@@ -38,14 +41,9 @@ public class SmtpTerror extends SendmailTest
 	int sent;
 	private static final boolean terrorDebug = true;
 
-	@Override
-	public void setUp() throws Exception
+	@BeforeEach
+	public void setUp() throws MessagingException
 	{
-		super.setUp();
-
-		if(skipTest)
-			return;
-
 		user = new Account("user3");
 
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", ENGLISH);
@@ -131,11 +129,9 @@ public class SmtpTerror extends SendmailTest
 		}
 	}
 
-	public void testTerror() throws InterruptedException
+	@Test
+	void testTerror() throws InterruptedException
 	{
-		if(skipTest)
-			return;
-
 		if(terrorDebug)
 			System.out.println();
 

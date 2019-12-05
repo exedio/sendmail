@@ -18,11 +18,14 @@
 
 package com.exedio.sendmail;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assert.assertEquals;
 
-public class MailSenderInstantiationTest extends TestCase
+import org.junit.jupiter.api.Test;
+
+public class MailSenderInstantiationTest
 {
-	public void testIt()
+	@Test
+	void testIt()
 	{
 		final MailSender ms = new MailSender("host", 123, 456, false);
 		assertEquals("host", ms.getHost());

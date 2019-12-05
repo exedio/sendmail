@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="sendmail" default="build" basedir=".">
+<project name="sendmail" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 
 	<!--suppress AntMissingPropertiesFileInspection -->
 	<property file="local.properties" />
@@ -49,9 +49,10 @@
 			<classpath>
 				<pathelement location="build/classes/src" />
 				<pathelement location="lib/exedio-cope-util.jar" />
-				<pathelement location="lib/junit.jar" />
 				<pathelement location="lib/mailapi.jar" />
 				<pathelement location="lib/findbugs-annotations.jar" />
+				<pathelement location="lib/junit-jupiter-api.jar" />
+				<pathelement location="lib/apiguardian-api.jar" />
 			</classpath>
 		</compile>
 		<copy todir="build/classes/testsrc/com/exedio/sendmail">
@@ -60,12 +61,13 @@
 	</target>
 
 	<target name="test" depends="test.compile">
-		<mkdir dir="build/testresults" />
-		<junit taskname="${test-taskname}" fork="yes"
-				 haltonerror="true" haltonfailure="true"
-				 showoutput="true" printsummary="true">
-			<formatter type="brief" usefile="false" />
-			<formatter type="xml" />
+		<property name="junitjvmargs" value=""/>
+		<fail if:true="false">ant >= 1.9.1 required, see https://ant.apache.org/manual/ifunless.html</fail>
+		<java taskname="${test-taskname}" fork="yes" dir="${basedir}"
+			  failonerror="true"
+			  classname="org.junit.platform.console.ConsoleLauncher">
+			<jvmarg line="${junitjvmargs}"/>
+			<arg line="--details ${test-details}" />
 			<classpath>
 				<pathelement location="build/classes/src" />
 				<pathelement location="build/classes/testsrc" />
@@ -73,10 +75,20 @@
 				<pathelement location="lib/mailapi.jar" />
 				<pathelement location="lib/smtp.jar" />
 				<pathelement location="lib/pop3.jar" />
-				<pathelement location="lib/junit.jar" />
+				<pathelement location="lib/junit-jupiter-api.jar" />
+				<pathelement location="lib/junit-jupiter-engine.jar" />
+				<pathelement location="lib/junit-platform-commons.jar" />
+				<pathelement location="lib/junit-platform-console.jar" />
+				<pathelement location="lib/junit-platform-engine.jar" />
+				<pathelement location="lib/junit-platform-launcher.jar" />
+				<pathelement location="lib/opentest4j.jar" />
 			</classpath>
-			<test name="com.exedio.sendmail.PackageTest" todir="build/testresults" outfile="sendmail-${test-taskname}" />
-			<sysproperty key="skipRemote" value="${skipRemote}" />
+			<arg line="--scan-class-path build/classes/testsrc" unless:set="test" />
+			<arg line="--select-class ${test}" if:set="test" unless:set="method" />
+			<arg line="--select-method ${test}#${method}" if:set="method" />
+			<arg line="--reports-dir build/testresults/${test-taskname}" />
+			<arg line="--include-tag RemoteTest" if:set="testRemote" if:true="${testRemote}" />
+			<arg line="--exclude-tag RemoteTest" if:set="testRemote" unless:true="${testRemote}" />
 			<sysproperty key="smtp.host"  value="${smtp.host}"  />
 			<sysproperty key="smtp.port"  value="${smtp.port}"  />
 			<sysproperty key="smtp.debug" value="${smtp.debug}" />
@@ -97,7 +109,7 @@
 			<sysproperty key="fail"      value="${fail}" />
 			<sysproperty key="failclose" value="${failclose}" />
 			<assertions><enable/></assertions>
-		</junit>
+		</java>
 	</target>
 
 	<target name="clean">

@@ -19,6 +19,11 @@
 package com.exedio.sendmail;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assert.assertTrue;
+import static org.junit.jupiter.api.Assert.fail;
+import static org.junit.jupiter.api.Assert.assertNotNull;
 
 import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
@@ -46,6 +51,8 @@ import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 @SuppressWarnings({"HardcodedLineSeparator", "RedundantCast"}) // OK: just a test
@@ -62,14 +69,9 @@ public class MailSenderTest extends SendmailTest
 
 	private static final boolean countDebug = false;
 
-	@Override
+	@BeforeEach
 	public void setUp() throws Exception
 	{
-		super.setUp();
-
-		if(skipTest)
-			return;
-
 		user1 = new Account("user1");
 		user2 = new Account("user2");
 		user3 = new Account("user3");
@@ -436,11 +438,9 @@ public class MailSenderTest extends SendmailTest
 		"</html>";
 
 	@SuppressWarnings("NestedAssignment")
-	public void testSendMail() throws InterruptedException, IOException, MessagingException
+	@Test
+	void testSendMail() throws InterruptedException, IOException, MessagingException
 	{
-		if(skipTest)
-			return;
-
 		final MockMail f1  = new MockMail("f1", fail, "text for failure test mail", actual -> fail("should not be sent"));
 		final MockMail f2  = new MockMail("f2", (String)null, null, actual -> fail("should not be sent"));
 		final MockMail f3  = new MockMail("f3", failclose, "text for failure test mail closing the connection", actual -> fail("should not be sent"));
@@ -527,7 +527,7 @@ public class MailSenderTest extends SendmailTest
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals("osorno.png", attachBody.getFileName());
 					assertEquals("image/png; name=osorno.png", attachBody.getContentType());
-					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
+					assertArrayEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
 					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 				}
 				assertEquals(2, multipart.getCount());
@@ -548,7 +548,7 @@ public class MailSenderTest extends SendmailTest
 					final BodyPart attachBody = multipart.getBodyPart(1);
 					assertEquals(null, attachBody.getFileName());
 					assertEquals("image/jpeg", attachBody.getContentType());
-					assertEquals(bytes("tree.jpg"), bytes((InputStream)attachBody.getContent()));
+					assertArrayEquals(bytes("tree.jpg"), bytes((InputStream)attachBody.getContent()));
 					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 				}
 				{
@@ -592,7 +592,7 @@ public class MailSenderTest extends SendmailTest
 					final BodyPart attachBody = multipart.getBodyPart(2);
 					assertEquals("osorno.png", attachBody.getFileName());
 					assertEquals("image/png; name=osorno.png", attachBody.getContentType());
-					assertEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
+					assertArrayEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
 					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 				}
 				assertEquals(3, multipart.getCount());
@@ -724,7 +724,6 @@ public class MailSenderTest extends SendmailTest
 
 	private static final String DEFAULT_CHARSET = "UTF-8";
 
-	@SuppressWarnings("resource") // OK: just a test
 	private void assertPOP3(final Account account, final MockMail[] expectedMails) throws IOException, MessagingException
 	{
 		final TreeMap<String, MockMail> expectedMessages = new TreeMap<>();
@@ -734,18 +733,11 @@ public class MailSenderTest extends SendmailTest
 				throw new RuntimeException(m.getSubject());
 		}
 
-		Store store = null;
+		final Session session = getPOP3Session(account);
 		Folder inboxFolder = null;
-		try
+		try(final Store store = getPOP3Store(session, account))
 		{
-			final Session session = getPOP3Session(account);
-
-			store = getPOP3Store(session, account);
-			store.connect();
-			final Folder defaultFolder = store.getDefaultFolder();
-			assertEquals("", defaultFolder.getFullName());
-			inboxFolder = defaultFolder.getFolder("INBOX");
-			assertEquals("INBOX", inboxFolder.getFullName());
+			inboxFolder = getInboxFolder(store);
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 
@@ -803,33 +795,21 @@ public class MailSenderTest extends SendmailTest
 
 			inboxFolder.close(false);
 			inboxFolder = null;
-			store.close();
-			store = null;
 		}
 		finally
 		{
-			if(inboxFolder!=null)
+			if (inboxFolder != null)
 				inboxFolder.close(false);
-			if(store!=null)
-				store.close();
 		}
 	}
 
-	@SuppressWarnings("resource") // OK: just a test
 	private boolean countPOP3(final Account account, final int expected) throws MessagingException
 	{
-		Store store = null;
+		final Session session = getPOP3Session(account);
 		Folder inboxFolder = null;
-		try
+		try(final Store store = getPOP3Store(session, account))
 		{
-			final Session session = getPOP3Session(account);
-
-			store = getPOP3Store(session, account);
-			store.connect();
-			final Folder defaultFolder = store.getDefaultFolder();
-			assertEquals("", defaultFolder.getFullName());
-			inboxFolder = defaultFolder.getFolder("INBOX");
-			assertEquals("INBOX", inboxFolder.getFullName());
+			inboxFolder = getInboxFolder(store);
 			inboxFolder.open(Folder.READ_ONLY);
 			final int inboxMessages = inboxFolder.getMessageCount();
 
@@ -838,17 +818,12 @@ public class MailSenderTest extends SendmailTest
 
 			inboxFolder.close(false);
 			inboxFolder = null;
-			store.close();
-			store = null;
-
 			return inboxMessages>=expected;
 		}
 		finally
 		{
-			if(inboxFolder!=null)
+			if (inboxFolder != null)
 				inboxFolder.close(false);
-			if(store!=null)
-				store.close();
 		}
 	}
 
@@ -870,12 +845,6 @@ public class MailSenderTest extends SendmailTest
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	void assertEquals(final byte[] expected, final byte[] actual)
-	{
-		if(!Arrays.equals(expected, actual))
-			fail("expected " + Arrays.toString(expected) + ", but was " + Arrays.toString(actual));
 	}
 
 	protected static final ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException

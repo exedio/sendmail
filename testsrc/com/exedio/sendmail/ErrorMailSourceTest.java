@@ -19,21 +19,24 @@
 package com.exedio.sendmail;
 
 import static java.lang.System.lineSeparator;
+import static org.junit.jupiter.api.Assert.assertTrue;
+import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assert.assertArrayEquals;
 
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ErrorMailSourceTest extends TestCase
+public class ErrorMailSourceTest
 {
 	@SuppressWarnings("deprecation") // OK: testing MailSource API
 	private ErrorMailSource ep;
 
-	@Override
 	@SuppressWarnings("deprecation") // OK: testing MailSource API
-	protected void setUp() throws Exception
+	@BeforeEach
+	void setUp()
 	{
-		super.setUp();
 		ep = new ErrorMailSource("error-mail-from@test.exedio.com", "error-mail-to@test.exedio.com", "error-subject", 3);
 	}
 
@@ -43,31 +46,32 @@ public class ErrorMailSourceTest extends TestCase
 		assertTrue("TEXT:"+actualText, actualText.indexOf(expectedText)>0);
 	}
 
-	public void testErrorMail()
+	@Test
+	void testErrorMail()
 	{
 		assertEquals(list(), ep.getMailsToSend(10));
 
 		final Mail m1 = ep.createMail("test-Text");
 		assertEquals("error-mail-from@test.exedio.com", m1.getFrom());
-		assertEquals(new String[]{"error-mail-to@test.exedio.com"}, m1.getTo());
-		assertEquals(null, m1.getCarbonCopy());
-		assertEquals(null, m1.getBlindCarbonCopy());
+		assertArrayEquals(new String[]{"error-mail-to@test.exedio.com"}, m1.getTo());
+		assertArrayEquals(null, m1.getCarbonCopy());
+		assertArrayEquals(null, m1.getBlindCarbonCopy());
 		assertEquals("error-subject", m1.getSubject());
 		assertText("test-Text", m1);
 
 		final Mail m2 = ep.createMail(new NullPointerException("test-exception-message"));
 		assertEquals("error-mail-from@test.exedio.com", m2.getFrom());
-		assertEquals(new String[]{"error-mail-to@test.exedio.com"}, m2.getTo());
-		assertEquals(null, m2.getCarbonCopy());
-		assertEquals(null, m2.getBlindCarbonCopy());
+		assertArrayEquals(new String[]{"error-mail-to@test.exedio.com"}, m2.getTo());
+		assertArrayEquals(null, m2.getCarbonCopy());
+		assertArrayEquals(null, m2.getBlindCarbonCopy());
 		assertEquals("error-subject", m2.getSubject());
 		assertText("java.lang.NullPointerException: test-exception-message"+lineSeparator(), m2);
 
 		final Mail m3 = ep.createMail("test3-Text", new NullPointerException("test3-exception-message"));
 		assertEquals("error-mail-from@test.exedio.com", m3.getFrom());
-		assertEquals(new String[]{"error-mail-to@test.exedio.com"}, m3.getTo());
-		assertEquals(null, m3.getCarbonCopy());
-		assertEquals(null, m3.getBlindCarbonCopy());
+		assertArrayEquals(new String[]{"error-mail-to@test.exedio.com"}, m3.getTo());
+		assertArrayEquals(null, m3.getCarbonCopy());
+		assertArrayEquals(null, m3.getBlindCarbonCopy());
 		assertEquals("error-subject", m3.getSubject());
 		//noinspection HardcodedLineSeparator
 		assertText("test3-Text\njava.lang.NullPointerException: test3-exception-message"+lineSeparator(), m3);
@@ -82,7 +86,8 @@ public class ErrorMailSourceTest extends TestCase
 		assertEquals(list(m3), ep.getMailsToSend(10));
 	}
 
-	public void testOverflow()
+	@Test
+	void testOverflow()
 	{
 		assertEquals(list(), ep.getMailsToSend(10));
 
@@ -128,18 +133,8 @@ public class ErrorMailSourceTest extends TestCase
 		return Arrays.asList(o);
 	}
 
-	protected void assertEquals(final Object[] expected, final Object[] actual)
-	{
-		if(expected==null && actual==null)
-			return;
-
-		//noinspection ConstantConditions
-		assertEquals(expected.length, actual.length);
-		for(int i = 0; i<expected.length; i++)
-			assertEquals(expected[i], actual[i]);
-	}
-
-	public void testSubject()
+	@Test
+	void testSubject()
 	{
 		final Mail m1 = ep.createMail("text");
 		assertEquals( "error-subject", m1.getSubject() );
@@ -167,7 +162,8 @@ public class ErrorMailSourceTest extends TestCase
 		m6.notifySent();
 	}
 
-	public void testSubjectOverflow()
+	@Test
+	void testSubjectOverflow()
 	{
 		final Mail m1 = ep.createMail("fill up");
 		ep.createMail("fill up");

@@ -18,21 +18,25 @@
 
 package com.exedio.sendmail;
 
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class CascadingMailSourceTest extends TestCase
+public class CascadingMailSourceTest
 {
 	int maximumResultSizeE;
 	int maximumResultSizeA;
 	int maximumResultSizeB;
 
 	@SuppressWarnings("deprecation") // OK: testing MailSource API
-	public void testComposite()
+	@Test
+	void testComposite()
 	{
 		maximumResultSizeE = -1;
 		maximumResultSizeA = -1;

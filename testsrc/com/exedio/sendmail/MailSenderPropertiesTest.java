@@ -18,17 +18,22 @@
 
 package com.exedio.sendmail;
 
+import static org.junit.jupiter.api.Assert.assertEquals;
+import static org.junit.jupiter.api.Assert.fail;
 import static com.exedio.cope.util.Sources.view;
 import static com.exedio.sendmail.MailSenderProperties.factory;
 
 import com.exedio.cope.util.IllegalPropertiesException;
 import com.exedio.cope.util.Properties.Source;
 import java.util.Properties;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MailSenderPropertiesTest extends TestCase
+public class MailSenderPropertiesTest
 {
-	public void testSet()
+	private static final com.exedio.cope.util.Properties.Factory<MailSenderProperties> FACTORY = factory();
+
+	@Test
+	void testSet()
 	{
 		final Properties source = new Properties();
 		source.setProperty("host", "testHost.invalid");
@@ -45,7 +50,9 @@ public class MailSenderPropertiesTest extends TestCase
 		assertEquals(8888, sender.getConnectTimeout());
 		assertEquals(9999, sender.getReadTimeout());
 	}
-	public void testDefault()
+
+	@Test
+	void testDefault()
 	{
 		final Properties source = new Properties();
 		source.setProperty("host", "testHost.invalid");
@@ -58,7 +65,9 @@ public class MailSenderPropertiesTest extends TestCase
 		assertEquals(5000, sender.getConnectTimeout());
 		assertEquals(5000, sender.getReadTimeout());
 	}
-	public void testSSL()
+
+	@Test
+	void testSSL()
 	{
 		final Properties source = new Properties();
 		source.setProperty("host", "testHost.invalid");
@@ -69,7 +78,9 @@ public class MailSenderPropertiesTest extends TestCase
 		assertEquals(false, sender.isEnableStarttls());
 		assertEquals(465, sender.port);
 	}
-	public void testStarttls()
+
+	@Test
+	void testStarttls()
 	{
 		final Properties source = new Properties();
 		source.setProperty("host", "testHost.invalid");
@@ -80,7 +91,9 @@ public class MailSenderPropertiesTest extends TestCase
 		assertEquals(true, sender.isEnableStarttls());
 		assertEquals(587, sender.port);
 	}
-	public void testSSLandStarttls()
+
+	@Test
+	void testSSLandStarttls()
 	{
 		final Properties source = new Properties();
 		source.setProperty("host", "testHost.invalid");
@@ -97,6 +110,4 @@ public class MailSenderPropertiesTest extends TestCase
 			assertEquals("property ssl in DESC must be false if enableStarttls is true", e.getMessage());
 		}
 	}
-
-	private static final com.exedio.cope.util.Properties.Factory<MailSenderProperties> FACTORY = factory();
 }

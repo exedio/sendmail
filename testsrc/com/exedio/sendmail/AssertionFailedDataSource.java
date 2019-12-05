@@ -18,34 +18,35 @@
 
 package com.exedio.sendmail;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.activation.DataSource;
-import junit.framework.AssertionFailedError;
 
 class AssertionFailedDataSource implements DataSource
 {
 	@Override
 	public String getContentType()
 	{
-		throw new AssertionFailedError();
+		return fail();
 	}
 
 	@Override
 	public InputStream getInputStream()
 	{
-		throw new AssertionFailedError();
+		return fail();
 	}
 
 	@Override
 	public String getName()
 	{
-		throw new AssertionFailedError();
+		return fail();
 	}
 
 	@Override
 	public OutputStream getOutputStream()
 	{
-		throw new AssertionFailedError();
+		return fail();
 	}
 }
