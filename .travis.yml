@@ -4,8 +4,7 @@ jdk:
   - openjdk8
 
 before_script:
-  - sudo apt-get install ant-optional
   - ant -version
-  - echo "skipRemote=true" > local.properties
+  - echo "testRemote=false" > local.properties
 
 script: "ant clean jenkins"
