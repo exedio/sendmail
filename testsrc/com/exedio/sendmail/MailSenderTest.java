@@ -1098,6 +1098,14 @@ public class MailSenderTest extends SendmailTest
 
 	private void assertPOP3(final Account account, final MockMail expectedMail) throws IOException, MessagingException
 	{
+		final String subject = expectedMail.getSubject();
+		final String from = expectedMail.getFrom();
+		final String[] to = expectedMail.getTo();
+		final String[] carbonCopy = expectedMail.getCarbonCopy();
+		final String messageID = expectedMail.getMessageID();
+		final boolean hasSpecialMessageID = expectedMail.specialMessageID;
+		final MockChecker checker = expectedMail.checker;
+		final Date date = expectedMail.getDate();
 		final Session session = getPOP3Session(account);
 		Folder inboxFolder = null;
 		try(final Store store = getPOP3Store(session, account))
@@ -1134,26 +1142,26 @@ public class MailSenderTest extends SendmailTest
 				}
 			}
 
-			final String subject = expectedMail.getSubject();
-			final Message m = actualMessages.get(subject);
 			final String message = account.pop3User + " - " + subject;
-
+			final Message m = actualMessages.get(subject);
 			assertNotNull(m, "no message " + message + "; found " + actualMessages.keySet());
-			assertEquals(expectedMail.getSubject(), m.getSubject(), message);
-			assertEquals(Arrays.asList(new InternetAddress(expectedMail.getFrom())), Arrays.asList(m.getFrom()), message);
-			assertEquals(((expectedMail.getTo() == null) && (expectedMail.getCarbonCopy() == null)) ? null : addressList(expectedMail.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)), message);
-			assertEquals(addressList(expectedMail.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)), message);
+			assertEquals(subject, m.getSubject(), message);
+			assertEquals(Arrays.asList(new InternetAddress(from)), Arrays.asList(m.getFrom()), message);
+			assertEquals(((to == null) && (carbonCopy == null)) ? null : addressList(to), addressList(m.getRecipients(Message.RecipientType.TO)), message);
+			assertEquals(addressList(carbonCopy), addressList(m.getRecipients(Message.RecipientType.CC)), message);
 			assertEquals(null, addressList(m.getRecipients(Message.RecipientType.BCC)), message);
 			assertNotNull(m.getHeader("Message-ID"), message);
 			assertEquals(1, m.getHeader("Message-ID").length, message);
-			if(expectedMail.specialMessageID)
-				assertEquals(expectedMail.getMessageID(), m.getHeader("Message-ID")[0], message);
+			if(hasSpecialMessageID)
+			{
+				assertEquals(messageID, m.getHeader("Message-ID")[0], message);
+			}
 			else
 				assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
 			assertNotNull(m.getHeader("Date"), message);
 			assertEquals(1, m.getHeader("Date").length, message);
-			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expectedMail.getDate()), m.getHeader("Date")[0], message);
-			expectedMail.checkBody(m);
+			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(date), m.getHeader("Date")[0], message);
+			checker.checkBody(m);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
