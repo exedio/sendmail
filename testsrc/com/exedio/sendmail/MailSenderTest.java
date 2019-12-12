@@ -1096,6 +1096,75 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
+	private void assertPOP3(final Account account, final MockMail expectedMail) throws IOException, MessagingException
+	{
+		final Session session = getPOP3Session(account);
+		Folder inboxFolder = null;
+		try(final Store store = getPOP3Store(session, account))
+		{
+			inboxFolder = getInboxFolder(store);
+			inboxFolder.open(Folder.READ_ONLY);
+			final Message[] inboxMessages = inboxFolder.getMessages();
+			assertEquals(1, inboxMessages.length, account.pop3User);
+
+			final TreeMap<String, Message> actualMessages = new TreeMap<>();
+			for(final Message m : inboxMessages)
+			{
+				if(actualMessages.put(m.getSubject(), m)!=null)
+					throw new RuntimeException(m.getSubject());
+			}
+
+			// check that the non-ascii characters in the subject are handled properly:
+			for(final Message m : actualMessages.values())
+			{
+				final String subjectPart = m.getSubject().substring(
+						m.getSubject().indexOf(" (("), m.getSubject().indexOf("))")+2
+				);
+				if ( subjectPart.startsWith(" ((utf") )
+				{
+					assertEquals(NON_ASCII_TEXT, subjectPart, m.getSubject());
+				}
+				else if ( subjectPart.startsWith(" ((iso") )
+				{
+					assertEquals(NON_ASCII_TEXT_ISO, subjectPart, m.getSubject());
+				}
+				else
+				{
+					fail( m.getSubject() );
+				}
+			}
+
+			final String subject = expectedMail.getSubject();
+			final Message m = actualMessages.get(subject);
+			final String message = account.pop3User + " - " + subject;
+
+			assertNotNull(m, "no message " + message + "; found " + actualMessages.keySet());
+			assertEquals(expectedMail.getSubject(), m.getSubject(), message);
+			assertEquals(Arrays.asList(new InternetAddress(expectedMail.getFrom())), Arrays.asList(m.getFrom()), message);
+			assertEquals(((expectedMail.getTo() == null) && (expectedMail.getCarbonCopy() == null)) ? null : addressList(expectedMail.getTo()), addressList(m.getRecipients(Message.RecipientType.TO)), message);
+			assertEquals(addressList(expectedMail.getCarbonCopy()), addressList(m.getRecipients(Message.RecipientType.CC)), message);
+			assertEquals(null, addressList(m.getRecipients(Message.RecipientType.BCC)), message);
+			assertNotNull(m.getHeader("Message-ID"), message);
+			assertEquals(1, m.getHeader("Message-ID").length, message);
+			if(expectedMail.specialMessageID)
+				assertEquals(expectedMail.getMessageID(), m.getHeader("Message-ID")[0], message);
+			else
+				assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
+			assertNotNull(m.getHeader("Date"), message);
+			assertEquals(1, m.getHeader("Date").length, message);
+			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expectedMail.getDate()), m.getHeader("Date")[0], message);
+			expectedMail.checkBody(m);
+
+			inboxFolder.close(false);
+			inboxFolder = null;
+		}
+		finally
+		{
+			if (inboxFolder != null)
+				inboxFolder.close(false);
+		}
+	}
+
 	private boolean countPOP3(final Account account, final int expected) throws MessagingException
 	{
 		final Session session = getPOP3Session(account);
