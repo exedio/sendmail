@@ -19,11 +19,11 @@
 package com.exedio.sendmail;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
@@ -717,14 +717,14 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 
-		assertPOP3(user1, new MockMail[]{mp, mh, ma, ma2, x12, x13, x14, mpa, mha, maa});
-		assertPOP3(user2, new MockMail[]{x12, x23});
-		assertPOP3(user3, new MockMail[]{x13, x14, x23});
+		assertPOP3(user1, mp, mh, ma, ma2, x12, x13, x14, mpa, mha, maa);
+		assertPOP3(user2, x12, x23);
+		assertPOP3(user3, x13, x14, x23);
 	}
 
 	private static final String DEFAULT_CHARSET = "UTF-8";
 
-	private void assertPOP3(final Account account, final MockMail[] expectedMails) throws IOException, MessagingException
+	private void assertPOP3(final Account account, final MockMail... expectedMails) throws IOException, MessagingException
 	{
 		final TreeMap<String, MockMail> expectedMessages = new TreeMap<>();
 		for(final MockMail m : expectedMails)
