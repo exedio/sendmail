@@ -33,10 +33,12 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.URLName;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 
 @Tag("RemoteTest")
+@SuppressWarnings("StaticVariableMayNotBeInitialized") // OK: just a test
 public class SendmailTest
 {
 	protected MailSender mailSender;
@@ -44,7 +46,13 @@ public class SendmailTest
 	protected String pop3Host;
 	protected boolean pop3Debug;
 
-	protected String from;
+	protected static String from;
+
+	@BeforeAll
+	static void setUpFrom()
+	{
+		from = getProperty("from");
+	}
 
 	@BeforeEach
 	void setUpSendMailTest()
@@ -57,8 +65,6 @@ public class SendmailTest
 		mailSender = mailSenderProperties.get();
 		pop3Host=getProperty("pop3.host");
 		pop3Debug=getPropertyBoolean("pop3.debug");
-
-		from=getProperty("from");
 	}
 
 	protected static class Account
@@ -142,6 +148,11 @@ public class SendmailTest
 		final Folder inboxFolder = defaultFolder.getFolder("INBOX");
 		assertEquals("INBOX", inboxFolder.getFullName());
 		return inboxFolder;
+	}
+
+	protected final void sendMail(final MailData mail) throws MessagingException
+	{
+		mailSender.sendMail(mail);
 	}
 
 	@SuppressWarnings("deprecation") // OK: testing MailSource API
