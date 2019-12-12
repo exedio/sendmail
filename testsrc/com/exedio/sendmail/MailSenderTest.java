@@ -957,7 +957,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		else
 		{
-			assertPOP3(user1);
+			assertEmptyPOP3(user1);
 		}
 		if (accountSet.contains(user2))
 		{
@@ -965,7 +965,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		else
 		{
-			assertPOP3(user2);
+			assertEmptyPOP3(user2);
 		}
 		if (accountSet.contains(user3))
 		{
@@ -973,7 +973,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		else
 		{
-			assertPOP3(user3);
+			assertEmptyPOP3(user3);
 		}
 	}
 
@@ -1155,6 +1155,26 @@ public class MailSenderTest extends SendmailTest
 			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expectedMail.getDate()), m.getHeader("Date")[0], message);
 			expectedMail.checkBody(m);
 
+			inboxFolder.close(false);
+			inboxFolder = null;
+		}
+		finally
+		{
+			if (inboxFolder != null)
+				inboxFolder.close(false);
+		}
+	}
+
+	private void assertEmptyPOP3(final Account account) throws MessagingException
+	{
+		final Session session = getPOP3Session(account);
+		Folder inboxFolder = null;
+		try(final Store store = getPOP3Store(session, account))
+		{
+			inboxFolder = getInboxFolder(store);
+			inboxFolder.open(Folder.READ_ONLY);
+			final Message[] inboxMessages = inboxFolder.getMessages();
+			assertEquals(0, inboxMessages.length, account.pop3User);
 			inboxFolder.close(false);
 			inboxFolder = null;
 		}
