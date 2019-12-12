@@ -907,19 +907,35 @@ public class MailSenderTest extends SendmailTest
 	@MethodSource("parameters")
 	public void testSendMailData(final MockMail mockMail, final Account[] accounts, final boolean erronous, final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
-		final MailData mailData = getMailData(mockMail.getSubject(),
-				mockMail.getFrom(),
-				mockMail.getTo(),
-				mockMail.getCarbonCopy(),
-				mockMail.getBlindCarbonCopy(),
-				mockMail.getReplyTo(),
-				mockMail.getMessageID(),
-				mockMail.getDate(),
-				mockMail.getTextPlain(),
-				mockMail.getTextHtml(),
-				mockMail.getAttachments(),
-				mockMail.getCharset(),
-				mockMail.getContentTransferEncoding());
+		final String subject = mockMail.getSubject();
+		final String from = mockMail.getFrom();
+		final String[] to = mockMail.getTo();
+		final String[] carbonCopy = mockMail.getCarbonCopy();
+		final String[] blindCarbonCopy = mockMail.getBlindCarbonCopy();
+		final String[] replyTo = mockMail.getReplyTo();
+		final String messageID = mockMail.getMessageID();
+		final boolean specialMessageID = mockMail.specialMessageID;
+		final Date date = mockMail.getDate();
+		final String textPlain = mockMail.getTextPlain();
+		final String textHtml = mockMail.getTextHtml();
+		final DataSource[] attachments = mockMail.getAttachments();
+		final String charset = mockMail.getCharset();
+		final String contentTransferEncoding = mockMail.getContentTransferEncoding();
+		final MockChecker checker = mockMail.checker;
+
+		final MailData mailData = getMailData(subject,
+				from,
+				to,
+				carbonCopy,
+				blindCarbonCopy,
+				replyTo,
+				messageID,
+				date,
+				textPlain,
+				textHtml,
+				attachments,
+				charset,
+				contentTransferEncoding);
 		try
 		{
 			sendMail(mailData);
@@ -965,14 +981,14 @@ public class MailSenderTest extends SendmailTest
 
 		if (accountSet.contains(user1))
 		{
-			assertPOP3(user1, mockMail.getSubject(),
-					mockMail.getFrom(),
-					mockMail.getTo(),
-					mockMail.getCarbonCopy(),
-					mockMail.specialMessageID,
-					mockMail.getMessageID(),
-					mockMail.getDate(),
-					mockMail.checker);
+			assertPOP3(user1, subject,
+					from,
+					to,
+					carbonCopy,
+					specialMessageID,
+					messageID,
+					date,
+					checker);
 		}
 		else
 		{
@@ -980,14 +996,14 @@ public class MailSenderTest extends SendmailTest
 		}
 		if (accountSet.contains(user2))
 		{
-			assertPOP3(user2, mockMail.getSubject(),
-					mockMail.getFrom(),
-					mockMail.getTo(),
-					mockMail.getCarbonCopy(),
-					mockMail.specialMessageID,
-					mockMail.getMessageID(),
-					mockMail.getDate(),
-					mockMail.checker);
+			assertPOP3(user2, subject,
+					from,
+					to,
+					carbonCopy,
+					specialMessageID,
+					messageID,
+					date,
+					checker);
 		}
 		else
 		{
@@ -995,14 +1011,14 @@ public class MailSenderTest extends SendmailTest
 		}
 		if (accountSet.contains(user3))
 		{
-			assertPOP3(user3, mockMail.getSubject(),
-					mockMail.getFrom(),
-					mockMail.getTo(),
-					mockMail.getCarbonCopy(),
-					mockMail.specialMessageID,
-					mockMail.getMessageID(),
-					mockMail.getDate(),
-					mockMail.checker);
+			assertPOP3(user3, subject,
+					from,
+					to,
+					carbonCopy,
+					specialMessageID,
+					messageID,
+					date,
+					checker);
 		}
 		else
 		{
