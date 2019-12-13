@@ -908,13 +908,11 @@ public class MailSenderTest extends SendmailTest
 	public void testSendMailData(final MockMail mockMail, final Account[] accounts, final boolean erronous, final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
 		final String subject = mockMail.getSubject();
-		final String from = mockMail.getFrom();
 		final String[] to = mockMail.getTo();
 		final String[] carbonCopy = mockMail.getCarbonCopy();
 		final String[] blindCarbonCopy = mockMail.getBlindCarbonCopy();
 		final String[] replyTo = mockMail.getReplyTo();
 		final String messageID = mockMail.getMessageID();
-		final boolean specialMessageID = mockMail.specialMessageID;
 		final Date date = mockMail.getDate();
 		final String textPlain = mockMail.getTextPlain();
 		final String textHtml = mockMail.getTextHtml();
@@ -985,7 +983,6 @@ public class MailSenderTest extends SendmailTest
 					from,
 					to,
 					carbonCopy,
-					specialMessageID,
 					messageID,
 					date,
 					checker);
@@ -1000,7 +997,6 @@ public class MailSenderTest extends SendmailTest
 					from,
 					to,
 					carbonCopy,
-					specialMessageID,
 					messageID,
 					date,
 					checker);
@@ -1015,7 +1011,6 @@ public class MailSenderTest extends SendmailTest
 					from,
 					to,
 					carbonCopy,
-					specialMessageID,
 					messageID,
 					date,
 					checker);
@@ -1151,7 +1146,6 @@ public class MailSenderTest extends SendmailTest
 									final String from,
 									final String[] to,
 									final String[] carbonCopy,
-									final boolean specialMessageID,
 									final String messageID,
 									final Date date,
 									final MockChecker checker) throws IOException, MessagingException
@@ -1202,10 +1196,8 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(null, addressList(m.getRecipients(Message.RecipientType.BCC)), message);
 			assertNotNull(m.getHeader("Message-ID"), message);
 			assertEquals(1, m.getHeader("Message-ID").length, message);
-			if(specialMessageID)
-			{
+			if(messageID != null)
 				assertEquals(messageID, m.getHeader("Message-ID")[0], message);
-			}
 			else
 				assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
 			assertNotNull(m.getHeader("Date"), message);
