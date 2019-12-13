@@ -1022,7 +1022,7 @@ public class MailSenderTest extends SendmailTest
 										  final MockChecker mailChecker,
 										  final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
-		final boolean erronous = (to == null && carbonCopy == null && blindCarbonCopy == null) ||
+		final boolean erroneous = (to == null && carbonCopy == null && blindCarbonCopy == null) ||
 										 (to != null && Arrays.stream(to).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s))) ||
 										 (carbonCopy != null && Arrays.stream(carbonCopy).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s))) ||
 										 (blindCarbonCopy != null && Arrays.stream(blindCarbonCopy).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s)));
@@ -1042,14 +1042,14 @@ public class MailSenderTest extends SendmailTest
 		try
 		{
 			sendMail(mailData);
-			if (erronous)
+			if (erroneous)
 			{
 				fail("Exception should have been thrown.");
 			}
 		}
 		catch(final Exception e)
 		{
-			if (!erronous)
+			if (!erroneous)
 			{
 				fail("Exception " + e.getClass().getSimpleName() + " was not expected");
 			}
