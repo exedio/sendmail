@@ -330,8 +330,9 @@ public class MailSenderTest extends SendmailTest
 		private String textHtml = (String) null;
 		private DataSource[] attachments;
 		private String charset = null;
-		private MockChecker mailChecker;
-		private ExceptionChecker exceptionChecker;
+		private String contentTransferEncoding = null;
+		private MockChecker mailChecker = actual -> fail("should not be sent");
+		private ExceptionChecker exceptionChecker = e -> fail();
 
 		private static <T> T[] emptyToNull(final T[] o)
 		{
@@ -391,6 +392,12 @@ public class MailSenderTest extends SendmailTest
 			this.charset = charset;
 			return this;
 		}
+		
+		private MockMailBuilder contentTransferEncoding(final String contentTransferEncoding)
+		{
+			this.contentTransferEncoding = contentTransferEncoding;
+			return this;
+		}
 
 		private MockMailBuilder mailChecker(final MockChecker mailChecker)
 		{
@@ -402,6 +409,29 @@ public class MailSenderTest extends SendmailTest
 		{
 			this.exceptionChecker = exceptionChecker;
 			return this;
+		}
+
+		private Arguments buildArguments()
+		{
+			if(to!=null && textPlain==null && textHtml==null)
+				throw new NullPointerException("both textPlain and textAsHtml is null");
+			final long timestamp = System.currentTimeMillis();
+			return arguments(
+					timeStamp + "subject " + ("ISO-8859-1".equals(charset) ? NON_ASCII_TEXT_ISO : NON_ASCII_TEXT) + '[' + id + ']', //Subject
+					to,
+					cc,
+					bcc,
+					replyTo,
+					id != null ? "messageid-" + id + '-' + timestamp : null,
+					new Date(timestamp),
+					textPlain,
+					textHtml,
+					attachments,
+					charset,
+					contentTransferEncoding,
+					mailChecker,
+					exceptionChecker
+			);
 		}
 
 		private MockMail build()
@@ -825,7 +855,7 @@ public class MailSenderTest extends SendmailTest
 	static Stream<Arguments> parameters()
 	{
 		final Collection<Arguments> parameters = new ArrayList<>();
-		parameters.add(arguments(new MockMailBuilder().id("f1").to(fail).textPlain("text for failure test mail").mailChecker(actual -> fail("should not be sent")).exceptionChecker(e -> {
+		parameters.add(arguments(new MockMailBuilder().id("f1").to(fail).textPlain("text for failure test mail").exceptionChecker(e -> {
 			final String fm1 = e.getMessage();
 			assertEquals("Invalid Addresses", fm1);
 			final String fm1n = e.getCause().getMessage();
@@ -836,7 +866,7 @@ public class MailSenderTest extends SendmailTest
 			final String fm1n = e.getCause().getMessage();
 			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
 		}));
-		parameters.add(arguments(new MockMailBuilder().id("f2").mailChecker(actual -> fail("should not be sent")).exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).build(), (ExceptionChecker) e -> assertEquals(NullPointerException.class, e.getClass())));
+		parameters.add(arguments(new MockMailBuilder().id("f2").exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).build(), (ExceptionChecker) e -> assertEquals(NullPointerException.class, e.getClass())));
 		parameters.add(arguments(new MockMailBuilder().id("x12").to(new String[]{user1.email, user2.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
