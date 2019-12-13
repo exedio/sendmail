@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.exedio.cope.util.Hex;
@@ -320,78 +319,92 @@ public class MailSenderTest extends SendmailTest
 
 	}
 
-	public static class MockMailBuilder
+	private static class MockMailBuilder
 	{
 		private String id;
 		private String[] to;
 		private String[] cc = null;
 		private String[] bcc = null;
+		private String[] replyTo = null;
 		private String textPlain;
-		private MockChecker mailChecker;
 		private String textHtml = (String) null;
 		private DataSource[] attachments;
 		private String charset = null;
+		private MockChecker mailChecker;
+		private ExceptionChecker exceptionChecker;
 
 		private static <T> T[] emptyToNull(final T[] o)
 		{
 			return o==null || o.length==0 ? null : o;
 		}
 
-		public MockMailBuilder id(final String id)
+		private MockMailBuilder id(final String id)
 		{
 			this.id = id;
 			return this;
 		}
 
-		public MockMailBuilder to(final String... to)
+		private MockMailBuilder to(final String... to)
 		{
 			this.to = emptyToNull(to);
 			return this;
 		}
 
-		public MockMailBuilder cc(final String... cc)
+		private MockMailBuilder cc(final String... cc)
 		{
 			this.cc = emptyToNull(cc);
 			return this;
 		}
 
-		public MockMailBuilder bcc(final String... bcc)
+		private MockMailBuilder bcc(final String... bcc)
 		{
 			this.bcc = emptyToNull(bcc);
 			return this;
 		}
 
-		public MockMailBuilder textPlain(final String textPlain)
+		private MockMailBuilder replyTo(final String... replyTo)
+		{
+			this.replyTo = emptyToNull(replyTo);
+			return this;
+		}
+
+		private MockMailBuilder textPlain(final String textPlain)
 		{
 			this.textPlain = textPlain;
 			return this;
 		}
 
-		public MockMailBuilder textHtml(final String textHtml)
+		private MockMailBuilder textHtml(final String textHtml)
 		{
 			this.textHtml = textHtml;
 			return this;
 		}
 
-		public MockMailBuilder mailChecker(final MockChecker mailChecker)
-		{
-			this.mailChecker = mailChecker;
-			return this;
-		}
-
-		public MockMailBuilder attachments(final DataSource... attachments)
+		private MockMailBuilder attachments(final DataSource... attachments)
 		{
 			this.attachments = emptyToNull(attachments);
 			return this;
 		}
 
-		public MockMailBuilder charset(final String charset)
+		private MockMailBuilder charset(final String charset)
 		{
 			this.charset = charset;
 			return this;
 		}
 
-		public MockMail build()
+		private MockMailBuilder mailChecker(final MockChecker mailChecker)
+		{
+			this.mailChecker = mailChecker;
+			return this;
+		}
+
+		private MockMailBuilder exceptionChecker(final ExceptionChecker exceptionChecker)
+		{
+			this.exceptionChecker = exceptionChecker;
+			return this;
+		}
+
+		private MockMail build()
 		{
 			return new MockMail(id, to, cc, bcc, textPlain, textHtml, attachments, charset, mailChecker);
 		}
@@ -812,13 +825,18 @@ public class MailSenderTest extends SendmailTest
 	static Stream<Arguments> parameters()
 	{
 		final Collection<Arguments> parameters = new ArrayList<>();
-		parameters.add(arguments(new MockMailBuilder().id("f1").to(fail).textPlain("text for failure test mail").mailChecker(actual -> fail("should not be sent")).build(), (ExceptionChecker) e -> {
+		parameters.add(arguments(new MockMailBuilder().id("f1").to(fail).textPlain("text for failure test mail").mailChecker(actual -> fail("should not be sent")).exceptionChecker(e -> {
+			final String fm1 = e.getMessage();
+			assertEquals("Invalid Addresses", fm1);
+			final String fm1n = e.getCause().getMessage();
+			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
+		}).build(), (ExceptionChecker) e -> {
 			final String fm1 = e.getMessage();
 			assertEquals("Invalid Addresses", fm1);
 			final String fm1n = e.getCause().getMessage();
 			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
 		}));
-		parameters.add(arguments(new MockMailBuilder().id("f2").mailChecker(actual -> fail("should not be sent")).build(), (ExceptionChecker) e -> assertEquals(NullPointerException.class, e.getClass())));
+		parameters.add(arguments(new MockMailBuilder().id("f2").mailChecker(actual -> fail("should not be sent")).exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).build(), (ExceptionChecker) e -> assertEquals(NullPointerException.class, e.getClass())));
 		parameters.add(arguments(new MockMailBuilder().id("x12").to(new String[]{user1.email, user2.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
