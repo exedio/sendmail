@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -734,44 +735,39 @@ public class MailSenderTest extends SendmailTest
 	static Stream<Arguments> parameters()
 	{
 		final Collection<Arguments> parameters = new ArrayList<>();
-		final Account[] empty = new Account[0];
-		final Account[] x1 = {user1};
-		final Account[] x12 = {user1, user2};
-		final Account[] x13 = {user1, user3};
-		final Account[] x23 = {user2, user3};
-		parameters.add(arguments(new MockMail("f1", fail, "text for failure test mail", actual -> fail("should not be sent")), empty, Boolean.TRUE, (ExceptionChecker)e -> {
+		parameters.add(arguments(new MockMail("f1", fail, "text for failure test mail", actual -> fail("should not be sent")), (ExceptionChecker)e -> {
 			final String fm1 = e.getMessage();
 			assertEquals("Invalid Addresses", fm1);
 			final String fm1n = e.getCause().getMessage();
 			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
 		}));
-		parameters.add(arguments(new MockMail("f2", (String)null, null, actual -> fail("should not be sent")), empty, Boolean.TRUE, (ExceptionChecker)e -> assertEquals(NullPointerException.class, e.getClass())));
+		parameters.add(arguments(new MockMail("f2", (String)null, null, actual -> fail("should not be sent")), (ExceptionChecker)e -> assertEquals(NullPointerException.class, e.getClass())));
 		parameters.add(arguments(new MockMail("x12", new String[]{user1.email, user2.email}, null, null, TEXT_PLAIN, m ->
 		{
 			assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}), x12, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("x13", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN, m ->
 		{
 			assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}), x13, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("x14", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN_ISO, null, null, "ISO-8859-1", m ->
 		{
 			assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
-		}), x13, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("x23", null, null, new String[]{user2.email, user3.email}, TEXT_PLAIN, m ->
 		{
 			assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}), x23, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("mp", user1.email, TEXT_PLAIN, m ->
 		{
 			assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 			assertEquals(null, m.getDisposition());
-		}), x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		final MockMail mh = new MockMail("mh", user1.email, (String) null, TEXT_HTML, m ->
 		{
 			assertEquals("text/html; charset=" + DEFAULT_CHARSET, m.getContentType());
@@ -779,7 +775,7 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(null, m.getDisposition());
 		});
 		mh.specialMessageID = true;
-		parameters.add(arguments(mh, x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		parameters.add(arguments(mh, (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("ma", user1.email, TEXT_PLAIN, TEXT_HTML, m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
@@ -797,7 +793,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.INLINE, htmlBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}), x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("ma2", user1.email, TEXT_PLAIN_ISO, TEXT_HTML_ISO, "ISO-8859-1", m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
@@ -815,7 +811,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.INLINE, htmlBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}), x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("mpa", user1.email, TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), m ->
@@ -834,7 +830,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}), x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("mha", user1.email, (String)null, TEXT_HTML,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
@@ -862,7 +858,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(3, multipart.getCount());
-		}), x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		parameters.add(arguments(new MockMail("maa", user1.email, TEXT_PLAIN, TEXT_HTML,
 				new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), m ->
@@ -899,13 +895,13 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(3, multipart.getCount());
-		}), x1, Boolean.FALSE, (ExceptionChecker)e -> fail()));
+		}), (ExceptionChecker)e -> fail()));
 		return parameters.stream();
 	}
 
 	@ParameterizedTest
 	@MethodSource("parameters")
-	public void testSendMailData(final MockMail mockMail, final Account[] accounts, final boolean erronous, final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
+	public void testSendMailData(final MockMail mockMail, final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
 		final String subject = mockMail.getSubject();
 		final String[] to = mockMail.getTo();
@@ -920,7 +916,10 @@ public class MailSenderTest extends SendmailTest
 		final String charset = mockMail.getCharset();
 		final String contentTransferEncoding = mockMail.getContentTransferEncoding();
 		final MockChecker checker = mockMail.checker;
-
+		final boolean erronous = (to == null && carbonCopy == null && blindCarbonCopy == null) ||
+										 (to != null && Arrays.stream(to).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s))) ||
+										 (carbonCopy != null && Arrays.stream(carbonCopy).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s))) ||
+										 (blindCarbonCopy != null && Arrays.stream(blindCarbonCopy).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s)));
 		final MailData mailData = getMailData(subject,
 				from,
 				to,
@@ -954,8 +953,38 @@ public class MailSenderTest extends SendmailTest
 		boolean complete1 = false;
 		boolean complete2 = false;
 		boolean complete3 = false;
-		final Set<Account> accountSet = Arrays.stream(accounts).collect(Collectors.toSet());
-		assertEquals(accounts.length, accountSet.size());
+		Stream<String> stream = null;
+		if(to != null)
+		{
+			stream = Arrays.stream(to);
+		}
+		if(carbonCopy != null)
+		{
+			if (stream == null)
+			{
+				stream = Arrays.stream(carbonCopy);
+			}
+			else
+			{
+				stream = Stream.concat(stream, Arrays.stream(carbonCopy));
+			}
+		}
+		if(blindCarbonCopy != null)
+		{
+			if (stream == null)
+			{
+				stream = Arrays.stream(blindCarbonCopy);
+			}
+			else
+			{
+				stream = Stream.concat(stream, Arrays.stream(blindCarbonCopy));
+			}
+		}
+		final Set<Account> accounts = stream != null ? stream.map(
+				s -> user1.email.equals(s) ? user1 :
+						user2.email.equals(s) ? user2 :
+								user3.email.equals(s) ? user3 : null
+		).filter(Objects::nonNull).collect(Collectors.toSet()) : Collections.emptySet();
 		for(int i = 0; i<30; i++)
 		{
 			//noinspection BusyWait OK: just a test
@@ -967,9 +996,9 @@ public class MailSenderTest extends SendmailTest
 			}
 			//noinspection ConstantConditions,NestedAssignment
 			if(
-					(complete1 || (complete1=countPOP3(user1, accountSet.contains(user1) ? 1 : 0))) &&
-					(complete2 || (complete2=countPOP3(user2, accountSet.contains(user2) ? 1 : 0))) &&
-					(complete3 || (complete3=countPOP3(user3, accountSet.contains(user3) ? 1 : 0))) )
+					(complete1 || (complete1=countPOP3(user1, accounts.contains(user1) ? 1 : 0))) &&
+					(complete2 || (complete2=countPOP3(user2, accounts.contains(user2) ? 1 : 0))) &&
+					(complete3 || (complete3=countPOP3(user3, accounts.contains(user3) ? 1 : 0))) )
 			{
 				break;
 			}
@@ -977,7 +1006,7 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 
-		if (accountSet.contains(user1))
+		if (accounts.contains(user1))
 		{
 			assertPOP3(user1, subject,
 					from,
@@ -991,7 +1020,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			assertEmptyPOP3(user1);
 		}
-		if (accountSet.contains(user2))
+		if (accounts.contains(user2))
 		{
 			assertPOP3(user2, subject,
 					from,
@@ -1005,7 +1034,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			assertEmptyPOP3(user2);
 		}
-		if (accountSet.contains(user3))
+		if (accounts.contains(user3))
 		{
 			assertPOP3(user3, subject,
 					from,
