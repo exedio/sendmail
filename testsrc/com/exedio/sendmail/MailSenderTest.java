@@ -320,7 +320,7 @@ public class MailSenderTest extends SendmailTest
 	}
 
 	@SuppressWarnings("unused")
-	private static class MockMailBuilder
+	private static class ArgumentsBuilder
 	{
 		private String id;
 		private String[] to;
@@ -340,79 +340,79 @@ public class MailSenderTest extends SendmailTest
 			return o==null || o.length==0 ? null : o;
 		}
 
-		private MockMailBuilder id(final String id)
+		private ArgumentsBuilder id(final String id)
 		{
 			this.id = id;
 			return this;
 		}
 
-		private MockMailBuilder to(final String... to)
+		private ArgumentsBuilder to(final String... to)
 		{
 			this.to = emptyToNull(to);
 			return this;
 		}
 
-		private MockMailBuilder cc(final String... cc)
+		private ArgumentsBuilder cc(final String... cc)
 		{
 			this.cc = emptyToNull(cc);
 			return this;
 		}
 
-		private MockMailBuilder bcc(final String... bcc)
+		private ArgumentsBuilder bcc(final String... bcc)
 		{
 			this.bcc = emptyToNull(bcc);
 			return this;
 		}
 
-		private MockMailBuilder replyTo(final String... replyTo)
+		private ArgumentsBuilder replyTo(final String... replyTo)
 		{
 			this.replyTo = emptyToNull(replyTo);
 			return this;
 		}
 
-		private MockMailBuilder textPlain(final String textPlain)
+		private ArgumentsBuilder textPlain(final String textPlain)
 		{
 			this.textPlain = textPlain;
 			return this;
 		}
 
-		private MockMailBuilder textHtml(final String textHtml)
+		private ArgumentsBuilder textHtml(final String textHtml)
 		{
 			this.textHtml = textHtml;
 			return this;
 		}
 
-		private MockMailBuilder attachments(final DataSource... attachments)
+		private ArgumentsBuilder attachments(final DataSource... attachments)
 		{
 			this.attachments = emptyToNull(attachments);
 			return this;
 		}
 
-		private MockMailBuilder charset(final String charset)
+		private ArgumentsBuilder charset(final String charset)
 		{
 			this.charset = charset;
 			return this;
 		}
 		
-		private MockMailBuilder contentTransferEncoding(final String contentTransferEncoding)
+		private ArgumentsBuilder contentTransferEncoding(final String contentTransferEncoding)
 		{
 			this.contentTransferEncoding = contentTransferEncoding;
 			return this;
 		}
 
-		private MockMailBuilder mailChecker(final MockChecker mailChecker)
+		private ArgumentsBuilder mailChecker(final MockChecker mailChecker)
 		{
 			this.mailChecker = mailChecker;
 			return this;
 		}
 
-		private MockMailBuilder exceptionChecker(final ExceptionChecker exceptionChecker)
+		private ArgumentsBuilder exceptionChecker(final ExceptionChecker exceptionChecker)
 		{
 			this.exceptionChecker = exceptionChecker;
 			return this;
 		}
 
-		private Arguments buildArguments()
+		private Arguments build()
 		{
 			if(to!=null && textPlain==null && textHtml==null)
 				throw new NullPointerException("both textPlain and textAsHtml is null");
@@ -851,46 +851,46 @@ public class MailSenderTest extends SendmailTest
 	static Stream<Arguments> parameters()
 	{
 		final Collection<Arguments> parameters = new ArrayList<>();
-		parameters.add(new MockMailBuilder().to(fail).textPlain("text for failure test mail").exceptionChecker(e -> {
+		parameters.add(new ArgumentsBuilder().to(fail).textPlain("text for failure test mail").exceptionChecker(e -> {
 			final String fm1 = e.getMessage();
 			assertEquals("Invalid Addresses", fm1);
 			final String fm1n = e.getCause().getMessage();
 			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).buildArguments());
-		parameters.add(new MockMailBuilder().to(new String[]{user1.email, user2.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).build());
+		parameters.add(new ArgumentsBuilder().to(new String[]{user1.email, user2.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().cc(new String[]{user1.email, user3.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().cc(new String[]{user1.email, user3.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().cc(new String[]{user1.email, user3.email}).textPlain(TEXT_PLAIN_ISO).charset("ISO-8859-1").mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().cc(new String[]{user1.email, user3.email}).textPlain(TEXT_PLAIN_ISO).charset("ISO-8859-1").mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().bcc(new String[]{user2.email, user3.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().bcc(new String[]{user2.email, user3.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().to(user1.email).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 			assertEquals(null, m.getDisposition());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().id("mh").to(user1.email).textHtml(TEXT_HTML).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().id("mh").to(user1.email).textHtml(TEXT_HTML).mailChecker(m ->
 		{
 			assertEquals("text/html; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_HTML) + TEXT_APPENDIX, m.getContent());
 			assertEquals(null, m.getDisposition());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -907,8 +907,8 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.INLINE, htmlBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().to(user1.email).textPlain(TEXT_PLAIN_ISO).textHtml(TEXT_HTML_ISO).charset("ISO-8859-1").mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN_ISO).textHtml(TEXT_HTML_ISO).charset("ISO-8859-1").mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -925,8 +925,8 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.INLINE, htmlBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().to(user1.email).textPlain(TEXT_PLAIN).attachments(new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).attachments(new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -942,8 +942,8 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().to(user1.email).textHtml(TEXT_HTML).attachments(new MockURLDataSource("tree.jpg", null, "image/jpeg"), new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain")).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textHtml(TEXT_HTML).attachments(new MockURLDataSource("tree.jpg", null, "image/jpeg"), new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain")).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -966,8 +966,8 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(3, multipart.getCount());
-		}).buildArguments());
-		parameters.add(new MockMailBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).attachments(new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"), new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
+		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).attachments(new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"), new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -1001,7 +1001,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(3, multipart.getCount());
-		}).buildArguments());
+		}).build());
 		return parameters.stream();
 	}
 
