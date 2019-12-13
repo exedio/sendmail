@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -509,6 +510,8 @@ public class MailSenderTest extends SendmailTest
 	private interface MockChecker
 	{
 		void checkBody(Message m) throws IOException, MessagingException;
+
+		MockChecker CHECK_NOTHING = e -> {};
 	}
 
 	@FunctionalInterface
@@ -1002,6 +1005,8 @@ public class MailSenderTest extends SendmailTest
 			}
 			assertEquals(3, multipart.getCount());
 		}).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(MockChecker.CHECK_NOTHING).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MockChecker.CHECK_NOTHING).build());
 		return parameters.stream();
 	}
 
@@ -1118,6 +1123,7 @@ public class MailSenderTest extends SendmailTest
 					from,
 					to,
 					carbonCopy,
+					replyTo,
 					messageID,
 					date,
 					mailChecker);
@@ -1132,6 +1138,7 @@ public class MailSenderTest extends SendmailTest
 					from,
 					to,
 					carbonCopy,
+					replyTo,
 					messageID,
 					date,
 					mailChecker);
@@ -1146,6 +1153,7 @@ public class MailSenderTest extends SendmailTest
 					from,
 					to,
 					carbonCopy,
+					replyTo,
 					messageID,
 					date,
 					mailChecker);
@@ -1281,6 +1289,7 @@ public class MailSenderTest extends SendmailTest
 									final String from,
 									final String[] to,
 									final String[] carbonCopy,
+									final String[] replyTo,
 									final String messageID,
 									final Date date,
 									final MockChecker checker) throws IOException, MessagingException
@@ -1338,6 +1347,17 @@ public class MailSenderTest extends SendmailTest
 			assertNotNull(m.getHeader("Date"), message);
 			assertEquals(1, m.getHeader("Date").length, message);
 			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(date), m.getHeader("Date")[0], message);
+			final String[] replyToHeader = m.getHeader("Reply-To");
+			if (replyTo == null)
+			{
+				assertNull(replyToHeader, message);
+			}
+			else
+			{
+				assertNotNull(replyToHeader, message);
+				assertEquals(replyTo.length, replyToHeader.length, message);
+				assertArrayEquals(replyTo, replyToHeader, message);
+			}
 			checker.checkBody(m);
 
 			inboxFolder.close(false);
