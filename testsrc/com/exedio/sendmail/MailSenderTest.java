@@ -102,7 +102,7 @@ public class MailSenderTest extends SendmailTest
 	@SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK: just a test
 	private static final class MockMail implements Mail
 	{
-		private final MockChecker checker;
+		private final MailChecker checker;
 		private final String id;
 		private final String[] to;
 		private final String[] cc;
@@ -122,7 +122,7 @@ public class MailSenderTest extends SendmailTest
 				final String id,
 				final String to,
 				final String textPlain,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
@@ -132,7 +132,7 @@ public class MailSenderTest extends SendmailTest
 				final String to,
 				final String textPlain,
 				final String textHtml,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, null, checker);
 		}
@@ -143,7 +143,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final String textHtml,
 				final String charset,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, charset, checker);
 		}
@@ -154,7 +154,7 @@ public class MailSenderTest extends SendmailTest
 				final String[] cc,
 				final String[] bcc,
 				final String textPlain,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
@@ -164,7 +164,7 @@ public class MailSenderTest extends SendmailTest
 				final String to,
 				final String textPlain,
 				final DataSource attachment,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachment}, null, checker);
 		}
@@ -176,7 +176,7 @@ public class MailSenderTest extends SendmailTest
 				final String textHtml,
 				final DataSource attachment1,
 				final DataSource attachment2,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			this(id, ta(to), null, null, textPlain, textHtml, new DataSource[]{attachment1, attachment2}, null, checker);
 		}
@@ -190,7 +190,7 @@ public class MailSenderTest extends SendmailTest
 				final String textHtml,
 				final DataSource[] attachments,
 				final String charset,
-				final MockChecker checker)
+				final MailChecker checker)
 		{
 			if(checker==null)
 				throw new RuntimeException("checker must not be null");
@@ -333,7 +333,7 @@ public class MailSenderTest extends SendmailTest
 		private DataSource[] attachments;
 		private String charset = null;
 		private String contentTransferEncoding = null;
-		private MockChecker mailChecker = actual -> fail("should not be sent");
+		private MailChecker mailChecker = actual -> fail("should not be sent");
 		private ExceptionChecker exceptionChecker = e -> fail();
 
 		private static <T> T[] emptyToNull(final T[] o)
@@ -401,7 +401,7 @@ public class MailSenderTest extends SendmailTest
 			return this;
 		}
 
-		private ArgumentsBuilder mailChecker(final MockChecker mailChecker)
+		private ArgumentsBuilder mailChecker(final MailChecker mailChecker)
 		{
 			this.mailChecker = mailChecker;
 			return this;
@@ -507,11 +507,11 @@ public class MailSenderTest extends SendmailTest
 	}
 
 	@FunctionalInterface
-	private interface MockChecker
+	private interface MailChecker
 	{
 		void checkBody(Message m) throws IOException, MessagingException;
 
-		MockChecker CHECK_NOTHING = e -> {};
+		MailChecker CHECK_NOTHING = m -> {};
 	}
 
 	@FunctionalInterface
@@ -1005,8 +1005,8 @@ public class MailSenderTest extends SendmailTest
 			}
 			assertEquals(3, multipart.getCount());
 		}).build());
-		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(MockChecker.CHECK_NOTHING).build());
-		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MockChecker.CHECK_NOTHING).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(MailChecker.CHECK_NOTHING).build());
+		parameters.add(new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MailChecker.CHECK_NOTHING).build());
 		return parameters.stream();
 	}
 
@@ -1024,7 +1024,7 @@ public class MailSenderTest extends SendmailTest
 										  final DataSource[] attachments,
 										  final String charset,
 										  final String contentTransferEncoding,
-										  final MockChecker mailChecker,
+										  final MailChecker mailChecker,
 										  final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
 		final boolean erroneous = (to == null && carbonCopy == null && blindCarbonCopy == null) ||
@@ -1292,7 +1292,7 @@ public class MailSenderTest extends SendmailTest
 									final String[] replyTo,
 									final String messageID,
 									final Date date,
-									final MockChecker checker) throws IOException, MessagingException
+									final MailChecker mailChecker) throws IOException, MessagingException
 	{
 		final Session session = getPOP3Session(account);
 		Folder inboxFolder = null;
@@ -1358,7 +1358,7 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(replyTo.length, replyToHeader.length, message);
 				assertArrayEquals(replyTo, replyToHeader, message);
 			}
-			checker.checkBody(m);
+			mailChecker.checkBody(m);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
