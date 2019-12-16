@@ -394,7 +394,7 @@ public class MailSenderTest extends SendmailTest
 			this.charset = charset;
 			return this;
 		}
-		
+
 		private ArgumentsBuilder contentTransferEncoding(final String contentTransferEncoding)
 		{
 			this.contentTransferEncoding = contentTransferEncoding;
