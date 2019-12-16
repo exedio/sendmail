@@ -861,22 +861,22 @@ public class MailSenderTest extends SendmailTest
 			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
 		}).build());
 		parameters.add(new ArgumentsBuilder().exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).build());
-		parameters.add(new ArgumentsBuilder().to(new String[]{user1.email, user2.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
+		parameters.add(new ArgumentsBuilder().to(user1.email, user2.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		}).build());
-		parameters.add(new ArgumentsBuilder().cc(new String[]{user1.email, user3.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
+		parameters.add(new ArgumentsBuilder().cc(user1.email, user3.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		}).build());
-		parameters.add(new ArgumentsBuilder().cc(new String[]{user1.email, user3.email}).textPlain(TEXT_PLAIN_ISO).charset("ISO-8859-1").mailChecker(m ->
+		parameters.add(new ArgumentsBuilder().cc(user1.email, user3.email).textPlain(TEXT_PLAIN_ISO).charset("ISO-8859-1").mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
 		}).build());
-		parameters.add(new ArgumentsBuilder().bcc(new String[]{user2.email, user3.email}).textPlain(TEXT_PLAIN).mailChecker(m ->
+		parameters.add(new ArgumentsBuilder().bcc(user2.email, user3.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
