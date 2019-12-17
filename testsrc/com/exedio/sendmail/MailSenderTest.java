@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.exedio.cope.util.Hex;
 import java.io.ByteArrayOutputStream;
@@ -60,9 +59,6 @@ import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 
 @SuppressWarnings({"HardcodedLineSeparator", "RedundantCast", "StaticVariableMayNotBeInitialized"}) // OK: just a test
@@ -85,7 +81,7 @@ public class MailSenderTest extends SendmailTest
 		user2 = new Account("user2");
 		user3 = new Account("user3");
 
-		fail=System.getProperty("fail");
+		fail = System.getProperty("fail");
 
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", Locale.ENGLISH);
 		timeStamp = df.format(new Date());
@@ -124,7 +120,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, null, checker);
+			this(id, ta(to), null, null, textPlain, (String) null, (DataSource[]) null, null, checker);
 		}
 
 		MockMail(
@@ -134,7 +130,7 @@ public class MailSenderTest extends SendmailTest
 				final String textHtml,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, null, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[]) null, null, checker);
 		}
 
 		MockMail(
@@ -145,7 +141,7 @@ public class MailSenderTest extends SendmailTest
 				final String charset,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, charset, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[]) null, charset, checker);
 		}
 
 		MockMail(
@@ -156,7 +152,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final MailChecker checker)
 		{
-			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, null, checker);
+			this(id, to, cc, bcc, textPlain, (String) null, (DataSource[]) null, null, checker);
 		}
 
 		MockMail(
@@ -166,7 +162,7 @@ public class MailSenderTest extends SendmailTest
 				final DataSource attachment,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachment}, null, checker);
+			this(id, ta(to), null, null, textPlain, (String) null, new DataSource[]{attachment}, null, checker);
 		}
 
 		MockMail(
@@ -192,11 +188,11 @@ public class MailSenderTest extends SendmailTest
 				final String charset,
 				final MailChecker checker)
 		{
-			if(checker==null)
+			if(checker == null)
 				throw new RuntimeException("checker must not be null");
-			if(id==null)
+			if(id == null)
 				throw new RuntimeException("id must not be null");
-			if(to!=null && textPlain==null && textHtml==null)
+			if(to != null && textPlain == null && textHtml == null)
 				throw new NullPointerException("both textPlain and textAsHtml is null");
 
 			this.checker = checker;
@@ -213,7 +209,7 @@ public class MailSenderTest extends SendmailTest
 
 		private static String[] ta(final String s)
 		{
-			return s==null ? null : new String[]{s};
+			return s == null ? null : new String[]{s};
 		}
 
 		@Override
@@ -249,7 +245,7 @@ public class MailSenderTest extends SendmailTest
 		@Override
 		public String getSubject()
 		{
-			return timeStamp + "subject " + ("ISO-8859-1".equals(charset)?NON_ASCII_TEXT_ISO:NON_ASCII_TEXT) + '[' + id + ']' ;
+			return timeStamp + "subject " + ("ISO-8859-1".equals(charset) ? NON_ASCII_TEXT_ISO : NON_ASCII_TEXT) + '[' + id + ']';
 		}
 
 		@Override
@@ -321,9 +317,8 @@ public class MailSenderTest extends SendmailTest
 	}
 
 	@SuppressWarnings("unused")
-	private static class ArgumentsBuilder
+	private class ArgumentsBuilder
 	{
-		private String testName = null;
 		private String id;
 		private String[] to;
 		private String[] cc = null;
@@ -337,20 +332,14 @@ public class MailSenderTest extends SendmailTest
 		private MailChecker mailChecker = actual -> fail("should not be sent");
 		private ExceptionChecker exceptionChecker = e -> fail();
 
-		private static <T> T[] emptyToNull(final T[] o)
+		private <T> T[] emptyToNull(final T[] o)
 		{
-			return o==null || o.length==0 ? null : o;
+			return o == null || o.length == 0 ? null : o;
 		}
 
 		private ArgumentsBuilder id(final String id)
 		{
 			this.id = id;
-			return this;
-		}
-
-		private ArgumentsBuilder testName(final String testName)
-		{
-			this.testName = testName;
 			return this;
 		}
 
@@ -420,15 +409,12 @@ public class MailSenderTest extends SendmailTest
 			return this;
 		}
 
-		private Arguments build()
+		private void execute() throws InterruptedException, MessagingException, IOException
 		{
-			if (testName == null)
-				throw new NullPointerException("testName must not be null");
-			if(to!=null && textPlain==null && textHtml==null)
+			if(to != null && textPlain == null && textHtml == null)
 				throw new NullPointerException("both textPlain and textAsHtml is null");
 			final long timestamp = System.currentTimeMillis();
-			return arguments(
-					testName,
+			sendAndTest(
 					timeStamp + "subject " + ("ISO-8859-1".equals(charset) ? NON_ASCII_TEXT_ISO : NON_ASCII_TEXT) + '[' + id + ']', //Subject
 					to,
 					cc,
@@ -499,7 +485,7 @@ public class MailSenderTest extends SendmailTest
 			this.name = name;
 			this.contentType = contentType;
 
-			if(this.contentType==null)
+			if(this.contentType == null)
 				throw new RuntimeException();
 		}
 
@@ -521,7 +507,8 @@ public class MailSenderTest extends SendmailTest
 	{
 		void checkBody(Message m) throws IOException, MessagingException;
 
-		MailChecker CHECK_NOTHING = m -> {};
+		MailChecker CHECK_NOTHING = m -> {
+		};
 	}
 
 	@FunctionalInterface
@@ -533,216 +520,216 @@ public class MailSenderTest extends SendmailTest
 	private static final int MAXIMUM_RESULT_SIZE = 345;
 
 	private static final String NEWLINES =
-		"lf-\n" +
-		"cr-\r" +
-		"crlf-\r\n";
+			"lf-\n" +
+			"cr-\r" +
+			"crlf-\r\n";
 	private static final String NEWLINES_RECEIVE =
-		"lf-\r\n" +
-		"cr-\r\n" +
-		"crlf-\r\n";
+			"lf-\r\n" +
+			"cr-\r\n" +
+			"crlf-\r\n";
 	private static final String NON_ASCII_TEXT =
-		" ((utf " +
-		"auml-\u00e4 " +
-		"ouml-\u00f6 " +
-		"uuml-\u00fc " +
-		NEWLINES +
-		"szlig-\u00df " +
-		"abreve-\u0102 " +
-		"hebrew-\u05d8 " +
-		"euro-\u20ac " +
-		"aelig-\u00e6))";
+			" ((utf " +
+			"auml-\u00e4 " +
+			"ouml-\u00f6 " +
+			"uuml-\u00fc " +
+			NEWLINES +
+			"szlig-\u00df " +
+			"abreve-\u0102 " +
+			"hebrew-\u05d8 " +
+			"euro-\u20ac " +
+			"aelig-\u00e6))";
 	private static final String NON_ASCII_TEXT_ISO =
-		" ((iso " +
-		"auml-\u00e4 " +
-		"ouml-\u00f6 " +
-		"uuml-\u00fc " +
-		NEWLINES +
-		"szlig-\u00df))";
+			" ((iso " +
+			"auml-\u00e4 " +
+			"ouml-\u00f6 " +
+			"uuml-\u00fc " +
+			NEWLINES +
+			"szlig-\u00df))";
 	private static final String TEXT_APPENDIX = "\r\n";
 	private static final String TEXT_PLAIN = "text for test mail" + NON_ASCII_TEXT;
 	private static final String TEXT_PLAIN_ISO = "text for test mail" + NON_ASCII_TEXT_ISO;
 	private static final String TEXT_HTML =
-		"<html>" +
-		"<head>" +
-		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
-		"</head>" +
-		"<body>" +
-		"text with html features " +
-		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
-		"and special characters" + NON_ASCII_TEXT + "." +
-		"</body>" +
-		"</html>";
+			"<html>" +
+			"<head>" +
+			"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
+			"</head>" +
+			"<body>" +
+			"text with html features " +
+			"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
+			"and special characters" + NON_ASCII_TEXT + "." +
+			"</body>" +
+			"</html>";
 	private static final String TEXT_HTML_ISO =
-		"<html>" +
-		"<head>" +
-		"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
-		"</head>" +
-		"<body>" +
-		"text with html features " +
-		"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
-		"and special characters" + NON_ASCII_TEXT_ISO + "." +
-		"</body>" +
-		"</html>";
+			"<html>" +
+			"<head>" +
+			"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" +
+			"</head>" +
+			"<body>" +
+			"text with html features " +
+			"such as <b>bold</b>, <i>italic</i> and <font color=\"#FF0000\">red</font> text " +
+			"and special characters" + NON_ASCII_TEXT_ISO + "." +
+			"</body>" +
+			"</html>";
 
 	@SuppressWarnings("NestedAssignment")
 	@Test
 	void testSendMail() throws InterruptedException, IOException, MessagingException
 	{
-		final MockMail f1  = new MockMail("f1", fail, "text for failure test mail", actual -> fail("should not be sent"));
-		final MockMail f2  = new MockMail("f2", (String)null, null, actual -> fail("should not be sent"));
+		final MockMail f1 = new MockMail("f1", fail, "text for failure test mail", actual -> fail("should not be sent"));
+		final MockMail f2 = new MockMail("f2", (String) null, null, actual -> fail("should not be sent"));
 		final MockMail x12 = new MockMail("x12", new String[]{user1.email, user2.email}, null, null, TEXT_PLAIN, m ->
 		{
-				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
+			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		});
 		final MockMail x13 = new MockMail("x13", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN, m ->
 		{
-				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
+			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		});
 		final MockMail x14 = new MockMail("x14", null, new String[]{user1.email, user3.email}, null, TEXT_PLAIN_ISO, null, null, "ISO-8859-1", m ->
 		{
-				assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
+			assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
 		});
 		final MockMail x23 = new MockMail("x23", null, null, new String[]{user2.email, user3.email}, TEXT_PLAIN, m ->
 		{
-				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
+			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		});
-		final MockMail mp  = new MockMail("mp", user1.email, TEXT_PLAIN, m ->
+		final MockMail mp = new MockMail("mp", user1.email, TEXT_PLAIN, m ->
 		{
-				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-				assertEquals(null, m.getDisposition());
+			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
+			assertEquals(null, m.getDisposition());
 		});
-		final MockMail mh  = new MockMail("mh", user1.email, (String)null, TEXT_HTML, m ->
+		final MockMail mh = new MockMail("mh", user1.email, (String) null, TEXT_HTML, m ->
 		{
-				assertEquals("text/html; charset="+DEFAULT_CHARSET, m.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_HTML) + TEXT_APPENDIX, m.getContent());
-				assertEquals(null, m.getDisposition());
+			assertEquals("text/html; charset=" + DEFAULT_CHARSET, m.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_HTML) + TEXT_APPENDIX, m.getContent());
+			assertEquals(null, m.getDisposition());
 		});
 		mh.specialMessageID = true;
-		final MockMail ma  = new MockMail("ma", user1.email, TEXT_PLAIN, TEXT_HTML, m ->
+		final MockMail ma = new MockMail("ma", user1.email, TEXT_PLAIN, TEXT_HTML, m ->
 		{
-				assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
-				final MimeMultipart multipart = (MimeMultipart)m.getContent();
-				{
-					final BodyPart textBody = multipart.getBodyPart(0);
-					assertEquals("text/plain; charset="+DEFAULT_CHARSET, textBody.getContentType());
-					assertEquals(replaceNewlines(TEXT_PLAIN), textBody.getContent());
-					assertEquals(Part.INLINE, textBody.getDisposition());
-				}
-				{
-					final BodyPart htmlBody = multipart.getBodyPart(1);
-					assertEquals("text/html; charset="+DEFAULT_CHARSET, htmlBody.getContentType());
-					assertEquals(replaceNewlines(TEXT_HTML), htmlBody.getContent());
-					assertEquals(Part.INLINE, htmlBody.getDisposition());
-				}
-				assertEquals(2, multipart.getCount());
+			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
+			final MimeMultipart multipart = (MimeMultipart) m.getContent();
+			{
+				final BodyPart textBody = multipart.getBodyPart(0);
+				assertEquals("text/plain; charset=" + DEFAULT_CHARSET, textBody.getContentType());
+				assertEquals(replaceNewlines(TEXT_PLAIN), textBody.getContent());
+				assertEquals(Part.INLINE, textBody.getDisposition());
+			}
+			{
+				final BodyPart htmlBody = multipart.getBodyPart(1);
+				assertEquals("text/html; charset=" + DEFAULT_CHARSET, htmlBody.getContentType());
+				assertEquals(replaceNewlines(TEXT_HTML), htmlBody.getContent());
+				assertEquals(Part.INLINE, htmlBody.getDisposition());
+			}
+			assertEquals(2, multipart.getCount());
 		});
-		final MockMail ma2  = new MockMail("ma2", user1.email, TEXT_PLAIN_ISO, TEXT_HTML_ISO, "ISO-8859-1", m ->
+		final MockMail ma2 = new MockMail("ma2", user1.email, TEXT_PLAIN_ISO, TEXT_HTML_ISO, "ISO-8859-1", m ->
 		{
-				assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
-				final MimeMultipart multipart = (MimeMultipart)m.getContent();
-				{
-					final BodyPart textBody = multipart.getBodyPart(0);
-					assertEquals("text/plain; charset=ISO-8859-1", textBody.getContentType());
-					assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO), textBody.getContent());
-					assertEquals(Part.INLINE, textBody.getDisposition());
-				}
-				{
-					final BodyPart htmlBody = multipart.getBodyPart(1);
-					assertEquals("text/html; charset=ISO-8859-1", htmlBody.getContentType());
-					assertEqualsHex(replaceNewlines(TEXT_HTML_ISO), htmlBody.getContent());
-					assertEquals(Part.INLINE, htmlBody.getDisposition());
-				}
-				assertEquals(2, multipart.getCount());
+			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
+			final MimeMultipart multipart = (MimeMultipart) m.getContent();
+			{
+				final BodyPart textBody = multipart.getBodyPart(0);
+				assertEquals("text/plain; charset=ISO-8859-1", textBody.getContentType());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO), textBody.getContent());
+				assertEquals(Part.INLINE, textBody.getDisposition());
+			}
+			{
+				final BodyPart htmlBody = multipart.getBodyPart(1);
+				assertEquals("text/html; charset=ISO-8859-1", htmlBody.getContentType());
+				assertEqualsHex(replaceNewlines(TEXT_HTML_ISO), htmlBody.getContent());
+				assertEquals(Part.INLINE, htmlBody.getDisposition());
+			}
+			assertEquals(2, multipart.getCount());
 		});
 		final MockMail mpa = new MockMail("mpa", user1.email, TEXT_PLAIN,
 				//new MockDataSource(MailSenderTest.class, "hallo1.class", "application/java-vm"));
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), m ->
+		{
+			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
+			final MimeMultipart multipart = (MimeMultipart) m.getContent();
+			final BodyPart mainBody = multipart.getBodyPart(0);
+			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, mainBody.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_PLAIN), mainBody.getContent());
+			assertEquals(Part.INLINE, mainBody.getDisposition());
 			{
-				assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
-				final MimeMultipart multipart = (MimeMultipart)m.getContent();
-				final BodyPart mainBody = multipart.getBodyPart(0);
-				assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainBody.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_PLAIN), mainBody.getContent());
-				assertEquals(Part.INLINE, mainBody.getDisposition());
-				{
-					final BodyPart attachBody = multipart.getBodyPart(1);
-					assertEquals("osorno.png", attachBody.getFileName());
-					assertEquals("image/png; name=osorno.png", attachBody.getContentType());
-					assertArrayEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
-					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
-				}
-				assertEquals(2, multipart.getCount());
-			});
-		final MockMail mha = new MockMail("mha", user1.email, (String)null, TEXT_HTML,
+				final BodyPart attachBody = multipart.getBodyPart(1);
+				assertEquals("osorno.png", attachBody.getFileName());
+				assertEquals("image/png; name=osorno.png", attachBody.getContentType());
+				assertArrayEquals(bytes("osorno.png"), bytes((InputStream) attachBody.getContent()));
+				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
+			}
+			assertEquals(2, multipart.getCount());
+		});
+		final MockMail mha = new MockMail("mha", user1.email, (String) null, TEXT_HTML,
 				//new MockDataSource(PackageTest.class, "hallo21.zick", "application/java-vm"),
 				//new MockDataSource(CascadingMailSourceTest.class, "hallo22.zock", "application/java-vm"));
 				new MockURLDataSource("tree.jpg", null, "image/jpeg"),
 				new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain"), m ->
+		{
+			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
+			final MimeMultipart multipart = (MimeMultipart) m.getContent();
+			final BodyPart mainBody = multipart.getBodyPart(0);
+			assertEquals("text/html; charset=" + DEFAULT_CHARSET, mainBody.getContentType());
+			assertEqualsHex(replaceNewlines(TEXT_HTML), mainBody.getContent());
+			assertEquals(Part.INLINE, mainBody.getDisposition());
 			{
-				assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
-				final MimeMultipart multipart = (MimeMultipart)m.getContent();
-				final BodyPart mainBody = multipart.getBodyPart(0);
-				assertEquals("text/html; charset="+DEFAULT_CHARSET, mainBody.getContentType());
-				assertEqualsHex(replaceNewlines(TEXT_HTML), mainBody.getContent());
-				assertEquals(Part.INLINE, mainBody.getDisposition());
-				{
-					final BodyPart attachBody = multipart.getBodyPart(1);
-					assertEquals(null, attachBody.getFileName());
-					assertEquals("image/jpeg", attachBody.getContentType());
-					assertArrayEquals(bytes("tree.jpg"), bytes((InputStream)attachBody.getContent()));
-					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
-				}
-				{
-					final BodyPart attachBody = multipart.getBodyPart(2);
-					assertEquals("dummyname.txt", attachBody.getFileName());
-					assertEquals("text/plain; charset=us-ascii; name=dummyname.txt", attachBody.getContentType());
-					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
-					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
-				}
-				assertEquals(3, multipart.getCount());
-			});
+				final BodyPart attachBody = multipart.getBodyPart(1);
+				assertEquals(null, attachBody.getFileName());
+				assertEquals("image/jpeg", attachBody.getContentType());
+				assertArrayEquals(bytes("tree.jpg"), bytes((InputStream) attachBody.getContent()));
+				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
+			}
+			{
+				final BodyPart attachBody = multipart.getBodyPart(2);
+				assertEquals("dummyname.txt", attachBody.getFileName());
+				assertEquals("text/plain; charset=us-ascii; name=dummyname.txt", attachBody.getContentType());
+				assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String) attachBody.getContent());
+				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
+			}
+			assertEquals(3, multipart.getCount());
+		});
 		final MockMail maa = new MockMail("maa", user1.email, TEXT_PLAIN, TEXT_HTML,
 				new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"),
 				new MockURLDataSource("osorno.png", "osorno.png", "image/png"), m ->
+		{
+			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
+			final MimeMultipart multipart = (MimeMultipart) m.getContent();
+			final MimeMultipart mainPart = (MimeMultipart) ((MimeBodyPart) multipart.getBodyPart(0)).getContent();
+			assertTrue(mainPart.getContentType().startsWith("multipart/alternative;"), mainPart.getContentType());
 			{
-				assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
-				final MimeMultipart multipart = (MimeMultipart)m.getContent();
-				final MimeMultipart mainPart = (MimeMultipart)((MimeBodyPart)multipart.getBodyPart(0)).getContent();
-				assertTrue(mainPart.getContentType().startsWith("multipart/alternative;"), mainPart.getContentType());
-				{
-					final BodyPart mainText = mainPart.getBodyPart(0);
-					assertEquals("text/plain; charset="+DEFAULT_CHARSET, mainText.getContentType());
-					assertEqualsHex(replaceNewlines(TEXT_PLAIN), mainText.getContent());
-					assertEquals(Part.INLINE, mainText.getDisposition());
-				}
-				{
-					final BodyPart mainHtml = mainPart.getBodyPart(1);
-					assertEquals("text/html; charset="+DEFAULT_CHARSET, mainHtml.getContentType());
-					assertEqualsHex(replaceNewlines(TEXT_HTML), mainHtml.getContent());
-					assertEquals(Part.INLINE, mainHtml.getDisposition());
-				}
-				assertEquals(2, mainPart.getCount());
-				{
-					final BodyPart attachBody = multipart.getBodyPart(1);
-					assertEquals("dummy.txt", attachBody.getFileName());
-					assertEquals("text/plain; charset=us-ascii; name=dummy.txt", attachBody.getContentType());
-					assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String)attachBody.getContent());
-					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
-				}
-				{
-					final BodyPart attachBody = multipart.getBodyPart(2);
-					assertEquals("osorno.png", attachBody.getFileName());
-					assertEquals("image/png; name=osorno.png", attachBody.getContentType());
-					assertArrayEquals(bytes("osorno.png"), bytes((InputStream)attachBody.getContent()));
-					assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
-				}
-				assertEquals(3, multipart.getCount());
-			});
+				final BodyPart mainText = mainPart.getBodyPart(0);
+				assertEquals("text/plain; charset=" + DEFAULT_CHARSET, mainText.getContentType());
+				assertEqualsHex(replaceNewlines(TEXT_PLAIN), mainText.getContent());
+				assertEquals(Part.INLINE, mainText.getDisposition());
+			}
+			{
+				final BodyPart mainHtml = mainPart.getBodyPart(1);
+				assertEquals("text/html; charset=" + DEFAULT_CHARSET, mainHtml.getContentType());
+				assertEqualsHex(replaceNewlines(TEXT_HTML), mainHtml.getContent());
+				assertEquals(Part.INLINE, mainHtml.getDisposition());
+			}
+			assertEquals(2, mainPart.getCount());
+			{
+				final BodyPart attachBody = multipart.getBodyPart(1);
+				assertEquals("dummy.txt", attachBody.getFileName());
+				assertEquals("text/plain; charset=us-ascii; name=dummy.txt", attachBody.getContentType());
+				assertEquals("This is an example file\r\nfor testing attachments\r\nin sendmail.\r\n", (String) attachBody.getContent());
+				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
+			}
+			{
+				final BodyPart attachBody = multipart.getBodyPart(2);
+				assertEquals("osorno.png", attachBody.getFileName());
+				assertEquals("image/png; name=osorno.png", attachBody.getContentType());
+				assertArrayEquals(bytes("osorno.png"), bytes((InputStream) attachBody.getContent()));
+				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
+			}
+			assertEquals(3, multipart.getCount());
+		});
 
 		@SuppressWarnings("deprecation") // OK: testing MailSource API
 		final MailSource p = new MailSource()
@@ -834,20 +821,20 @@ public class MailSenderTest extends SendmailTest
 		boolean complete1 = false;
 		boolean complete2 = false;
 		boolean complete3 = false;
-		for(int i = 0; i<30; i++)
+		for(int i = 0; i < 30; i++)
 		{
 			//noinspection BusyWait OK: just a test
 			Thread.sleep(1000);
 			if(countDebug)
 			{
 				System.out.println();
-				System.out.print("---------"+i+"--");
+				System.out.print("---------" + i + "--");
 			}
 			//noinspection ConstantConditions
 			if(
-					(complete1 || (complete1=countPOP3(user1, 5))) &&
-					(complete2 || (complete2=countPOP3(user2, 4))) &&
-					(complete3 || (complete3=countPOP3(user3, 3))) )
+					(complete1 || (complete1 = countPOP3(user1, 5))) &&
+					(complete2 || (complete2 = countPOP3(user2, 4))) &&
+					(complete3 || (complete3 = countPOP3(user3, 3))))
 			{
 				break;
 			}
@@ -860,50 +847,97 @@ public class MailSenderTest extends SendmailTest
 		assertPOP3(user3, x13, x14, x23);
 	}
 
-	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
-	static Stream<Arguments> parameters()
+	@Test
+	void testUnknownRecipient() throws InterruptedException, MessagingException, IOException
 	{
-		final Collection<Arguments> parameters = new ArrayList<>();
-		parameters.add(new ArgumentsBuilder().testName("Unknown recipient").to(fail).textPlain("text for failure test mail").exceptionChecker(e -> {
+		new ArgumentsBuilder().to(fail).textPlain("text for failure test mail").exceptionChecker(e -> {
 			final String fm1 = e.getMessage();
 			assertEquals("Invalid Addresses", fm1);
 			final String fm1n = e.getCause().getMessage();
 			assertTrue(fm1n.contains(fail), fm1n + "--------" + fail);
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("No recipients").exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text to user1 and user2").to(user1.email, user2.email).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testNoRecipients() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).execute();
+	}
+
+
+	@Test
+	void testPlainTextToUser1AndUser2() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email, user2.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text to user1 and user3").cc(user1.email, user3.email).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextToUser1AndUser3() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().cc(user1.email, user3.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text to user1 and user3 with charset ISO-8859-1").cc(user1.email, user3.email).textPlain(TEXT_PLAIN_ISO).charset("ISO-8859-1").mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextToUser1AndUser3WithISOCharset() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().cc(user1.email, user3.email).textPlain(TEXT_PLAIN_ISO).charset("ISO-8859-1").mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=ISO-8859-1", m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN_ISO) + TEXT_APPENDIX, m.getContent());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text to user2 and user3").bcc(user2.email, user3.email).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextToUser2AndUser3() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().bcc(user2.email, user3.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text to user1").to(user1.email).textPlain(TEXT_PLAIN).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextToUser1() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).mailChecker(m ->
 		{
 			assertEquals("text/plain; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 			assertEquals(null, m.getDisposition());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("HTML to user1 with special messageID").id("mh").to(user1.email).textHtml(TEXT_HTML).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testHTMLToUser1WithSpecialMessageID() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().id("mh").to(user1.email).textHtml(TEXT_HTML).mailChecker(m ->
 		{
 			assertEquals("text/html; charset=" + DEFAULT_CHARSET, m.getContentType());
 			assertEqualsHex(replaceNewlines(TEXT_HTML) + TEXT_APPENDIX, m.getContent());
 			assertEquals(null, m.getDisposition());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain text and HTML to user1").to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextAndHTMLToUser1() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -920,8 +954,14 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.INLINE, htmlBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain text and HTML to user1 with charset ISO-8859-1").to(user1.email).textPlain(TEXT_PLAIN_ISO).textHtml(TEXT_HTML_ISO).charset("ISO-8859-1").mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextAndHTMLToUser1WithISOCharset() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN_ISO).textHtml(TEXT_HTML_ISO).charset("ISO-8859-1").mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/alternative;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -938,8 +978,14 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.INLINE, htmlBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text and one attachment to user1").to(user1.email).textPlain(TEXT_PLAIN).attachments(new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextAndOneAttachmentToUser1() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).attachments(new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -955,8 +1001,14 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(2, multipart.getCount());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("HTML with two attachments to user1").to(user1.email).textHtml(TEXT_HTML).attachments(new MockURLDataSource("tree.jpg", null, "image/jpeg"), new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain")).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testHTMLWithTwoAttachmentsToUser1() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textHtml(TEXT_HTML).attachments(new MockURLDataSource("tree.jpg", null, "image/jpeg"), new MockURLDataSource("dummy.txt", "dummyname.txt", "text/plain")).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -979,8 +1031,14 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(3, multipart.getCount());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain text and HTML with two attachments to user1").to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).attachments(new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"), new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
+		}).execute();
+	}
+
+
+	@Test
+	void testPlainTextAndHTMLWithTwoAttachmentsToUser1() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).attachments(new MockURLDataSource("dummy.txt", "dummy.txt", "text/plain"), new MockURLDataSource("osorno.png", "osorno.png", "image/png")).mailChecker(m ->
 		{
 			assertTrue(m.getContentType().startsWith("multipart/mixed;"), m.getContentType());
 			final MimeMultipart multipart = (MimeMultipart) m.getContent();
@@ -1014,34 +1072,36 @@ public class MailSenderTest extends SendmailTest
 				assertEquals(Part.ATTACHMENT, attachBody.getDisposition());
 			}
 			assertEquals(3, multipart.getCount());
-		}).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text and HTML w/o REPLY-TO Header to user1").to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).mailChecker(MailChecker.CHECK_NOTHING).build());
-		parameters.add(new ArgumentsBuilder().testName("Plain Text and HTML with REPLY-TO Header to user1").to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MailChecker.CHECK_NOTHING).build());
-		return parameters.stream();
+		}).execute();
 	}
 
-	@ParameterizedTest(name="testSendMailData: {0}")
-	@MethodSource("parameters")
-	public void testSendMailData(final String testName,
-										  final String subject,
-										  final String[] to,
-										  final String[] carbonCopy,
-										  final String[] blindCarbonCopy,
-										  final String[] replyTo,
-										  final String messageID,
-										  final Date date,
-										  final String textPlain,
-										  final String textHtml,
-										  final DataSource[] attachments,
-										  final String charset,
-										  final String contentTransferEncoding,
-										  final MailChecker mailChecker,
-										  final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
+
+	@Test
+	void testPlainTextAndHTMLWithREPLYTOHeaderToUser1() throws InterruptedException, MessagingException, IOException
+	{
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MailChecker.CHECK_NOTHING).execute();
+	}
+
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
+	private void sendAndTest(final String subject,
+									 final String[] to,
+									 final String[] carbonCopy,
+									 final String[] blindCarbonCopy,
+									 final String[] replyTo,
+									 final String messageID,
+									 final Date date,
+									 final String textPlain,
+									 final String textHtml,
+									 final DataSource[] attachments,
+									 final String charset,
+									 final String contentTransferEncoding,
+									 final MailChecker mailChecker,
+									 final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
 		final boolean erroneous = (to == null && carbonCopy == null && blindCarbonCopy == null) ||
-										 (to != null && Arrays.stream(to).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s))) ||
-										 (carbonCopy != null && Arrays.stream(carbonCopy).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s))) ||
-										 (blindCarbonCopy != null && Arrays.stream(blindCarbonCopy).anyMatch(s -> !user1.email.equals(s) && !user2.email.equals(s) && !user3.email.equals(s)));
+										  (to != null && Arrays.stream(to).anyMatch(s -> ! user1.email.equals(s) && ! user2.email.equals(s) && ! user3.email.equals(s))) ||
+										  (carbonCopy != null && Arrays.stream(carbonCopy).anyMatch(s -> ! user1.email.equals(s) && ! user2.email.equals(s) && ! user3.email.equals(s))) ||
+										  (blindCarbonCopy != null && Arrays.stream(blindCarbonCopy).anyMatch(s -> ! user1.email.equals(s) && ! user2.email.equals(s) && ! user3.email.equals(s)));
 		final MailData mailData = getMailData(subject,
 				from,
 				to,
@@ -1058,14 +1118,14 @@ public class MailSenderTest extends SendmailTest
 		try
 		{
 			sendMail(mailData);
-			if (erroneous)
+			if(erroneous)
 			{
 				fail("Exception should have been thrown.");
 			}
 		}
 		catch(final Exception e)
 		{
-			if (!erroneous)
+			if(! erroneous)
 			{
 				fail("Exception " + e.getClass().getSimpleName() + " was not expected");
 			}
@@ -1082,7 +1142,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		if(carbonCopy != null)
 		{
-			if (stream == null)
+			if(stream == null)
 			{
 				stream = Arrays.stream(carbonCopy);
 			}
@@ -1093,7 +1153,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		if(blindCarbonCopy != null)
 		{
-			if (stream == null)
+			if(stream == null)
 			{
 				stream = Arrays.stream(blindCarbonCopy);
 			}
@@ -1107,20 +1167,20 @@ public class MailSenderTest extends SendmailTest
 						user2.email.equals(s) ? user2 :
 								user3.email.equals(s) ? user3 : null
 		).filter(Objects::nonNull).collect(Collectors.toSet()) : Collections.emptySet();
-		for(int i = 0; i<30; i++)
+		for(int i = 0; i < 30; i++)
 		{
 			//noinspection BusyWait OK: just a test
 			Thread.sleep(1000);
 			if(countDebug)
 			{
 				System.out.println();
-				System.out.print("---------"+i+"--");
+				System.out.print("---------" + i + "--");
 			}
 			//noinspection ConstantConditions,NestedAssignment
 			if(
-					(complete1 || (complete1=countPOP3(user1, accounts.contains(user1) ? 1 : 0))) &&
-					(complete2 || (complete2=countPOP3(user2, accounts.contains(user2) ? 1 : 0))) &&
-					(complete3 || (complete3=countPOP3(user3, accounts.contains(user3) ? 1 : 0))) )
+					(complete1 || (complete1 = countPOP3(user1, accounts.contains(user1) ? 1 : 0))) &&
+					(complete2 || (complete2 = countPOP3(user2, accounts.contains(user2) ? 1 : 0))) &&
+					(complete3 || (complete3 = countPOP3(user3, accounts.contains(user3) ? 1 : 0))))
 			{
 				break;
 			}
@@ -1128,7 +1188,7 @@ public class MailSenderTest extends SendmailTest
 		if(countDebug)
 			System.out.println();
 
-		if (accounts.contains(user1))
+		if(accounts.contains(user1))
 		{
 			assertPOP3(user1, subject,
 					from,
@@ -1143,7 +1203,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			assertEmptyPOP3(user1);
 		}
-		if (accounts.contains(user2))
+		if(accounts.contains(user2))
 		{
 			assertPOP3(user2, subject,
 					from,
@@ -1158,7 +1218,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			assertEmptyPOP3(user2);
 		}
-		if (accounts.contains(user3))
+		if(accounts.contains(user3))
 		{
 			assertPOP3(user3, subject,
 					from,
@@ -1190,38 +1250,39 @@ public class MailSenderTest extends SendmailTest
 													final String contentTransferEncoding) throws MessagingException
 	{
 		final MailData message = new MailData(from, subject);
-		if(id!=null)
+		if(id != null)
 			message.setMessageID(id);
-		if(replyTo!=null)
+		if(replyTo != null)
 			message.setReplyTo(replyTo);
-		if(to!=null)
+		if(to != null)
 			message.setTo(to);
-		if(carbonCopy!=null)
+		if(carbonCopy != null)
 			message.setCarbonCopy(carbonCopy);
-		if(blindCarbonCopy!=null)
+		if(blindCarbonCopy != null)
 			message.setBlindCarbonCopy(blindCarbonCopy);
 		message.setDate(date);
-		if(textPlain!=null)
+		if(textPlain != null)
 			message.setTextPlain(textPlain);
-		if(textHtml!=null)
+		if(textHtml != null)
 			message.setTextHtml(textHtml);
-		if(attachments!=null)
+		if(attachments != null)
 			message.setAttachments(attachments);
-		if(charset!=null)
+		if(charset != null)
 			message.setCharset(charset);
-		if(contentTransferEncoding!=null)
+		if(contentTransferEncoding != null)
 			message.setContentTransferEncoding(contentTransferEncoding);
 		return message;
 	}
 
 	private static final String DEFAULT_CHARSET = "UTF-8";
 
-	private void assertPOP3(final Account account, final MockMail... expectedMails) throws IOException, MessagingException
+	private void assertPOP3(final Account account,
+									final MockMail... expectedMails) throws IOException, MessagingException
 	{
 		final TreeMap<String, MockMail> expectedMessages = new TreeMap<>();
 		for(final MockMail m : expectedMails)
 		{
-			if(expectedMessages.put(m.getSubject(), m)!=null)
+			if(expectedMessages.put(m.getSubject(), m) != null)
 				throw new RuntimeException(m.getSubject());
 		}
 
@@ -1236,7 +1297,7 @@ public class MailSenderTest extends SendmailTest
 			final TreeMap<String, Message> actualMessages = new TreeMap<>();
 			for(final Message m : inboxMessages)
 			{
-				if(actualMessages.put(m.getSubject(), m)!=null)
+				if(actualMessages.put(m.getSubject(), m) != null)
 					throw new RuntimeException(m.getSubject());
 			}
 
@@ -1244,19 +1305,19 @@ public class MailSenderTest extends SendmailTest
 			for(final Message m : actualMessages.values())
 			{
 				final String subjectPart = m.getSubject().substring(
-					m.getSubject().indexOf(" (("), m.getSubject().indexOf("))")+2
+						m.getSubject().indexOf(" (("), m.getSubject().indexOf("))") + 2
 				);
-				if ( subjectPart.startsWith(" ((utf") )
+				if(subjectPart.startsWith(" ((utf"))
 				{
 					assertEquals(NON_ASCII_TEXT, subjectPart, m.getSubject());
 				}
-				else if ( subjectPart.startsWith(" ((iso") )
+				else if(subjectPart.startsWith(" ((iso"))
 				{
 					assertEquals(NON_ASCII_TEXT_ISO, subjectPart, m.getSubject());
 				}
 				else
 				{
-					fail( m.getSubject() );
+					fail(m.getSubject());
 				}
 			}
 
@@ -1280,7 +1341,7 @@ public class MailSenderTest extends SendmailTest
 					assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
 				assertNotNull(m.getHeader("Date"), message);
 				assertEquals(1, m.getHeader("Date").length, message);
-				assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(expected.getDate()), m.getHeader("Date")[0], message);
+				assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale("en"))).format(expected.getDate()), m.getHeader("Date")[0], message);
 				expected.checkBody(m);
 			}
 			assertEquals(expectedMails.length, inboxMessages.length, account.pop3User);
@@ -1290,7 +1351,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		finally
 		{
-			if (inboxFolder != null)
+			if(inboxFolder != null)
 				inboxFolder.close(false);
 		}
 	}
@@ -1317,7 +1378,7 @@ public class MailSenderTest extends SendmailTest
 			final TreeMap<String, Message> actualMessages = new TreeMap<>();
 			for(final Message m : inboxMessages)
 			{
-				if(actualMessages.put(m.getSubject(), m)!=null)
+				if(actualMessages.put(m.getSubject(), m) != null)
 					throw new RuntimeException(m.getSubject());
 			}
 
@@ -1325,19 +1386,19 @@ public class MailSenderTest extends SendmailTest
 			for(final Message m : actualMessages.values())
 			{
 				final String subjectPart = m.getSubject().substring(
-						m.getSubject().indexOf(" (("), m.getSubject().indexOf("))")+2
+						m.getSubject().indexOf(" (("), m.getSubject().indexOf("))") + 2
 				);
-				if ( subjectPart.startsWith(" ((utf") )
+				if(subjectPart.startsWith(" ((utf"))
 				{
 					assertEquals(NON_ASCII_TEXT, subjectPart, m.getSubject());
 				}
-				else if ( subjectPart.startsWith(" ((iso") )
+				else if(subjectPart.startsWith(" ((iso"))
 				{
 					assertEquals(NON_ASCII_TEXT_ISO, subjectPart, m.getSubject());
 				}
 				else
 				{
-					fail( m.getSubject() );
+					fail(m.getSubject());
 				}
 			}
 
@@ -1357,9 +1418,9 @@ public class MailSenderTest extends SendmailTest
 				assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
 			assertNotNull(m.getHeader("Date"), message);
 			assertEquals(1, m.getHeader("Date").length, message);
-			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale ("en"))).format(date), m.getHeader("Date")[0], message);
+			assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale("en"))).format(date), m.getHeader("Date")[0], message);
 			final String[] replyToHeader = m.getHeader("Reply-To");
-			if (replyTo == null)
+			if(replyTo == null)
 			{
 				assertNull(replyToHeader, message);
 			}
@@ -1376,7 +1437,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		finally
 		{
-			if (inboxFolder != null)
+			if(inboxFolder != null)
 				inboxFolder.close(false);
 		}
 	}
@@ -1396,7 +1457,7 @@ public class MailSenderTest extends SendmailTest
 		}
 		finally
 		{
-			if (inboxFolder != null)
+			if(inboxFolder != null)
 				inboxFolder.close(false);
 		}
 	}
@@ -1412,15 +1473,15 @@ public class MailSenderTest extends SendmailTest
 			final int inboxMessages = inboxFolder.getMessageCount();
 
 			if(countDebug)
-				System.out.print(" "+account.pop3User+":"+inboxMessages+"/"+expected);
+				System.out.print(" " + account.pop3User + ":" + inboxMessages + "/" + expected);
 
 			inboxFolder.close(false);
 			inboxFolder = null;
-			return inboxMessages>=expected;
+			return inboxMessages >= expected;
 		}
 		finally
 		{
-			if (inboxFolder != null)
+			if(inboxFolder != null)
 				inboxFolder.close(false);
 		}
 	}
@@ -1435,7 +1496,7 @@ public class MailSenderTest extends SendmailTest
 		final byte[] buf = new byte[1024];
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			for(int len = in.read(buf); len>=0; len = in.read(buf))
+			for(int len = in.read(buf); len >= 0; len = in.read(buf))
 				baos.write(buf, 0, len);
 			return baos.toByteArray();
 		}
@@ -1447,7 +1508,7 @@ public class MailSenderTest extends SendmailTest
 
 	protected static final ArrayList<InternetAddress> addressList(final String[] addresses) throws MessagingException
 	{
-		if(addresses==null)
+		if(addresses == null)
 			return null;
 
 		final ArrayList<InternetAddress> result = new ArrayList<>(addresses.length);
@@ -1458,7 +1519,7 @@ public class MailSenderTest extends SendmailTest
 
 	protected static final List<Address> addressList(final Address[] addresses)
 	{
-		if(addresses==null)
+		if(addresses == null)
 			return null;
 
 		return Arrays.asList(addresses);
@@ -1467,13 +1528,13 @@ public class MailSenderTest extends SendmailTest
 	static String replaceNewlines(final String s)
 	{
 		final int pos = s.indexOf(NEWLINES);
-		assertTrue(pos>0);
-		return s.substring(0, pos) + NEWLINES_RECEIVE + s.substring(pos+NEWLINES.length());
+		assertTrue(pos > 0);
+		return s.substring(0, pos) + NEWLINES_RECEIVE + s.substring(pos + NEWLINES.length());
 	}
 
 	static void assertEqualsHex(final String expected, final Object actual)
 	{
-		final String actualString = (String)actual;
+		final String actualString = (String) actual;
 		assertEquals(
 				expected, actualString, "\n" + Hex.encodeLower(expected.getBytes(UTF_8)) +
 												'\n' + Hex.encodeLower(actualString.getBytes(UTF_8))
