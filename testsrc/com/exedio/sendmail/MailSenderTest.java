@@ -64,7 +64,6 @@ public class MailSenderTest extends SendmailTest
 	private Account user3;
 
 	private String fail;
-	private String failclose;
 	String timeStamp;
 
 	private static final boolean countDebug = false;
@@ -77,7 +76,6 @@ public class MailSenderTest extends SendmailTest
 		user3 = new Account("user3");
 
 		fail=System.getProperty("fail");
-		failclose=System.getProperty("failclose");
 
 		cleanPOP3Account(user1);
 		cleanPOP3Account(user2);
@@ -443,7 +441,6 @@ public class MailSenderTest extends SendmailTest
 	{
 		final MockMail f1  = new MockMail("f1", fail, "text for failure test mail", actual -> fail("should not be sent"));
 		final MockMail f2  = new MockMail("f2", (String)null, null, actual -> fail("should not be sent"));
-		final MockMail f3  = new MockMail("f3", failclose, "text for failure test mail closing the connection", actual -> fail("should not be sent"));
 		final MockMail x12 = new MockMail("x12", new String[]{user1.email, user2.email}, null, null, TEXT_PLAIN, m ->
 		{
 				assertEquals("text/plain; charset="+DEFAULT_CHARSET, m.getContentType());
@@ -619,7 +616,6 @@ public class MailSenderTest extends SendmailTest
 				result.add(ma);
 				result.add(ma2);
 				result.add(x12);
-				result.add(f3);
 				result.add(x13);
 				result.add(x14);
 				result.add(x23);
@@ -649,13 +645,6 @@ public class MailSenderTest extends SendmailTest
 		assertEquals(NullPointerException.class, f2.failedException.getClass());
 		assertEquals(0, f2.sentCounter);
 		assertEquals(1, f2.failedCounter);
-
-		final String fm3 = f3.failedException.getMessage();
-		assertEquals("Invalid Addresses", fm3);
-		final String fm3n = f3.failedException.getCause().getMessage();
-		assertTrue(fm3n.contains(failclose), fm3n + "--------" + failclose);
-		assertEquals(0, f3.sentCounter);
-		assertEquals(1, f3.failedCounter);
 
 		assertEquals(null, mh.failedException);
 		assertEquals(1, mh.sentCounter);
