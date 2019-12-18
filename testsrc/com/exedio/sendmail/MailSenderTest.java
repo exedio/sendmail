@@ -1367,10 +1367,9 @@ public class MailSenderTest extends SendmailTest
 									final MailChecker mailChecker) throws IOException, MessagingException
 	{
 		final Session session = getPOP3Session(account);
-		Folder inboxFolder = null;
 		try(final Store store = getPOP3Store(session, account))
 		{
-			inboxFolder = getInboxFolder(store);
+			final Folder inboxFolder = getInboxFolder(store);
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			assertEquals(1, inboxMessages.length, account.pop3User);
@@ -1433,12 +1432,6 @@ public class MailSenderTest extends SendmailTest
 			mailChecker.checkBody(m);
 
 			inboxFolder.close(false);
-			inboxFolder = null;
-		}
-		finally
-		{
-			if(inboxFolder != null)
-				inboxFolder.close(false);
 		}
 	}
 
