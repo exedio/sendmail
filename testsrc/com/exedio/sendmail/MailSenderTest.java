@@ -125,7 +125,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String) null, (DataSource[]) null, null, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
 
 		MockMail(
@@ -135,7 +135,7 @@ public class MailSenderTest extends SendmailTest
 				final String textHtml,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[]) null, null, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, null, checker);
 		}
 
 		MockMail(
@@ -146,7 +146,7 @@ public class MailSenderTest extends SendmailTest
 				final String charset,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[]) null, charset, checker);
+			this(id, ta(to), null, null, textPlain, textHtml, (DataSource[])null, charset, checker);
 		}
 
 		MockMail(
@@ -157,7 +157,7 @@ public class MailSenderTest extends SendmailTest
 				final String textPlain,
 				final MailChecker checker)
 		{
-			this(id, to, cc, bcc, textPlain, (String) null, (DataSource[]) null, null, checker);
+			this(id, to, cc, bcc, textPlain, (String)null, (DataSource[])null, null, checker);
 		}
 
 		MockMail(
@@ -167,7 +167,7 @@ public class MailSenderTest extends SendmailTest
 				final DataSource attachment,
 				final MailChecker checker)
 		{
-			this(id, ta(to), null, null, textPlain, (String) null, new DataSource[]{attachment}, null, checker);
+			this(id, ta(to), null, null, textPlain, (String)null, new DataSource[]{attachment}, null, checker);
 		}
 
 		MockMail(
