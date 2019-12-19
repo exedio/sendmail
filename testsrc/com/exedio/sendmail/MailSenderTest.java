@@ -95,8 +95,13 @@ public class MailSenderTest extends SendmailTest
 		cleanPOP3Account(user3);
 	}
 
+	public static final String[] ta(final String s)
+	{
+		return s==null ? null : new String[]{s};
+	}
+
 	@SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK: just a test
-	private static final class MockMail implements Mail
+	private final class MockMail implements Mail
 	{
 		private final MailChecker checker;
 		private final String id;
@@ -205,11 +210,6 @@ public class MailSenderTest extends SendmailTest
 			this.attachments = attachments;
 			this.charset = charset;
 			this.timestamp = System.currentTimeMillis();
-		}
-
-		private static String[] ta(final String s)
-		{
-			return s == null ? null : new String[]{s};
 		}
 
 		@Override
