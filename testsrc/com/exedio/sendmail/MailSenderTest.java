@@ -56,43 +56,38 @@ import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-@SuppressWarnings({"HardcodedLineSeparator", "RedundantCast", "StaticVariableMayNotBeInitialized"}) // OK: just a test
+@SuppressWarnings({"HardcodedLineSeparator", "RedundantCast"}) // OK: just a test
 public class MailSenderTest extends SendmailTest
 {
 
-	private static Account user1;
-	private static Account user2;
-	private static Account user3;
+	private Account user1;
+	private Account user2;
+	private Account user3;
 
-	private static String fail;
-	private static String timeStamp;
+	private String fail;
+	String timeStamp;
 
 	private static final boolean countDebug = false;
 
-	@BeforeAll
-	static void setUpStatic()
+	@BeforeEach
+	public void setUp() throws Exception
 	{
 		user1 = new Account("user1");
 		user2 = new Account("user2");
 		user3 = new Account("user3");
 
-		fail = System.getProperty("fail");
+		fail=System.getProperty("fail");
 
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", Locale.ENGLISH);
-		timeStamp = df.format(new Date());
-	}
-
-	@BeforeEach
-	void setUp() throws Exception
-	{
 		cleanPOP3Account(user1);
 		cleanPOP3Account(user2);
 		cleanPOP3Account(user3);
+
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", Locale.ENGLISH);
+		timeStamp = df.format(new Date());
 	}
 
 	public static final String[] ta(final String s)
