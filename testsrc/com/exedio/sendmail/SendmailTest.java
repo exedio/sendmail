@@ -121,8 +121,8 @@ public class SendmailTest
 	protected final void cleanPOP3Account(final Account account) throws MessagingException
 	{
 		final Session session = getPOP3Session(account);
-		try (final Store store=getPOP3Store(session, account);
-			  final Folder inboxFolder =getInboxFolder(store))
+		try (final Store store = getPOP3Store(session, account);
+			  final Folder inboxFolder = getInboxFolder(store))
 		{
 			inboxFolder.open(Folder.READ_WRITE);
 			final Message[] inboxMessages = inboxFolder.getMessages();
