@@ -1281,10 +1281,10 @@ public class MailSenderTest extends SendmailTest
 		}
 
 		final Session session = getPOP3Session(account);
-		Folder inboxFolder = null;
-		try(final Store store = getPOP3Store(session, account))
+		try(final Store store = getPOP3Store(session, account);
+			 final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, false))
 		{
-			inboxFolder = getInboxFolder(store);
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 
@@ -1339,14 +1339,6 @@ public class MailSenderTest extends SendmailTest
 				expected.checkBody(m);
 			}
 			assertEquals(expectedMails.length, inboxMessages.length, account.pop3User);
-
-			inboxFolder.close(false);
-			inboxFolder = null;
-		}
-		finally
-		{
-			if (inboxFolder != null)
-				inboxFolder.close(false);
 		}
 	}
 
@@ -1361,9 +1353,10 @@ public class MailSenderTest extends SendmailTest
 									final MailChecker mailChecker) throws IOException, MessagingException
 	{
 		final Session session = getPOP3Session(account);
-		try(final Store store = getPOP3Store(session, account))
+		try(final Store store = getPOP3Store(session, account);
+			 final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, false))
 		{
-			final Folder inboxFolder = getInboxFolder(store);
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			assertEquals(1, inboxMessages.length, account.pop3User);
@@ -1424,52 +1417,36 @@ public class MailSenderTest extends SendmailTest
 				assertArrayEquals(replyTo, replyToHeader, message);
 			}
 			mailChecker.checkBody(m);
-
-			inboxFolder.close(false);
 		}
 	}
 
 	private void assertEmptyPOP3(final Account account) throws MessagingException
 	{
 		final Session session = getPOP3Session(account);
-		Folder inboxFolder = null;
-		try(final Store store = getPOP3Store(session, account))
+		try(final Store store = getPOP3Store(session, account);
+			 final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, false))
 		{
-			inboxFolder = getInboxFolder(store);
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			assertEquals(0, inboxMessages.length, account.pop3User);
-			inboxFolder.close(false);
-			inboxFolder = null;
-		}
-		finally
-		{
-			if(inboxFolder != null)
-				inboxFolder.close(false);
 		}
 	}
 
 	private boolean countPOP3(final Account account, final int expected) throws MessagingException
 	{
 		final Session session = getPOP3Session(account);
-		Folder inboxFolder = null;
-		try(final Store store = getPOP3Store(session, account))
+		try(final Store store = getPOP3Store(session, account);
+			 final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, false))
 		{
-			inboxFolder = getInboxFolder(store);
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
 			inboxFolder.open(Folder.READ_ONLY);
 			final int inboxMessages = inboxFolder.getMessageCount();
 
 			if(countDebug)
 				System.out.print(" "+account.pop3User+":"+inboxMessages+"/"+expected);
 
-			inboxFolder.close(false);
-			inboxFolder = null;
 			return inboxMessages>=expected;
-		}
-		finally
-		{
-			if (inboxFolder != null)
-				inboxFolder.close(false);
 		}
 	}
 
