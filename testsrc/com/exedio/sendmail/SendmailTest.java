@@ -20,6 +20,8 @@ package com.exedio.sendmail;
 
 import static java.lang.System.getProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.exedio.cope.util.JobContext;
 import com.exedio.cope.util.PrefixSource;
@@ -121,9 +123,10 @@ public class SendmailTest
 	protected final void cleanPOP3Account(final Account account) throws MessagingException
 	{
 		final Session session = getPOP3Session(account);
-		try (final Store store=getPOP3Store(session, account);
-			  final Folder inboxFolder =getInboxFolder(store))
+		try (final Store store = getPOP3Store(session, account);
+			  final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, true))
 		{
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
 			inboxFolder.open(Folder.READ_WRITE);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			//System.out.println("--------removing "+inboxMessages.length+" messages --------");
@@ -135,13 +138,9 @@ public class SendmailTest
 		}
 	}
 
-	protected static final Folder getInboxFolder(final Store store) throws MessagingException
+	protected final void sendMail(final MailData mail) throws MessagingException
 	{
-		final Folder defaultFolder = store.getDefaultFolder();
-		assertEquals("", defaultFolder.getFullName());
-		final Folder inboxFolder = defaultFolder.getFolder("INBOX");
-		assertEquals("INBOX", inboxFolder.getFullName());
-		return inboxFolder;
+		mailSender.sendMail(mail);
 	}
 
 	@SuppressWarnings("deprecation") // OK: testing MailSource API
@@ -151,5 +150,33 @@ public class SendmailTest
 			final JobContext ctx)
 	{
 		mailSender.sendMails(source, maximumResultSize, ctx);
+	}
+
+	protected static final class InboxFolderWrapper implements AutoCloseable
+	{
+		private final Folder inboxFolder;
+		private final boolean expungeOnClose;
+
+		public InboxFolderWrapper(final Store store, final boolean expungeOnClose) throws MessagingException
+		{
+			assertNotNull(store);
+			assertTrue(store.isConnected());
+			final Folder defaultFolder = store.getDefaultFolder();
+			assertEquals("", defaultFolder.getFullName());
+			this.inboxFolder = defaultFolder.getFolder("INBOX");
+			assertEquals("INBOX", inboxFolder.getFullName());
+			this.expungeOnClose = expungeOnClose;
+		}
+
+		public Folder getInboxFolder()
+		{
+			return inboxFolder;
+		}
+
+		@Override
+		public void close() throws MessagingException
+		{
+			inboxFolder.close(expungeOnClose);
+		}
 	}
 }
