@@ -59,7 +59,6 @@ import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings({"HardcodedLineSeparator", "RedundantCast"}) // OK: just a test
 public class MailSenderTest extends SendmailTest
 {
@@ -853,13 +852,11 @@ public class MailSenderTest extends SendmailTest
 		}).execute();
 	}
 
-
 	@Test
 	void testNoRecipients() throws InterruptedException, MessagingException, IOException
 	{
 		new ArgumentsBuilder().exceptionChecker(e -> assertEquals(NullPointerException.class, e.getClass())).execute();
 	}
-
 
 	@Test
 	void testPlainTextToUser1AndUser2() throws InterruptedException, MessagingException, IOException
@@ -871,7 +868,6 @@ public class MailSenderTest extends SendmailTest
 		}).execute();
 	}
 
-
 	@Test
 	void testPlainTextToUser1AndUser3() throws InterruptedException, MessagingException, IOException
 	{
@@ -881,7 +877,6 @@ public class MailSenderTest extends SendmailTest
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		}).execute();
 	}
-
 
 	@Test
 	void testPlainTextToUser1AndUser3WithISOCharset() throws InterruptedException, MessagingException, IOException
@@ -893,7 +888,6 @@ public class MailSenderTest extends SendmailTest
 		}).execute();
 	}
 
-
 	@Test
 	void testPlainTextToUser2AndUser3() throws InterruptedException, MessagingException, IOException
 	{
@@ -903,7 +897,6 @@ public class MailSenderTest extends SendmailTest
 			assertEqualsHex(replaceNewlines(TEXT_PLAIN) + TEXT_APPENDIX, m.getContent());
 		}).execute();
 	}
-
 
 	@Test
 	void testPlainTextToUser1() throws InterruptedException, MessagingException, IOException
@@ -916,7 +909,6 @@ public class MailSenderTest extends SendmailTest
 		}).execute();
 	}
 
-
 	@Test
 	void testHTMLToUser1WithSpecialMessageID() throws InterruptedException, MessagingException, IOException
 	{
@@ -927,7 +919,6 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(null, m.getDisposition());
 		}).execute();
 	}
-
 
 	@Test
 	void testPlainTextAndHTMLToUser1() throws InterruptedException, MessagingException, IOException
@@ -952,7 +943,6 @@ public class MailSenderTest extends SendmailTest
 		}).execute();
 	}
 
-
 	@Test
 	void testPlainTextAndHTMLToUser1WithISOCharset() throws InterruptedException, MessagingException, IOException
 	{
@@ -976,7 +966,6 @@ public class MailSenderTest extends SendmailTest
 		}).execute();
 	}
 
-
 	@Test
 	void testPlainTextAndOneAttachmentToUser1() throws InterruptedException, MessagingException, IOException
 	{
@@ -998,7 +987,6 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(2, multipart.getCount());
 		}).execute();
 	}
-
 
 	@Test
 	void testHTMLWithTwoAttachmentsToUser1() throws InterruptedException, MessagingException, IOException
@@ -1028,7 +1016,6 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(3, multipart.getCount());
 		}).execute();
 	}
-
 
 	@Test
 	void testPlainTextAndHTMLWithTwoAttachmentsToUser1() throws InterruptedException, MessagingException, IOException
@@ -1069,7 +1056,6 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(3, multipart.getCount());
 		}).execute();
 	}
-
 
 	@Test
 	void testPlainTextAndHTMLWithREPLYTOHeaderToUser1() throws InterruptedException, MessagingException, IOException
