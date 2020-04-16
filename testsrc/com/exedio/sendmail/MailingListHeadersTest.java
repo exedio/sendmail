@@ -1,6 +1,7 @@
 package com.exedio.sendmail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -165,17 +166,20 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.post.isEmpty());
+		assertFalse(m.noPost);
 		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addPost(uri1);
 		assertTrue(m.post.size() == 1);
 		assertEquals(uri1, m.post.get(0));
+		assertFalse(m.noPost);
 		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addPost(uri2);
 		assertTrue(m.post.size() == 2);
 		assertEquals(uri1, m.post.get(0));
 		assertEquals(uri2, m.post.get(1));
+		assertFalse(m.noPost);
 		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addPost(uri3);
@@ -183,6 +187,7 @@ public class MailingListHeadersTest
 		assertEquals(uri1, m.post.get(0));
 		assertEquals(uri2, m.post.get(1));
 		assertEquals(uri3, m.post.get(2));
+		assertFalse(m.noPost);
 		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addPost(uri4);
@@ -191,6 +196,7 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.post.get(1));
 		assertEquals(uri3, m.post.get(2));
 		assertEquals(uri4, m.post.get(3));
+		assertFalse(m.noPost);
 		assertThrows(NullPointerException.class, () -> m.addPost(null), "post");
 		assertThrows(IllegalArgumentException.class, () -> {
 			final String aString = "dontuse.something.invalid";
@@ -208,6 +214,32 @@ public class MailingListHeadersTest
 			final String aString = "file://something.invalid/dontuse";
 			m.addPost(new URI(aString));
 		}, "post: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
+	}
+
+	@Test
+	void testNoPost() throws URISyntaxException
+	{
+		final MailingListHeaders m = new MailingListHeaders();
+		assertTrue(m.post.isEmpty());
+		assertFalse(m.noPost);
+		m.setNoPost(true);
+		assertTrue(m.post.isEmpty());
+		assertTrue(m.noPost);
+		final URI uri = new URI("https://dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> m.addPost(uri), "post: Must not add URI to post when noPost is selected: https://dontuse.something.invalid");
+		assertTrue(m.post.isEmpty());
+		assertTrue(m.noPost);
+		m.setNoPost(false);
+		assertTrue(m.post.isEmpty());
+		assertFalse(m.noPost);
+		m.addPost(uri);
+		assertTrue(m.post.size() == 1);
+		assertEquals(uri, m.post.get(0));
+		assertFalse(m.noPost);
+		assertThrows(IllegalArgumentException.class, () -> m.setNoPost(true), "post: Can not set post to NO when there are URIs already defined as post");
+		assertTrue(m.post.size() == 1);
+		assertEquals(uri, m.post.get(0));
+		assertFalse(m.noPost);
 	}
 
 	@Test

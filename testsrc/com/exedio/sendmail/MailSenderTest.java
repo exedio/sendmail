@@ -333,6 +333,7 @@ public class MailSenderTest extends SendmailTest
 		private final List<URI> listPost = new ArrayList<>();
 		private final List<URI> listOwner = new ArrayList<>();
 		private final List<URI> listArchive = new ArrayList<>();
+		private boolean listNoPost = false;
 
 		private <T> T[] emptyToNull(final T[] o)
 		{
@@ -435,6 +436,12 @@ public class MailSenderTest extends SendmailTest
 			return this;
 		}
 
+		private ArgumentsBuilder listNoPost()
+		{
+			this.listNoPost = true;
+			return this;
+		}
+
 		private ArgumentsBuilder listOwner(final URI listOwner)
 		{
 			this.listOwner.add(listOwner);
@@ -465,7 +472,7 @@ public class MailSenderTest extends SendmailTest
 					attachments,
 					charset,
 					contentTransferEncoding,
-					listHelp, listUnsubscribe, listSubscribe, listPost, listOwner, listArchive, mailChecker,
+					listHelp, listUnsubscribe, listSubscribe, listPost, listOwner, listArchive, listNoPost, mailChecker,
 					exceptionChecker
 			);
 		}
@@ -1120,6 +1127,19 @@ public class MailSenderTest extends SendmailTest
 				.mailChecker(MailChecker.CHECK_NOTHING).execute();
 	}
 
+	@Test
+	void testNoPostListHeaders() throws InterruptedException, MessagingException, IOException, URISyntaxException
+	{
+		new ArgumentsBuilder().to(user1.email).cc(user2.email).bcc(user3.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML)
+				.listHelp(new URI("http://dontuse.something.invalid/help")).listHelp(new URI("ftp://dontuse.something.invalid/help")).listHelp(new URI("mailto:dontuse@something.invalid?subject=Help"))
+				.listUnsubscribe(new URI("http://dontuse.something.invalid/unsubscribe")).listUnsubscribe(new URI("ftp://dontuse.something.invalid/unsubscribe")).listUnsubscribe(new URI("mailto:dontuse@something.invalid?subject=Unsubscribe"))
+				.listSubscribe(new URI("http://dontuse.something.invalid/subscribe")).listSubscribe(new URI("ftp://dontuse.something.invalid/subscribe")).listSubscribe(new URI("mailto:dontuse@something.invalid?subject=Subscribe"))
+				.listPost(new URI("http://dontuse.something.invalid/post")).listPost(new URI("ftp://dontuse.something.invalid/post")).listPost(new URI("mailto:dontuse@something.invalid?subject=Post"))
+				.listOwner(new URI("http://dontuse.something.invalid/owner")).listOwner(new URI("ftp://dontuse.something.invalid/owner")).listOwner(new URI("mailto:dontuse@something.invalid?subject=Owner"))
+				.listArchive(new URI("http://dontuse.something.invalid/archive")).listArchive(new URI("ftp://dontuse.something.invalid/archive")).listArchive(new URI("mailto:dontuse@something.invalid?subject=Archive"))
+				.mailChecker(MailChecker.CHECK_NOTHING).execute();
+	}
+
 	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void sendAndTest(final String subject,
 									 final String[] to,
@@ -1139,7 +1159,7 @@ public class MailSenderTest extends SendmailTest
 									 final List<URI> listPost,
 									 final List<URI> listOwner,
 									 final List<URI> listArchive,
-									 final MailChecker mailChecker,
+									 final boolean listNoPost, final MailChecker mailChecker,
 									 final ExceptionChecker exceptionChecker) throws InterruptedException, MessagingException, IOException
 	{
 		final boolean erroneous = (to == null && carbonCopy == null && blindCarbonCopy == null) ||
@@ -1162,7 +1182,14 @@ public class MailSenderTest extends SendmailTest
 		listHelp.forEach(mailData.mailingListHeaderData()::addHelp);
 		listUnsubscribe.forEach(mailData.mailingListHeaderData()::addUnsubscribe);
 		listSubscribe.forEach(mailData.mailingListHeaderData()::addSubscribe);
-		listPost.forEach(mailData.mailingListHeaderData()::addPost);
+		if (listNoPost)
+		{
+			mailData.mailingListHeaderData().setNoPost(true);
+		}
+		else
+		{
+			listPost.forEach(mailData.mailingListHeaderData()::addPost);
+		}
 		listOwner.forEach(mailData.mailingListHeaderData()::addOwner);
 		listArchive.forEach(mailData.mailingListHeaderData()::addArchive);
 		try
@@ -1253,7 +1280,7 @@ public class MailSenderTest extends SendmailTest
 					listPost,
 					listOwner,
 					listArchive,
-					mailChecker);
+					listNoPost, mailChecker);
 		}
 		else
 		{
@@ -1274,7 +1301,7 @@ public class MailSenderTest extends SendmailTest
 					listPost,
 					listOwner,
 					listArchive,
-					mailChecker);
+					listNoPost, mailChecker);
 		}
 		else
 		{
@@ -1295,7 +1322,7 @@ public class MailSenderTest extends SendmailTest
 					listPost,
 					listOwner,
 					listArchive,
-					mailChecker);
+					listNoPost, mailChecker);
 		}
 		else
 		{
@@ -1429,7 +1456,7 @@ public class MailSenderTest extends SendmailTest
 									final List<URI> listPost,
 									final List<URI> listOwner,
 									final List<URI> listArchive,
-									final MailChecker mailChecker) throws IOException, MessagingException
+									final boolean listNoPost, final MailChecker mailChecker) throws IOException, MessagingException
 	{
 		final Session session = getPOP3Session(account);
 		try(final Store store = getPOP3Store(session, account);
@@ -1498,7 +1525,14 @@ public class MailSenderTest extends SendmailTest
 			assertListHeader(m, listHelp, "List-Help", message);
 			assertListHeader(m, listUnsubscribe, "List-Unsubscribe", message);
 			assertListHeader(m, listSubscribe, "List-Subscribe", message);
-			assertListHeader(m, listPost, "List-Post", message);
+			if (listNoPost)
+			{
+				assertListNoPostHeader(m, message);
+			}
+			else
+			{
+				assertListHeader(m, listPost, "List-Post", message);
+			}
 			assertListHeader(m, listOwner, "List-Owner", message);
 			assertListHeader(m, listArchive, "List-Archive", message);
 			mailChecker.checkBody(m);
@@ -1518,6 +1552,14 @@ public class MailSenderTest extends SendmailTest
 			assertEquals(1, header.length, message);
 			assertEquals(expected.stream().map(uri -> "<" + uri.toASCIIString() + ">").collect(Collectors.joining(",")), header[0], message);
 		}
+	}
+
+	private static void assertListNoPostHeader(final Message m, final String message) throws MessagingException
+	{
+		final String[] header = m.getHeader("List-Post");
+		assertNotNull(header, message);
+		assertEquals(1, header.length, message);
+		assertEquals("NO", header[0], message);
 	}
 
 	private void assertEmptyPOP3(final Account account) throws MessagingException

@@ -41,6 +41,7 @@ public final class MailingListHeaders
 	final List<URI> post = new ArrayList<>();
 	final List<URI> owner = new ArrayList<>();
 	final List<URI> archive = new ArrayList<>();
+	boolean noPost = false;
 
 	MailingListHeaders()
 	{
@@ -64,7 +65,20 @@ public final class MailingListHeaders
 
 	public void addPost(final URI uri)
 	{
+		if (noPost)
+		{
+			throw new IllegalArgumentException("post: Must not add URI to post when noPost is selected: " + uri);
+		}
 		post.add(check(uri, "post"));
+	}
+
+	public void setNoPost(final boolean noPost)
+	{
+		if (!post.isEmpty())
+		{
+			throw new IllegalArgumentException("post: Can not set post to NO when there are URIs already defined as post");
+		}
+		this.noPost = noPost;
 	}
 
 	public void addOwner(final URI uri)
@@ -93,7 +107,14 @@ public final class MailingListHeaders
 		addHeader(message, help, "List-Help");
 		addHeader(message, unsubscribe, "List-Unsubscribe");
 		addHeader(message, subscribe, "List-Subscribe");
-		addHeader(message, post, "List-Post");
+		if (noPost)
+		{
+			message.setHeader("List-Post", "NO");
+		}
+		else
+		{
+			addHeader(message, post, "List-Post");
+		}
 		addHeader(message, owner, "List-Owner");
 		addHeader(message, archive, "List-Archive");
 	}
