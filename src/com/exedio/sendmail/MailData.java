@@ -56,7 +56,7 @@ public final class MailData
 	private String charset = DEFAULT_CHARSET;
 	private String contentTransferEncoding = null;
 	private final ArrayList<DataSource> attachments = new ArrayList<>();
-	private final MailingListHeaderData mailingListHeaderData = new MailingListHeaderData();
+	private final MailingListHeaders mailingListHeaders = new MailingListHeaders();
 
 	public MailData(
 			final String from,
@@ -169,9 +169,9 @@ public final class MailData
 		this.attachments.add(attachment);
 	}
 
-	public MailingListHeaderData mailingListHeaderData()
+	public MailingListHeaders mailingListHeaderData()
 	{
-		return mailingListHeaderData;
+		return mailingListHeaders;
 	}
 
 	MimeMessage createMessage(final Session session)
@@ -258,7 +258,7 @@ public final class MailData
 			}
 			message.setContent(mixed);
 		}
-		mailingListHeaderData.addToMessage(message);
+		mailingListHeaders.addToMessage(message);
 		return message;
 	}
 

@@ -33,7 +33,7 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Andreas
  */
-public final class MailingListHeaderData
+public final class MailingListHeaders
 {
 	final List<URI> help = new ArrayList<>();
 	final List<URI> unsubscribe = new ArrayList<>();
@@ -42,7 +42,7 @@ public final class MailingListHeaderData
 	final List<URI> owner = new ArrayList<>();
 	final List<URI> archive = new ArrayList<>();
 
-	MailingListHeaderData()
+	MailingListHeaders()
 	{
 		// Prevent public instantiation
 	}

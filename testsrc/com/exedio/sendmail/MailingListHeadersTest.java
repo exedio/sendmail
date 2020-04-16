@@ -8,12 +8,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.jupiter.api.Test;
 
-public class MailingListHeaderDataTest
+public class MailingListHeadersTest
 {
 	@Test
 	void testHelp() throws URISyntaxException
 	{
-		final MailingListHeaderData m = new MailingListHeaderData();
+		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.help.isEmpty());
 		String s = "https://dontuse.exedio.com";
 		final URI uri1 = new URI(s);
@@ -95,7 +95,7 @@ public class MailingListHeaderDataTest
 	@Test
 	void testUnsubscribe() throws URISyntaxException
 	{
-		final MailingListHeaderData m = new MailingListHeaderData();
+		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.unsubscribe.isEmpty());
 		String s = "https://dontuse.exedio.com";
 		final URI uri1 = new URI(s);
@@ -177,7 +177,7 @@ public class MailingListHeaderDataTest
 	@Test
 	void testSubscribe() throws URISyntaxException
 	{
-		final MailingListHeaderData m = new MailingListHeaderData();
+		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.subscribe.isEmpty());
 		String s = "https://dontuse.exedio.com";
 		final URI uri1 = new URI(s);
@@ -259,7 +259,7 @@ public class MailingListHeaderDataTest
 	@Test
 	void testPost() throws URISyntaxException
 	{
-		final MailingListHeaderData m = new MailingListHeaderData();
+		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.post.isEmpty());
 		String s = "https://dontuse.exedio.com";
 		final URI uri1 = new URI(s);
@@ -341,7 +341,7 @@ public class MailingListHeaderDataTest
 	@Test
 	void testOwner() throws URISyntaxException
 	{
-		final MailingListHeaderData m = new MailingListHeaderData();
+		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.owner.isEmpty());
 		String s = "https://dontuse.exedio.com";
 		final URI uri1 = new URI(s);
@@ -423,7 +423,7 @@ public class MailingListHeaderDataTest
 	@Test
 	void testArchive() throws URISyntaxException
 	{
-		final MailingListHeaderData m = new MailingListHeaderData();
+		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.archive.isEmpty());
 		String s = "https://dontuse.exedio.com";
 		final URI uri1 = new URI(s);
