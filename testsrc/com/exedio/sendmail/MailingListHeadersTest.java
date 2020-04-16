@@ -1,8 +1,8 @@
 package com.exedio.sendmail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,55 +41,23 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.help.get(1));
 		assertEquals(uri3, m.help.get(2));
 		assertEquals(uri4, m.help.get(3));
-		try
-		{
-			m.addHelp(null);
-			fail();
-		}
-		catch(final NullPointerException e)
-		{
-			assertEquals("help", e.getMessage());
-		}
-		try
-		{
-			s = "dontuse.something.invalid";
-			m.addHelp(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("help: URI must not have empty scheme: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "urn:dontuse1.something.invalid";
-			m.addHelp(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("help: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "doi:10.1337/0815";
-			m.addHelp(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("help: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "file://something.invalid/dontuse";
-			m.addHelp(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("help: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
+		assertThrows(NullPointerException.class, () -> m.addHelp(null), "help");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "dontuse.something.invalid";
+			m.addHelp(new URI(aString));
+		}, "help: URI must not have empty scheme: dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "urn:dontuse1.something.invalid";
+			m.addHelp(new URI(aString));
+		}, "help: URI must define scheme mailto, http, https or ftp: urn:dontuse1.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "doi:10.1337/0815";
+			m.addHelp(new URI(aString));
+		}, "help: URI must define scheme mailto, http, https or ftp: doi:10.1337/0815");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "file://something.invalid/dontuse";
+			m.addHelp(new URI(aString));
+		}, "help: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
 
 	@Test
@@ -123,55 +91,23 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.unsubscribe.get(1));
 		assertEquals(uri3, m.unsubscribe.get(2));
 		assertEquals(uri4, m.unsubscribe.get(3));
-		try
-		{
-			m.addUnsubscribe(null);
-			fail();
-		}
-		catch(final NullPointerException e)
-		{
-			assertEquals("unsubscribe", e.getMessage());
-		}
-		try
-		{
-			s = "dontuse.something.invalid";
-			m.addUnsubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("unsubscribe: URI must not have empty scheme: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "urn:dontuse1.something.invalid";
-			m.addUnsubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("unsubscribe: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "doi:10.1337/0815";
-			m.addUnsubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("unsubscribe: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "file://something.invalid/dontuse";
-			m.addUnsubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("unsubscribe: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
+		assertThrows(NullPointerException.class, () -> m.addUnsubscribe(null), "unsubscribe");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "dontuse.something.invalid";
+			m.addUnsubscribe(new URI(aString));
+		}, "unsubscribe: URI must not have empty scheme: dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "urn:dontuse1.something.invalid";
+			m.addUnsubscribe(new URI(aString));
+		}, "unsubscribe: URI must define scheme mailto, http, https or ftp: urn:dontuse1.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "doi:10.1337/0815";
+			m.addUnsubscribe(new URI(aString));
+		}, "unsubscribe: URI must define scheme mailto, http, https or ftp: doi:10.1337/0815");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "file://something.invalid/dontuse";
+			m.addUnsubscribe(new URI(aString));
+		}, "unsubscribe: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
 
 	@Test
@@ -205,55 +141,23 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.subscribe.get(1));
 		assertEquals(uri3, m.subscribe.get(2));
 		assertEquals(uri4, m.subscribe.get(3));
-		try
-		{
-			m.addSubscribe(null);
-			fail();
-		}
-		catch(final NullPointerException e)
-		{
-			assertEquals("subscribe", e.getMessage());
-		}
-		try
-		{
-			s = "dontuse.something.invalid";
-			m.addSubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("subscribe: URI must not have empty scheme: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "urn:dontuse1.something.invalid";
-			m.addSubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("subscribe: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "doi:10.1337/0815";
-			m.addSubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("subscribe: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "file://something.invalid/dontuse";
-			m.addSubscribe(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("subscribe: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
+		assertThrows(NullPointerException.class, () -> m.addSubscribe(null), "subscribe");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "dontuse.something.invalid";
+			m.addSubscribe(new URI(aString));
+		}, "subscribe: URI must not have empty scheme: dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "urn:dontuse1.something.invalid";
+			m.addSubscribe(new URI(aString));
+		}, "subscribe: URI must define scheme mailto, http, https or ftp: urn:dontuse1.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "doi:10.1337/0815";
+			m.addSubscribe(new URI(aString));
+		}, "subscribe: URI must define scheme mailto, http, https or ftp: doi:10.1337/0815");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "file://something.invalid/dontuse";
+			m.addSubscribe(new URI(aString));
+		}, "subscribe: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
 
 	@Test
@@ -287,55 +191,23 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.post.get(1));
 		assertEquals(uri3, m.post.get(2));
 		assertEquals(uri4, m.post.get(3));
-		try
-		{
-			m.addPost(null);
-			fail();
-		}
-		catch(final NullPointerException e)
-		{
-			assertEquals("post", e.getMessage());
-		}
-		try
-		{
-			s = "dontuse.something.invalid";
-			m.addPost(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("post: URI must not have empty scheme: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "urn:dontuse1.something.invalid";
-			m.addPost(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("post: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "doi:10.1337/0815";
-			m.addPost(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("post: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "file://something.invalid/dontuse";
-			m.addPost(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("post: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
+		assertThrows(NullPointerException.class, () -> m.addPost(null), "post");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "dontuse.something.invalid";
+			m.addPost(new URI(aString));
+		}, "post: URI must not have empty scheme: dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "urn:dontuse1.something.invalid";
+			m.addPost(new URI(aString));
+		}, "post: URI must define scheme mailto, http, https or ftp: urn:dontuse1.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "doi:10.1337/0815";
+			m.addPost(new URI(aString));
+		}, "post: URI must define scheme mailto, http, https or ftp: doi:10.1337/0815");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "file://something.invalid/dontuse";
+			m.addPost(new URI(aString));
+		}, "post: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
 
 	@Test
@@ -369,55 +241,23 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.owner.get(1));
 		assertEquals(uri3, m.owner.get(2));
 		assertEquals(uri4, m.owner.get(3));
-		try
-		{
-			m.addOwner(null);
-			fail();
-		}
-		catch(final NullPointerException e)
-		{
-			assertEquals("owner", e.getMessage());
-		}
-		try
-		{
-			s = "dontuse.something.invalid";
-			m.addOwner(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("owner: URI must not have empty scheme: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "urn:dontuse1.something.invalid";
-			m.addOwner(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("owner: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "doi:10.1337/0815";
-			m.addOwner(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("owner: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "file://something.invalid/dontuse";
-			m.addOwner(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("owner: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
+		assertThrows(NullPointerException.class, () -> m.addOwner(null), "owner");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "dontuse.something.invalid";
+			m.addOwner(new URI(aString));
+		}, "owner: URI must not have empty scheme: dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "urn:dontuse1.something.invalid";
+			m.addOwner(new URI(aString));
+		}, "owner: URI must define scheme mailto, http, https or ftp: urn:dontuse1.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "doi:10.1337/0815";
+			m.addOwner(new URI(aString));
+		}, "owner: URI must define scheme mailto, http, https or ftp: doi:10.1337/0815");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "file://something.invalid/dontuse";
+			m.addOwner(new URI(aString));
+		}, "owner: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
 
 	@Test
@@ -451,54 +291,22 @@ public class MailingListHeadersTest
 		assertEquals(uri2, m.archive.get(1));
 		assertEquals(uri3, m.archive.get(2));
 		assertEquals(uri4, m.archive.get(3));
-		try
-		{
-			m.addArchive(null);
-			fail();
-		}
-		catch(final NullPointerException e)
-		{
-			assertEquals("archive", e.getMessage());
-		}
-		try
-		{
-			s = "dontuse.something.invalid";
-			m.addArchive(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("archive: URI must not have empty scheme: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "urn:dontuse1.something.invalid";
-			m.addArchive(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("archive: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "doi:10.1337/0815";
-			m.addArchive(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("archive: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
-		try
-		{
-			s = "file://something.invalid/dontuse";
-			m.addArchive(new URI(s));
-			fail();
-		}
-		catch(final IllegalArgumentException e)
-		{
-			assertEquals("archive: URI must define scheme mailto, http, https or ftp: " + s, e.getMessage());
-		}
+		assertThrows(NullPointerException.class, () -> m.addArchive(null), "archive");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "dontuse.something.invalid";
+			m.addArchive(new URI(aString));
+		}, "archive: URI must not have empty scheme: dontuse.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "urn:dontuse1.something.invalid";
+			m.addArchive(new URI(aString));
+		}, "archive: URI must define scheme mailto, http, https or ftp: urn:dontuse1.something.invalid");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "doi:10.1337/0815";
+			m.addArchive(new URI(aString));
+		}, "archive: URI must define scheme mailto, http, https or ftp: doi:10.1337/0815");
+		assertThrows(IllegalArgumentException.class, () -> {
+			final String aString = "file://something.invalid/dontuse";
+			m.addArchive(new URI(aString));
+		}, "archive: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
 }
