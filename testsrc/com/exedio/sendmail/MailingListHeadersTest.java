@@ -15,25 +15,25 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.help.isEmpty());
-		String s = "https://dontuse.exedio.com";
+		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addHelp(uri1);
 		assertTrue(m.help.size() == 1);
 		assertEquals(uri1, m.help.get(0));
-		s = "http://dontuse.exedio.com";
+		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addHelp(uri2);
 		assertTrue(m.help.size() == 2);
 		assertEquals(uri1, m.help.get(0));
 		assertEquals(uri2, m.help.get(1));
-		s = "ftp://dontuse.exedio.com";
+		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addHelp(uri3);
 		assertTrue(m.help.size() == 3);
 		assertEquals(uri1, m.help.get(0));
 		assertEquals(uri2, m.help.get(1));
 		assertEquals(uri3, m.help.get(2));
-		s = "mailto:dontuse@exedio.com";
+		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addHelp(uri4);
 		assertTrue(m.help.size() == 4);
@@ -52,7 +52,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "dontuse.exedio.com";
+			s = "dontuse.something.invalid";
 			m.addHelp(new URI(s));
 			fail();
 		}
@@ -62,7 +62,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "urn:dontuse1.exedio.com";
+			s = "urn:dontuse1.something.invalid";
 			m.addHelp(new URI(s));
 			fail();
 		}
@@ -82,7 +82,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "file://exedio.com/dontuse";
+			s = "file://something.invalid/dontuse";
 			m.addHelp(new URI(s));
 			fail();
 		}
@@ -97,25 +97,25 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.unsubscribe.isEmpty());
-		String s = "https://dontuse.exedio.com";
+		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addUnsubscribe(uri1);
 		assertTrue(m.unsubscribe.size() == 1);
 		assertEquals(uri1, m.unsubscribe.get(0));
-		s = "http://dontuse.exedio.com";
+		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addUnsubscribe(uri2);
 		assertTrue(m.unsubscribe.size() == 2);
 		assertEquals(uri1, m.unsubscribe.get(0));
 		assertEquals(uri2, m.unsubscribe.get(1));
-		s = "ftp://dontuse.exedio.com";
+		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addUnsubscribe(uri3);
 		assertTrue(m.unsubscribe.size() == 3);
 		assertEquals(uri1, m.unsubscribe.get(0));
 		assertEquals(uri2, m.unsubscribe.get(1));
 		assertEquals(uri3, m.unsubscribe.get(2));
-		s = "mailto:dontuse@exedio.com";
+		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addUnsubscribe(uri4);
 		assertTrue(m.unsubscribe.size() == 4);
@@ -134,7 +134,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "dontuse.exedio.com";
+			s = "dontuse.something.invalid";
 			m.addUnsubscribe(new URI(s));
 			fail();
 		}
@@ -144,7 +144,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "urn:dontuse1.exedio.com";
+			s = "urn:dontuse1.something.invalid";
 			m.addUnsubscribe(new URI(s));
 			fail();
 		}
@@ -164,7 +164,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "file://exedio.com/dontuse";
+			s = "file://something.invalid/dontuse";
 			m.addUnsubscribe(new URI(s));
 			fail();
 		}
@@ -179,25 +179,25 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.subscribe.isEmpty());
-		String s = "https://dontuse.exedio.com";
+		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addSubscribe(uri1);
 		assertTrue(m.subscribe.size() == 1);
 		assertEquals(uri1, m.subscribe.get(0));
-		s = "http://dontuse.exedio.com";
+		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addSubscribe(uri2);
 		assertTrue(m.subscribe.size() == 2);
 		assertEquals(uri1, m.subscribe.get(0));
 		assertEquals(uri2, m.subscribe.get(1));
-		s = "ftp://dontuse.exedio.com";
+		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addSubscribe(uri3);
 		assertTrue(m.subscribe.size() == 3);
 		assertEquals(uri1, m.subscribe.get(0));
 		assertEquals(uri2, m.subscribe.get(1));
 		assertEquals(uri3, m.subscribe.get(2));
-		s = "mailto:dontuse@exedio.com";
+		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addSubscribe(uri4);
 		assertTrue(m.subscribe.size() == 4);
@@ -216,7 +216,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "dontuse.exedio.com";
+			s = "dontuse.something.invalid";
 			m.addSubscribe(new URI(s));
 			fail();
 		}
@@ -226,7 +226,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "urn:dontuse1.exedio.com";
+			s = "urn:dontuse1.something.invalid";
 			m.addSubscribe(new URI(s));
 			fail();
 		}
@@ -246,7 +246,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "file://exedio.com/dontuse";
+			s = "file://something.invalid/dontuse";
 			m.addSubscribe(new URI(s));
 			fail();
 		}
@@ -261,25 +261,25 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.post.isEmpty());
-		String s = "https://dontuse.exedio.com";
+		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addPost(uri1);
 		assertTrue(m.post.size() == 1);
 		assertEquals(uri1, m.post.get(0));
-		s = "http://dontuse.exedio.com";
+		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addPost(uri2);
 		assertTrue(m.post.size() == 2);
 		assertEquals(uri1, m.post.get(0));
 		assertEquals(uri2, m.post.get(1));
-		s = "ftp://dontuse.exedio.com";
+		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addPost(uri3);
 		assertTrue(m.post.size() == 3);
 		assertEquals(uri1, m.post.get(0));
 		assertEquals(uri2, m.post.get(1));
 		assertEquals(uri3, m.post.get(2));
-		s = "mailto:dontuse@exedio.com";
+		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addPost(uri4);
 		assertTrue(m.post.size() == 4);
@@ -298,7 +298,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "dontuse.exedio.com";
+			s = "dontuse.something.invalid";
 			m.addPost(new URI(s));
 			fail();
 		}
@@ -308,7 +308,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "urn:dontuse1.exedio.com";
+			s = "urn:dontuse1.something.invalid";
 			m.addPost(new URI(s));
 			fail();
 		}
@@ -328,7 +328,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "file://exedio.com/dontuse";
+			s = "file://something.invalid/dontuse";
 			m.addPost(new URI(s));
 			fail();
 		}
@@ -343,25 +343,25 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.owner.isEmpty());
-		String s = "https://dontuse.exedio.com";
+		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addOwner(uri1);
 		assertTrue(m.owner.size() == 1);
 		assertEquals(uri1, m.owner.get(0));
-		s = "http://dontuse.exedio.com";
+		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addOwner(uri2);
 		assertTrue(m.owner.size() == 2);
 		assertEquals(uri1, m.owner.get(0));
 		assertEquals(uri2, m.owner.get(1));
-		s = "ftp://dontuse.exedio.com";
+		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addOwner(uri3);
 		assertTrue(m.owner.size() == 3);
 		assertEquals(uri1, m.owner.get(0));
 		assertEquals(uri2, m.owner.get(1));
 		assertEquals(uri3, m.owner.get(2));
-		s = "mailto:dontuse@exedio.com";
+		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addOwner(uri4);
 		assertTrue(m.owner.size() == 4);
@@ -380,7 +380,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "dontuse.exedio.com";
+			s = "dontuse.something.invalid";
 			m.addOwner(new URI(s));
 			fail();
 		}
@@ -390,7 +390,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "urn:dontuse1.exedio.com";
+			s = "urn:dontuse1.something.invalid";
 			m.addOwner(new URI(s));
 			fail();
 		}
@@ -410,7 +410,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "file://exedio.com/dontuse";
+			s = "file://something.invalid/dontuse";
 			m.addOwner(new URI(s));
 			fail();
 		}
@@ -425,25 +425,25 @@ public class MailingListHeadersTest
 	{
 		final MailingListHeaders m = new MailingListHeaders();
 		assertTrue(m.archive.isEmpty());
-		String s = "https://dontuse.exedio.com";
+		String s = "https://dontuse.something.invalid";
 		final URI uri1 = new URI(s);
 		m.addArchive(uri1);
 		assertTrue(m.archive.size() == 1);
 		assertEquals(uri1, m.archive.get(0));
-		s = "http://dontuse.exedio.com";
+		s = "http://dontuse.something.invalid";
 		final URI uri2 = new URI(s);
 		m.addArchive(uri2);
 		assertTrue(m.archive.size() == 2);
 		assertEquals(uri1, m.archive.get(0));
 		assertEquals(uri2, m.archive.get(1));
-		s = "ftp://dontuse.exedio.com";
+		s = "ftp://dontuse.something.invalid";
 		final URI uri3 = new URI(s);
 		m.addArchive(uri3);
 		assertTrue(m.archive.size() == 3);
 		assertEquals(uri1, m.archive.get(0));
 		assertEquals(uri2, m.archive.get(1));
 		assertEquals(uri3, m.archive.get(2));
-		s = "mailto:dontuse@exedio.com";
+		s = "mailto:dontuse@something.invalid";
 		final URI uri4 = new URI(s);
 		m.addArchive(uri4);
 		assertTrue(m.archive.size() == 4);
@@ -462,7 +462,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "dontuse.exedio.com";
+			s = "dontuse.something.invalid";
 			m.addArchive(new URI(s));
 			fail();
 		}
@@ -472,7 +472,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "urn:dontuse1.exedio.com";
+			s = "urn:dontuse1.something.invalid";
 			m.addArchive(new URI(s));
 			fail();
 		}
@@ -492,7 +492,7 @@ public class MailingListHeadersTest
 		}
 		try
 		{
-			s = "file://exedio.com/dontuse";
+			s = "file://something.invalid/dontuse";
 			m.addArchive(new URI(s));
 			fail();
 		}

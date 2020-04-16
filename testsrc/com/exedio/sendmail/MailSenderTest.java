@@ -1104,19 +1104,19 @@ public class MailSenderTest extends SendmailTest
 	@Test
 	void testPlainTextAndHTMLWithREPLYTOHeaderToUser1() throws InterruptedException, MessagingException, IOException
 	{
-		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@exedio.com").mailChecker(MailChecker.CHECK_NOTHING).execute();
+		new ArgumentsBuilder().to(user1.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML).replyTo("dontuse@something.invalid").mailChecker(MailChecker.CHECK_NOTHING).execute();
 	}
 
 	@Test
 	void testListHeaders() throws InterruptedException, MessagingException, IOException, URISyntaxException
 	{
 		new ArgumentsBuilder().to(user1.email).cc(user2.email).bcc(user3.email).textPlain(TEXT_PLAIN).textHtml(TEXT_HTML)
-				.listHelp(new URI("http://dontuse.exedio.com/help")).listHelp(new URI("ftp://dontuse.exedio.com/help")).listHelp(new URI("mailto:dontuse@exedio.com?subject=Help"))
-				.listUnsubscribe(new URI("http://dontuse.exedio.com/unsubscribe")).listUnsubscribe(new URI("ftp://dontuse.exedio.com/unsubscribe")).listUnsubscribe(new URI("mailto:dontuse@exedio.com?subject=Unsubscribe"))
-				.listSubscribe(new URI("http://dontuse.exedio.com/subscribe")).listSubscribe(new URI("ftp://dontuse.exedio.com/subscribe")).listSubscribe(new URI("mailto:dontuse@exedio.com?subject=Subscribe"))
-				.listPost(new URI("http://dontuse.exedio.com/post")).listPost(new URI("ftp://dontuse.exedio.com/post")).listPost(new URI("mailto:dontuse@exedio.com?subject=Post"))
-				.listOwner(new URI("http://dontuse.exedio.com/owner")).listOwner(new URI("ftp://dontuse.exedio.com/owner")).listOwner(new URI("mailto:dontuse@exedio.com?subject=Owner"))
-				.listArchive(new URI("http://dontuse.exedio.com/archive")).listArchive(new URI("ftp://dontuse.exedio.com/archive")).listArchive(new URI("mailto:dontuse@exedio.com?subject=Archive"))
+				.listHelp(new URI("http://dontuse.something.invalid/help")).listHelp(new URI("ftp://dontuse.something.invalid/help")).listHelp(new URI("mailto:dontuse@something.invalid?subject=Help"))
+				.listUnsubscribe(new URI("http://dontuse.something.invalid/unsubscribe")).listUnsubscribe(new URI("ftp://dontuse.something.invalid/unsubscribe")).listUnsubscribe(new URI("mailto:dontuse@something.invalid?subject=Unsubscribe"))
+				.listSubscribe(new URI("http://dontuse.something.invalid/subscribe")).listSubscribe(new URI("ftp://dontuse.something.invalid/subscribe")).listSubscribe(new URI("mailto:dontuse@something.invalid?subject=Subscribe"))
+				.listPost(new URI("http://dontuse.something.invalid/post")).listPost(new URI("ftp://dontuse.something.invalid/post")).listPost(new URI("mailto:dontuse@something.invalid?subject=Post"))
+				.listOwner(new URI("http://dontuse.something.invalid/owner")).listOwner(new URI("ftp://dontuse.something.invalid/owner")).listOwner(new URI("mailto:dontuse@something.invalid?subject=Owner"))
+				.listArchive(new URI("http://dontuse.something.invalid/archive")).listArchive(new URI("ftp://dontuse.something.invalid/archive")).listArchive(new URI("mailto:dontuse@something.invalid?subject=Archive"))
 				.mailChecker(MailChecker.CHECK_NOTHING).execute();
 	}
 
