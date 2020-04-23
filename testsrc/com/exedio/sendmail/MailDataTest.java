@@ -161,6 +161,6 @@ public class MailDataTest
 	public void testMailingListHeaderData() throws AddressException
 	{
 		final MailData d = new MailData("from", "subject");
-		assertNotNull(d.mailingListHeaderData());
+		assertNotNull(d.mailingListHeaders());
 	}
 }

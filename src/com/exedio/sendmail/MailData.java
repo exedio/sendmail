@@ -169,7 +169,7 @@ public final class MailData
 		this.attachments.add(attachment);
 	}
 
-	public MailingListHeaders mailingListHeaderData()
+	public MailingListHeaders mailingListHeaders()
 	{
 		return mailingListHeaders;
 	}

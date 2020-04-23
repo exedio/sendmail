@@ -1179,19 +1179,19 @@ public class MailSenderTest extends SendmailTest
 				attachments,
 				charset,
 				contentTransferEncoding);
-		listHelp.forEach(mailData.mailingListHeaderData()::addHelp);
-		listUnsubscribe.forEach(mailData.mailingListHeaderData()::addUnsubscribe);
-		listSubscribe.forEach(mailData.mailingListHeaderData()::addSubscribe);
+		listHelp.forEach(mailData.mailingListHeaders()::addHelp);
+		listUnsubscribe.forEach(mailData.mailingListHeaders()::addUnsubscribe);
+		listSubscribe.forEach(mailData.mailingListHeaders()::addSubscribe);
 		if (listNoPost)
 		{
-			mailData.mailingListHeaderData().setNoPost(true);
+			mailData.mailingListHeaders().setNoPost(true);
 		}
 		else
 		{
-			listPost.forEach(mailData.mailingListHeaderData()::addPost);
+			listPost.forEach(mailData.mailingListHeaders()::addPost);
 		}
-		listOwner.forEach(mailData.mailingListHeaderData()::addOwner);
-		listArchive.forEach(mailData.mailingListHeaderData()::addArchive);
+		listOwner.forEach(mailData.mailingListHeaders()::addOwner);
+		listArchive.forEach(mailData.mailingListHeaders()::addArchive);
 		try
 		{
 			sendMail(mailData);
