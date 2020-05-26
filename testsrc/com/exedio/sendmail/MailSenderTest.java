@@ -868,7 +868,6 @@ public class MailSenderTest extends SendmailTest
 		boolean complete3 = false;
 		for(int i = 0; i<30; i++)
 		{
-			//noinspection BusyWait OK: just a test
 			Thread.sleep(1000);
 			if(countDebug)
 			{
@@ -1246,7 +1245,6 @@ public class MailSenderTest extends SendmailTest
 		).filter(Objects::nonNull).collect(Collectors.toSet()) : Collections.emptySet();
 		for(int i = 0; i < 30; i++)
 		{
-			//noinspection BusyWait OK: just a test
 			Thread.sleep(1000);
 			if(countDebug)
 			{
