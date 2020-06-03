@@ -30,6 +30,7 @@ timestamps
 				def antHome = tool 'Ant version 1.9.3'
 
 				sh "rm -rf " + env.HOME  + "/.Idea*"
+				sh "rm -rf " + env.HOME  + "/.cache/JetBrains"
 				sh "rm -rf " + env.HOME  + "/.config/JetBrains"
 
 				sh "/" + idea + "/bin/inspect.sh " + env.WORKSPACE + " 'Project Default' idea-inspection-output"
