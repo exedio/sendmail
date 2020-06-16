@@ -29,7 +29,8 @@ import javax.mail.internet.MimeMessage;
 
 /**
  * This class provides a wrapper for all mailing list relevant header entries
- * according to <a href="https://www.ietf.org/rfc/rfc2369.txt" target="_top">RFC2369</a>.
+ * according to <a href="https://www.ietf.org/rfc/rfc2369.txt" target="_top">RFC2369</a> and
+ * <a href="https://tools.ietf.org/html/rfc8058" target="_top">RFC8058</a>.
  *
  * @author Andreas
  */
