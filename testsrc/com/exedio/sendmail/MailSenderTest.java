@@ -1133,7 +1133,7 @@ public class MailSenderTest extends SendmailTest
 				.listHelp(new URI("http://dontuse.something.invalid/help")).listHelp(new URI("ftp://dontuse.something.invalid/help")).listHelp(new URI("mailto:dontuse@something.invalid?subject=Help"))
 				.listUnsubscribe(new URI("http://dontuse.something.invalid/unsubscribe")).listUnsubscribe(new URI("ftp://dontuse.something.invalid/unsubscribe")).listUnsubscribe(new URI("mailto:dontuse@something.invalid?subject=Unsubscribe"))
 				.listSubscribe(new URI("http://dontuse.something.invalid/subscribe")).listSubscribe(new URI("ftp://dontuse.something.invalid/subscribe")).listSubscribe(new URI("mailto:dontuse@something.invalid?subject=Subscribe"))
-				.listPost(new URI("http://dontuse.something.invalid/post")).listPost(new URI("ftp://dontuse.something.invalid/post")).listPost(new URI("mailto:dontuse@something.invalid?subject=Post"))
+				.listNoPost()
 				.listOwner(new URI("http://dontuse.something.invalid/owner")).listOwner(new URI("ftp://dontuse.something.invalid/owner")).listOwner(new URI("mailto:dontuse@something.invalid?subject=Owner"))
 				.listArchive(new URI("http://dontuse.something.invalid/archive")).listArchive(new URI("ftp://dontuse.something.invalid/archive")).listArchive(new URI("mailto:dontuse@something.invalid?subject=Archive"))
 				.mailChecker(MailChecker.CHECK_NOTHING).execute();
