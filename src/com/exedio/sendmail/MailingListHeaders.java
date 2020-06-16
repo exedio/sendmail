@@ -42,6 +42,7 @@ public final class MailingListHeaders
 	final List<URI> owner = new ArrayList<>();
 	final List<URI> archive = new ArrayList<>();
 	boolean noPost = false;
+	boolean listUnsubscribePost = false;
 
 	MailingListHeaders()
 	{
@@ -91,6 +92,11 @@ public final class MailingListHeaders
 		archive.add(check(uri, "archive"));
 	}
 
+	public void setListUnsubscribePost(final boolean listUnsubscribePost)
+	{
+		this.listUnsubscribePost = listUnsubscribePost;
+	}
+
 	private static URI check(final URI uri, final String name)
 	{
 		requireNonNull(uri, name);
@@ -117,6 +123,10 @@ public final class MailingListHeaders
 		}
 		addHeader(message, owner, "List-Owner");
 		addHeader(message, archive, "List-Archive");
+		if (!unsubscribe.isEmpty() && listUnsubscribePost)
+		{
+			message.setHeader("List-Unsubscribe-Post", "List-Unsubscribe=One-Click");
+		}
 	}
 
 	private static void addHeader(final MimeMessage message,

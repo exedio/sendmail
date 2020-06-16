@@ -359,4 +359,15 @@ public class MailingListHeadersTest
 			m.addArchive(new URI(aString));
 		}, "archive: URI must define scheme mailto, http, https or ftp: file://something.invalid/dontuse");
 	}
+
+	@Test
+	void testListUnsubscribePost()
+	{
+		final MailingListHeaders m = new MailingListHeaders();
+		assertFalse(m.listUnsubscribePost);
+		m.setListUnsubscribePost(true);
+		assertTrue(m.listUnsubscribePost);
+		m.setListUnsubscribePost(false);
+		assertFalse(m.listUnsubscribePost);
+	}
 }
