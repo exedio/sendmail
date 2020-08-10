@@ -105,9 +105,20 @@
 			<sysproperty key="user3.email"         value="${user3.email}"         />
 			<sysproperty key="user3.pop3.user"     value="${user3.pop3.user}"     />
 			<sysproperty key="user3.pop3.password" value="${user3.pop3.password}" />
+			<sysproperty key="user4.email"         value="${user4.email}"         />
+			<sysproperty key="user4.pop3.user"     value="${user4.pop3.user}"     />
+			<sysproperty key="user4.pop3.password" value="${user4.pop3.password}" />
 			<sysproperty key="from"      value="${from}" />
+			<sysproperty key="dsnFrom"      value="${dsnFrom}" />
 			<sysproperty key="fail"      value="${fail}" />
 			<sysproperty key="failclose" value="${failclose}" />
+			<sysproperty key="smtp.returnPath.set"   value="${smtp.returnPath.set}" if:set="smtp.returnPath.set" />
+			<sysproperty key="smtp.returnPath"   value="${user4.email}" />
+			<sysproperty key="smtp.dsn.returnFull"   value="${smtp.dsn.returnFull}" if:set="smtp.dsn.returnFull" />
+			<sysproperty key="smtp.dsn.notifyNever"   value="${smtp.dsn.notifyNever}" if:set="smtp.dsn.notifyNever" />
+			<sysproperty key="smtp.dsn.notifySuccess"   value="${smtp.dsn.notifySuccess}" if:set="smtp.dsn.notifySuccess" />
+			<sysproperty key="smtp.dsn.notifyFailure"   value="${smtp.dsn.notifyFailure}" if:set="smtp.dsn.notifyFailure" />
+			<sysproperty key="smtp.dsn.notifyDelay"   value="${smtp.dsn.notifyDelay}" if:set="smtp.dsn.notifyDelay" />
 			<assertions><enable/></assertions>
 		</java>
 	</target>

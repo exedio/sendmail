@@ -21,6 +21,7 @@ package com.exedio.sendmail;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,17 +33,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.activation.DataSource;
@@ -58,6 +65,8 @@ import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
+import javax.mail.util.SharedByteArrayInputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,6 +77,7 @@ public class MailSenderTest extends SendmailTest
 	private Account user1;
 	private Account user2;
 	private Account user3;
+	private Account user4;
 
 	private String fail;
 	String timeStamp;
@@ -80,12 +90,14 @@ public class MailSenderTest extends SendmailTest
 		user1 = new Account("user1");
 		user2 = new Account("user2");
 		user3 = new Account("user3");
+		user4 = new Account("user4");
 
 		fail=System.getProperty("fail");
 
 		cleanPOP3Account(user1);
 		cleanPOP3Account(user2);
 		cleanPOP3Account(user3);
+		cleanPOP3Account(user4);
 
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S ", Locale.ENGLISH);
 		timeStamp = df.format(new Date());
@@ -1345,6 +1357,7 @@ public class MailSenderTest extends SendmailTest
 		boolean complete1 = false;
 		boolean complete2 = false;
 		boolean complete3 = false;
+		boolean complete4 = false;
 		Stream<String> stream = null;
 		if(to != null)
 		{
@@ -1389,7 +1402,8 @@ public class MailSenderTest extends SendmailTest
 			if(
 					(complete1 || (complete1 = countPOP3(user1, accounts.contains(user1) ? 1 : 0))) &&
 					(complete2 || (complete2 = countPOP3(user2, accounts.contains(user2) ? 1 : 0))) &&
-					(complete3 || (complete3 = countPOP3(user3, accounts.contains(user3) ? 1 : 0))))
+					(complete3 || (complete3 = countPOP3(user3, accounts.contains(user3) ? 1 : 0))) &&
+					(complete4 || (complete4 = countPOP3(user4, mailSender.getDsnNotifies() != null && !accounts.isEmpty() ? 1 : 0))))
 			{
 				break;
 			}
@@ -1459,6 +1473,14 @@ public class MailSenderTest extends SendmailTest
 		else
 		{
 			assertEmptyPOP3(user3);
+		}
+		if(mailSender.getDsnNotifies() != null && !accounts.isEmpty())
+		{
+			assertNotificationPOP3(accounts, subject, from, to, carbonCopy, messageID, date);
+		}
+		else
+		{
+			assertEmptyPOP3(user4);
 		}
 	}
 
@@ -1597,7 +1619,9 @@ public class MailSenderTest extends SendmailTest
 			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
-			assertEquals(1, inboxMessages.length, account.pop3User);
+			final String returnPath = mailSender.getReturnPath();
+			if (returnPath != null && returnPath.equals(account.pop3User))
+				assertEquals(1, inboxMessages.length, account.pop3User);
 
 			final TreeMap<String, Message> actualMessages = new TreeMap<>();
 			for(final Message m : inboxMessages)
@@ -1668,8 +1692,14 @@ public class MailSenderTest extends SendmailTest
 			assertListUnsubscribePostHeader(m, listUnsubscribePost && !listUnsubscribe.isEmpty(), message);
 			assertListHeader(m, listOwner, "List-Owner", message);
 			assertListHeader(m, listArchive, "List-Archive", message);
+			assertEquals(1, m.getHeader("Return-Path").length, message);
+			assertEquals(normalizeAddress(mailSender.getReturnPath() != null ? mailSender.getReturnPath() : from), m.getHeader("Return-Path")[0], message);
 			mailChecker.checkBody(m);
 		}
+	}
+
+	private static String normalizeAddress(final String addr) {
+		return !addr.startsWith("<") && !addr.endsWith(">") ? "<" + addr + ">" : addr;
 	}
 
 	private static void assertListHeader(final Message m, final List<URI> expected, final String headerName, final String message) throws MessagingException
@@ -1720,6 +1750,155 @@ public class MailSenderTest extends SendmailTest
 			inboxFolder.open(Folder.READ_ONLY);
 			final Message[] inboxMessages = inboxFolder.getMessages();
 			assertEquals(0, inboxMessages.length, account.pop3User);
+		}
+	}
+
+	private void assertNotificationPOP3(final Set<Account> accounts,
+													final String originalSubject,
+													final String from,
+													final String[] to,
+													final String[] carbonCopy,
+													final String messageID,
+													final Date date) throws IOException, MessagingException
+	{
+		final Account account = user4;
+		final Session session = getPOP3Session(account);
+		try(final Store store = getPOP3Store(session, account);
+			 final InboxFolderWrapper inboxFolderWrapper = new InboxFolderWrapper(store, false))
+		{
+			final Folder inboxFolder = inboxFolderWrapper.getInboxFolder();
+			inboxFolder.open(Folder.READ_ONLY);
+			final Message[] inboxMessages = inboxFolder.getMessages();
+			final String returnPath = mailSender.getReturnPath();
+			if (returnPath != null && returnPath.equals(account.pop3User))
+				assertEquals(1, inboxMessages.length, account.pop3User);
+
+			final TreeMap<String, Message> actualMessages = new TreeMap<>();
+			for(final Message m : inboxMessages)
+			{
+				if(actualMessages.put(m.getSubject(), m) != null)
+					throw new RuntimeException(m.getSubject());
+			}
+
+			final String subject = "Successful Mail Delivery Report";
+			final String message = account.pop3User + " - " + originalSubject + " - Delivery Status Notification";
+			final Message m = actualMessages.get(subject);
+			assertNotNull(m, "no message " + message + "; found " + actualMessages.keySet());
+			assertEquals(subject, m.getSubject(), message);
+			assertEquals(Arrays.asList(new InternetAddress(dsnFrom)), Arrays.asList(m.getFrom()), message);
+			assertEquals(addressList(user4.email), addressList(m.getRecipients(Message.RecipientType.TO)), message);
+			assertNull(addressList(m.getRecipients(Message.RecipientType.CC)), message);
+			assertNull(addressList(m.getRecipients(Message.RecipientType.BCC)), message);
+			assertNotNull(m.getHeader("Message-ID"), message);
+			assertEquals(1, m.getHeader("Message-ID").length, message);
+			assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
+			assertNotNull(m.getHeader("Date"), message);
+			assertEquals(1, m.getHeader("Date").length, message);
+			assertTrue(m.getContentType().startsWith("multipart/report; report-type=delivery-status;"), m.getContentType());
+			final Object content = m.getContent();
+			assertTrue(content instanceof MimeMultipart, message);
+			final MimeMultipart multipart = (MimeMultipart) content;
+			assertEquals(3, multipart.getCount(), message);
+			{
+				final BodyPart bodyPart = multipart.getBodyPart(0);
+				assertTrue(bodyPart.getContentType().startsWith("text/plain"), message);
+				assertTrue(bodyPart.getContent() instanceof String, message);
+				final String text = (String) bodyPart.getContent();
+				for (final Account anAccount : new Account[]{user1, user2, user3})
+				{
+					if (accounts.contains(anAccount))
+					{
+						assertTrue(text.contains(anAccount.email), message);
+					}
+					else
+					{
+						assertFalse(text.contains(anAccount.email), message);
+					}
+				}
+			}
+			{
+				final BodyPart bodyPart = multipart.getBodyPart(1);
+				assertEquals("message/delivery-status", bodyPart.getContentType(), message);
+				assertTrue(bodyPart.getContent() instanceof SharedByteArrayInputStream, message);
+				try (final Scanner scanner = new Scanner((InputStream)bodyPart.getContent(), StandardCharsets.US_ASCII.toString()))
+				{
+					scanner.useDelimiter("\\Z");
+					String data = "";
+					if(scanner.hasNext())
+						data = scanner.next();
+					final String[] blocks = data.split("(\n|\r\n){2}");
+					assertEquals(1 + accounts.size(), blocks.length, message);
+					assertTrue(blocks[0].contains("Reporting-MTA: dns; " + pop3Host), message);
+					for (int i=1;i<blocks.length;i++)
+					{
+						final String block = blocks[i];
+						final Matcher matcher = Pattern.compile("Final-Recipient: rfc822; ([a-zA-Z0-9@.]*)").matcher(block);
+						assertTrue(matcher.find(), message);
+						assertTrue(accounts.stream().anyMatch(anAccount -> matcher.group(1).equals(anAccount.email)), message);
+						assertTrue(block.contains("Action: delivered"), message);
+						assertTrue(block.contains("Status: 2."), message);
+					}
+				}
+			}
+			{
+				final BodyPart bodyPart = multipart.getBodyPart(2);
+				assertEquals("text/rfc822-headers", bodyPart.getContentType(), message);
+				assertTrue(bodyPart.getContent() instanceof SharedByteArrayInputStream, message);
+				try (final Scanner scanner = new Scanner((InputStream)bodyPart.getContent(), StandardCharsets.US_ASCII.toString()))
+				{
+					final Map<String, String> headers = new HashMap<>();
+					String key = null;
+					String value = null;
+					while (scanner.hasNextLine())
+					{
+						final String line = scanner.nextLine();
+						final int index = line.indexOf(": ");
+						if (index > -1)
+						{
+							if (key != null)
+							{
+								headers.put(key.trim(), value.trim());
+							}
+							key = line.substring(0, index);
+							value = line.substring(index+1);
+						}
+						else
+						{
+							assertNotNull(value, message);
+							value += line;
+						}
+					}
+					if (key != null)
+					{
+						headers.put(key, value);
+					}
+					assertEquals(from, headers.get("From"), message);
+					if (to != null && to.length>0)
+					{
+						assertNotNull(headers.get("To"), message);
+						assertEquals(addressList(to), addressList(InternetAddress.parse(headers.get("To"), true)), message);
+					}
+					else
+					{
+						assertNull(headers.get("To"), message);
+					}
+					if (carbonCopy != null && carbonCopy.length>0)
+					{
+						assertNotNull(headers.get("Cc"), message);
+						assertEquals(addressList(carbonCopy), addressList(InternetAddress.parse(headers.get("Cc"), true)), message);
+					}
+					else
+					{
+						assertNull(headers.get("Cc"), message);
+					}
+					if(messageID != null)
+						assertEquals(messageID, headers.get("Message-ID"), message);
+					else
+						assertTrue(headers.get("Message-ID").indexOf("@") > 0, message);
+					assertEquals(originalSubject, MimeUtility.decodeText(MimeUtility.unfold(headers.get("Subject"))), message);
+					assertEquals((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", new Locale("en"))).format(date), headers.get("Date"), message);
+				}
+			}
 		}
 	}
 

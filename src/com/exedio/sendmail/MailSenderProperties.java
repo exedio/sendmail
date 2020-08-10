@@ -24,6 +24,7 @@ import static java.time.Duration.ofSeconds;
 
 import com.exedio.cope.util.Properties;
 import java.time.Duration;
+import java.util.StringJoiner;
 
 @SuppressWarnings("synthetic-access")
 public final class MailSenderProperties extends Properties
@@ -56,6 +57,51 @@ public final class MailSenderProperties extends Properties
 		final Duration readTimeout    = valueIntMillis(   "readTimeout", ofSeconds(5), ofSeconds(1));
 		final Auth auth = value("auth", false, Auth::new);
 
+		final String returnPath;
+		if (value("returnPath.set", false))
+		{
+			returnPath = value("returnPath", (String) null);
+		}
+		else
+		{
+			returnPath = null;
+		}
+
+		final boolean dsnNotifyNever = value("dsn.notifyNever", false);
+		final boolean dsnNotifySuccess = value("dsn.notifySuccess", false);
+		final boolean dsnNotifyFailure = value("dsn.notifyFailure", false);
+		final boolean dsnNotifyDelay = value("dsn.notifyDelay", false);
+
+		if (dsnNotifyNever && (dsnNotifySuccess || dsnNotifyFailure || dsnNotifyDelay))
+			throw newException("dsn.notifyNever", "must not be set when other notifications are requested");
+
+		final String dsnNotify;
+		if (dsnNotifyNever)
+		{
+			dsnNotify = "NEVER";
+		}
+		else if (dsnNotifySuccess || dsnNotifyFailure || dsnNotifyDelay)
+		{
+			final StringJoiner notifyJoiner = new StringJoiner(",");
+			if (dsnNotifySuccess)
+			{
+				notifyJoiner.add("SUCCESS");
+			}
+			if (dsnNotifyFailure)
+			{
+				notifyJoiner.add("FAILURE");
+			}
+			if (dsnNotifyDelay)
+			{
+				notifyJoiner.add("DELAY");
+			}
+			dsnNotify = notifyJoiner.toString();
+		}
+		else
+		{
+			dsnNotify = null;
+		}
+
 		this.value =
 			new MailSender(
 					host,
@@ -66,7 +112,9 @@ public final class MailSenderProperties extends Properties
 					toIntExact(readTimeout   .toMillis()), // toIntExact cannot fail because of valueIntMillis
 					debug,
 					auth==null ? null : auth.username,
-					auth==null ? null : auth.password);
+					auth==null ? null : auth.password,
+					returnPath,
+					dsnNotify);
 	}
 
 	// copied from com.exedio.cope.ConnectProperties

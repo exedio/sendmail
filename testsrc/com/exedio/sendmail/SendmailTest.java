@@ -47,6 +47,7 @@ public class SendmailTest
 	protected boolean pop3Debug;
 
 	protected String from;
+	protected String dsnFrom;
 
 	@BeforeEach
 	void setUpSendMailTest()
@@ -61,6 +62,7 @@ public class SendmailTest
 		pop3Debug=getPropertyBoolean("pop3.debug");
 
 		from=getProperty("from");
+		dsnFrom=getProperty("dsnFrom");
 	}
 
 	protected static class Account

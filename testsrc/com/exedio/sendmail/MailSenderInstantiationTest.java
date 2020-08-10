@@ -69,7 +69,7 @@ public class MailSenderInstantiationTest
 		}
 		try
 		{
-			new MailSender("host", 0,  true, true, 0, 1, true, "", "");
+			new MailSender("host", 0,  true, true, 0, 1, true, "", "", null, null);
 		}
 		catch(final IllegalArgumentException e)
 		{

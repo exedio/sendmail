@@ -47,6 +47,8 @@ public class MailSender
 	private final int readTimeout;
 	private final boolean debug;
 	private final Session session;
+	private final String returnPath;
+	private final String dsnNotifies;
 
 	public MailSender(
 			final String host,
@@ -79,7 +81,7 @@ public class MailSender
 			final String smtpUser,
 			final String smtpPassword)
 	{
-		this(host, port, false, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
+		this(host, port, false, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword, null, null);
 	}
 
 	/** @param smtpUser null and empty string denote usage without authentification */
@@ -93,7 +95,7 @@ public class MailSender
 			final String smtpUser,
 			final String smtpPassword)
 	{
-		this(host, port, ssl, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword);
+		this(host, port, ssl, false, connectTimeout, readTimeout, debug, smtpUser, smtpPassword, null, null);
 	}
 
 	protected MailSender(
@@ -105,7 +107,9 @@ public class MailSender
 			final int readTimeout,
 			final boolean debug,
 			final String smtpUser,
-			final String smtpPassword)
+			final String smtpPassword,
+			final String returnPath,
+			final String dsnNotifies)
 	{
 		if(host==null)
 			throw new IllegalArgumentException("host must not be null");
@@ -125,6 +129,8 @@ public class MailSender
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 		this.debug = debug;
+		this.returnPath = returnPath;
+		this.dsnNotifies = dsnNotifies;
 
 		// BEWARE
 		// Always set strings as values,
@@ -137,6 +143,15 @@ public class MailSender
 		properties.setProperty("mail.smtp.timeout", String.valueOf(readTimeout));
 		properties.setProperty("mail.smtp.ssl.enable", String.valueOf(ssl) );
 		properties.setProperty("mail.smtp.starttls.enable", String.valueOf(enableStarttls) );
+		if (returnPath != null)
+		{
+			properties.setProperty("mail.smtp.from", returnPath);
+		}
+		if (dsnNotifies != null)
+		{
+			properties.setProperty("mail.smtp.dsn.notify", dsnNotifies);
+			properties.setProperty("mail.smtp.dsn.ret", "HDRS");
+		}
 		final Session session;
 		if ( smtpUser==null || smtpUser.isEmpty() )
 		{
@@ -185,6 +200,16 @@ public class MailSender
 	public final boolean isEnableStarttls()
 	{
 		return enableStarttls;
+	}
+
+	public String getReturnPath()
+	{
+		return returnPath;
+	}
+
+	public String getDsnNotifies()
+	{
+		return dsnNotifies;
 	}
 
 	public final Connection openConnection() throws MessagingException
