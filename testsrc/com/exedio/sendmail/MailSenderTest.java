@@ -1794,7 +1794,7 @@ public class MailSenderTest extends SendmailTest
 			assertTrue(m.getHeader("Message-ID")[0].indexOf("@") > 0, message);
 			assertNotNull(m.getHeader("Date"), message);
 			assertEquals(1, m.getHeader("Date").length, message);
-			assertTrue(m.getContentType().startsWith("multipart/report; report-type=delivery-status;"), m.getContentType());
+			assertTrue(m.getContentType().startsWith("multipart/report; report-type=delivery-status;"), message);
 			final Object content = m.getContent();
 			assertTrue(content instanceof MimeMultipart, message);
 			final MimeMultipart multipart = (MimeMultipart) content;
