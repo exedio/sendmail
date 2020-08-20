@@ -2,6 +2,14 @@
 timestamps
 {
 	def jdk = 'openjdk-8-deb9'
+	def isRelease = env.BRANCH_NAME.toString().equals("master")
+
+	properties([
+			buildDiscarder(logRotator(
+					numToKeepStr         : isRelease ? '1000' : '30',
+					artifactNumToKeepStr : isRelease ? '1000' :  '2'
+			))
+	])
 
 	//noinspection GroovyAssignabilityCheck
 	lock('sendmail-remote') { node(jdk)
@@ -13,76 +21,46 @@ timestamps
 				echo("Delete working dir before build")
 				deleteDir()
 
-				def scmResult = checkout scm
-				computeGitTree(scmResult)
+				def buildTag = makeBuildTag(checkout(scm))
 
-				env.BUILD_TIMESTAMP = new Date().format("yyyy-MM-dd_HH-mm-ss");
-				env.JAVA_HOME = tool jdk
+				env.JAVA_HOME = tool type: 'jdk', name: jdk
 				env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
 				def antHome = tool 'Ant version 1.9.3'
 
 				sh "java -version"
 				sh "${antHome}/bin/ant -version"
 
-				def isRelease = env.BRANCH_NAME.toString().equals("master");
-
-				properties([
-						buildDiscarder(logRotator(
-								numToKeepStr         : isRelease ? '1000' : '15',
-								artifactNumToKeepStr : isRelease ? '1000' :  '2'
-						))
-				])
-
-				sh 'echo' +
-						' scmResult=' + scmResult +
-						' BUILD_TIMESTAMP -${BUILD_TIMESTAMP}-' +
-						' BRANCH_NAME -${BRANCH_NAME}-' +
-						' BUILD_NUMBER -${BUILD_NUMBER}-' +
-						' BUILD_ID -${BUILD_ID}-' +
-						' isRelease=' + isRelease
-
-				sh "${antHome}/bin/ant clean jenkins" +
+				sh "${antHome}/bin/ant -noinput clean jenkins" +
 						' "-Dbuild.revision=${BUILD_NUMBER}"' +
-						' "-Dbuild.tag=git ${BRANCH_NAME} ' + scmResult.GIT_COMMIT + ' ' + scmResult.GIT_TREE + ' jenkins ${BUILD_NUMBER} ${BUILD_TIMESTAMP}"' +
+						' "-Dbuild.tag=' + buildTag + '"' +
 						' -Dbuild.status=' + (isRelease?'release':'integration') +
 						' -DtestRemote=false' +
 						' -Dfindbugs.output=xml'
 
-				warnings(
-						canComputeNew: true,
-						canResolveRelativePaths: true,
-						categoriesPattern: '',
-						consoleParsers: [[parserName: 'Java Compiler (javac)']],
-						defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: '',
-						unstableTotalAll: '0',
-						usePreviousBuildAsReference: false,
-						useStableBuildAsReference: false,
-				)
-				findbugs(
-						canComputeNew: true,
-						defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '',
-						isRankActivated: false,
-						pattern: 'build/findbugs.xml',
-						unHealthy: '',
-						unstableTotalAll: '0',
-						usePreviousBuildAsReference: false,
-						useStableBuildAsReference: false,
+				recordIssues(
+						enabledForFailure: true,
+						ignoreFailedBuilds: false,
+						qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]],
+						tools: [
+							java(),
+							spotBugs(pattern: 'build/findbugs.xml', useRankAsPriority: true),
+						],
 				)
 				withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
 				{
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
-					sh "${antHome}/bin/ant test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-dsn	  -Dsmtp.port=25  -Dsmtp.returnPath.set=true -Dsmtp.dsn.notifySuccess=true"
+					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
+					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
+					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
+					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
+					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-dsn	     -Dsmtp.port=25  -Dsmtp.returnPath.set=true -Dsmtp.dsn.notifySuccess=true"
 				}
-				archive 'build/success/*'
+				archiveArtifacts 'build/success/*'
 			}
 		}
 		catch(Exception e)
 		{
 			//todo handle script returned exit code 143
-			throw e;
+			throw e
 		}
 		finally
 		{
@@ -91,22 +69,15 @@ timestamps
 					allowEmptyResults: false,
 					testResults: 'build/testresults/**/*.xml',
 			)
-			def to = emailextrecipients([
-					[$class: 'CulpritsRecipientProvider'],
-					[$class: 'RequesterRecipientProvider']
-			])
+			def to = emailextrecipients([culprits(), requestor()])
 			//TODO details
 			step([$class: 'Mailer',
 					recipients: to,
 					attachLog: true,
 					notifyEveryUnstableBuild: true])
 
-			if('SUCCESS'.equals(currentBuild.result) ||
-				'UNSTABLE'.equals(currentBuild.result))
-			{
-				echo("Delete working dir after " + currentBuild.result)
-				deleteDir()
-			}
+			echo("Delete working dir after build")
+			deleteDir()
 		}
 	}}
 }
@@ -115,18 +86,22 @@ def abortable(Closure body)
 {
 	try
 	{
-		body.call();
+		body.call()
 	}
 	catch(hudson.AbortException e)
 	{
 		if(e.getMessage().contains("exit code 143"))
 			return
-		throw e;
+		throw e
 	}
 }
 
-def computeGitTree(scmResult)
+def makeBuildTag(scmResult)
 {
-	sh "git cat-file -p " + scmResult.GIT_COMMIT + " | grep '^tree ' | sed -e 's/^tree //' > .git/jenkins-head-tree"
-	scmResult.GIT_TREE = readFile('.git/jenkins-head-tree').trim()
+	return 'build ' +
+			env.BRANCH_NAME + ' ' +
+			env.BUILD_NUMBER + ' ' +
+			new Date().format("yyyy-MM-dd") + ' ' +
+			scmResult.GIT_COMMIT + ' ' +
+			sh (script: "git cat-file -p " + scmResult.GIT_COMMIT + " | grep '^tree ' | sed -e 's/^tree //'", returnStdout: true).trim()
 }
