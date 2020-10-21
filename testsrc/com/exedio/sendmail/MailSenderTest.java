@@ -1349,7 +1349,7 @@ public class MailSenderTest extends SendmailTest
 		{
 			if(! erroneous)
 			{
-				fail("Exception " + e.getClass().getSimpleName() + " was not expected");
+				fail("Exception " + e.getClass().getSimpleName() + " was not expected", e);
 			}
 			exceptionChecker.checkException(e);
 		}
