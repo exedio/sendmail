@@ -38,6 +38,7 @@ timestamps
 						' -Dfindbugs.output=xml'
 
 				recordIssues(
+						failOnError: true,
 						enabledForFailure: true,
 						ignoreFailedBuilds: false,
 						qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]],
