@@ -1,7 +1,7 @@
 
 timestamps
 {
-	def jdk = 'openjdk-8-deb9'
+	def jdk = 'openjdk-8'
 	def isRelease = env.BRANCH_NAME.toString().equals("master")
 
 	properties([
@@ -12,7 +12,7 @@ timestamps
 	])
 
 	//noinspection GroovyAssignabilityCheck
-	lock('sendmail-remote') { node(jdk)
+	lock('sendmail-remote') { node('docker')
 	{
 		try
 		{
@@ -23,19 +23,28 @@ timestamps
 
 				def buildTag = makeBuildTag(checkout(scm))
 
-				env.JAVA_HOME = tool type: 'jdk', name: jdk
-				env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
-				def antHome = tool 'Ant version 1.9.3'
+				def dockerName = env.JOB_NAME.replace("/", "-") + "-" + env.BUILD_NUMBER
+				def dockerDate = new Date().format("yyyyMMdd")
+				def mainImage = docker.build(
+						'exedio-jenkins:' + dockerName + '-' + dockerDate,
+						'--build-arg JDK=' + jdk + ' ' +
+						'conf/main')
+				mainImage.inside(
+						"--name '" + dockerName + "' " +
+						"--cap-drop all " +
+						"--security-opt no-new-privileges " +
+						"--network none")
+				{
+					sh "java -version"
+					sh "ant -version"
 
-				sh "java -version"
-				sh "${antHome}/bin/ant -version"
-
-				sh "${antHome}/bin/ant -noinput clean jenkins" +
-						' "-Dbuild.revision=${BUILD_NUMBER}"' +
-						' "-Dbuild.tag=' + buildTag + '"' +
-						' -Dbuild.status=' + (isRelease?'release':'integration') +
-						' -DtestRemote=false' +
-						' -Dfindbugs.output=xml'
+					sh "ant -noinput clean jenkins" +
+							' "-Dbuild.revision=${BUILD_NUMBER}"' +
+							' "-Dbuild.tag=' + buildTag + '"' +
+							' -Dbuild.status=' + (isRelease?'release':'integration') +
+							' -DtestRemote=false' +
+							' -Dfindbugs.output=xml'
+				}
 
 				recordIssues(
 						failOnError: true,
@@ -47,13 +56,20 @@ timestamps
 							spotBugs(pattern: 'build/findbugs.xml', useRankAsPriority: true),
 						],
 				)
-				withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
+				mainImage.inside(
+						"--name '" + dockerName + "' " +
+						"--cap-drop all " +
+						"--security-opt no-new-privileges")
+						// TODO restrict network access to the smtp host in sendmail-remote.properties only
 				{
-					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
-					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
-					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
-					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
-					sh "${antHome}/bin/ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-dsn	     -Dsmtp.port=25  -Dsmtp.returnPath.set=true -Dsmtp.dsn.notifySuccess=true"
+					withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
+					{
+						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
+						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
+						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
+						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
+						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-dsn	     -Dsmtp.port=25  -Dsmtp.returnPath.set=true -Dsmtp.dsn.notifySuccess=true"
+					}
 				}
 				archiveArtifacts 'build/success/*'
 			}

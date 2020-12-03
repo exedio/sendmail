@@ -1,10 +1,11 @@
 
 timestamps
 {
-	def jdk = 'openjdk-8-deb9'
+	def jdk = 'openjdk-8'
+	def cache = 'dependencies-cache-' + env.JOB_NAME.substring(0, env.JOB_NAME.indexOf("/"))
 
 	//noinspection GroovyAssignabilityCheck
-	lock('ivy-cache') { node(jdk)
+	lock(cache) { node('docker')
 	{
 		try
 		{
@@ -15,17 +16,28 @@ timestamps
 
 				checkout scm
 
-				env.JAVA_HOME = tool jdk
-				env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
-				def antHome = tool 'Ant version 1.9.3'
-
 				properties([
 						buildDiscarder(logRotator(
 								numToKeepStr : '50'
 						))
 				])
 
-				sh "${antHome}/bin/ant -buildfile ivy"
+				def dockerName = env.JOB_NAME.replace("/", "-") + "-" + env.BUILD_NUMBER
+				def dockerDate = new Date().format("yyyyMMdd")
+				def mainImage = docker.build(
+						'exedio-jenkins:' + dockerName + '-' + dockerDate,
+						'--build-arg JDK=' + jdk + ' ' +
+						'conf/main')
+				mainImage.inside(
+						"--name '" + dockerName + "' " +
+						"--cap-drop all " +
+						"--security-opt no-new-privileges " +
+						"--mount type=volume,src=" + cache + ",target=/var/dependencies-cache")
+				{
+					sh "ant -noinput" +
+						" -buildfile ivy" +
+						" -Divy.user.home=/var/dependencies-cache"
+				}
 				archiveArtifacts 'ivy/artifacts/report/**'
 
 				sh "git status --porcelain --untracked-files=normal > git-status.txt"
