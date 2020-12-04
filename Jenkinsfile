@@ -36,9 +36,9 @@ timestamps
 						"--network none")
 				{
 					sh "java -version"
-					sh "ant -version"
+					sh "java -jar lib/ant-launcher.jar -version"
 
-					sh "ant -noinput clean jenkins" +
+					sh "java -jar lib/ant-launcher.jar -noinput clean jenkins" +
 							' "-Dbuild.revision=${BUILD_NUMBER}"' +
 							' "-Dbuild.tag=' + buildTag + '"' +
 							' -Dbuild.status=' + (isRelease?'release':'integration') +
@@ -64,11 +64,11 @@ timestamps
 				{
 					withCredentials([file(credentialsId: 'sendmail-remote.properties', variable: 'PROPERTIES')])
 					{
-						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
-						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
-						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
-						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
-						sh "ant -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-dsn	     -Dsmtp.port=25  -Dsmtp.returnPath.set=true -Dsmtp.dsn.notifySuccess=true"
+						sh "java -jar lib/ant-launcher.jar -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-plain    -Dsmtp.port=25"
+						sh "java -jar lib/ant-launcher.jar -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-ssltls   -Dsmtp.port=465 -Dsmtp.ssl=true"
+						sh "java -jar lib/ant-launcher.jar -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-starttls -Dsmtp.port=587 -Dsmtp.enableStarttls=true"
+						sh "java -jar lib/ant-launcher.jar -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-start25  -Dsmtp.port=25  -Dsmtp.enableStarttls=true"
+						sh "java -jar lib/ant-launcher.jar -noinput test -propertyfile " + PROPERTIES + " -DtestRemote=true -Dtest-taskname=junit-dsn	     -Dsmtp.port=25  -Dsmtp.returnPath.set=true -Dsmtp.dsn.notifySuccess=true"
 					}
 				}
 				archiveArtifacts 'build/success/*'

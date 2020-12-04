@@ -4,8 +4,7 @@ ARG JDK
 RUN \
 	apt-get update && \
 	apt-get install --no-install-recommends --assume-yes \
-		${JDK}-jdk-headless \
-		ant && \
+		${JDK}-jdk-headless && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN \
@@ -14,4 +13,3 @@ RUN \
 
 LABEL purpose=jenkins
 LABEL jdk=${JDK}
-LABEL ant=yes

@@ -34,7 +34,7 @@ timestamps
 						"--security-opt no-new-privileges " +
 						"--mount type=volume,src=" + cache + ",target=/var/dependencies-cache")
 				{
-					sh "ant -noinput" +
+					sh "java -jar lib/ant-launcher.jar -noinput" +
 						" -buildfile ivy" +
 						" -Divy.user.home=/var/dependencies-cache"
 				}
