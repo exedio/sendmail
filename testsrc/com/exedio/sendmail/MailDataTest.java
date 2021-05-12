@@ -137,6 +137,9 @@ public class MailDataTest
 		{
 			assertEquals(null, e.getMessage());
 		}
+
+		d.addAttachment(new AssertionFailedDataSource(), MailData.Disposition.INLINE);
+		d.addAttachment(new AssertionFailedDataSource(), null);
 	}
 
 	@Test

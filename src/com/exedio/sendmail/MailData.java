@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.annotation.Nullable;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -40,6 +41,18 @@ import javax.mail.internet.MimeMultipart;
 
 public final class MailData
 {
+	public enum Disposition
+	{
+		INLINE(Part.INLINE), ATTACHMENT(Part.ATTACHMENT);
+
+		private final String disposition;
+
+		Disposition(final String disposition)
+		{
+			this.disposition = disposition;
+		}
+	}
+
 	static final String DEFAULT_CHARSET = "UTF-8";
 	private static final long NOT_A_DATE = Long.MIN_VALUE;
 
@@ -55,7 +68,7 @@ public final class MailData
 	private String textHtml = null;
 	private String charset = DEFAULT_CHARSET;
 	private String contentTransferEncoding = null;
-	private final ArrayList<DataSource> attachments = new ArrayList<>();
+	private final ArrayList<AttachmentData> attachments = new ArrayList<>();
 	private final MailingListHeaders mailingListHeaders = new MailingListHeaders();
 
 	public MailData(
@@ -157,16 +170,22 @@ public final class MailData
 	void setAttachments(final DataSource[] attachments)
 	{
 		this.attachments.clear();
-		this.attachments.addAll(Arrays.asList(attachments));
+		for(final DataSource attachment : attachments)
+		{
+			addAttachment(attachment);
+		}
 	}
 
+	/** add an attachment with content-disposition 'attachment' */
 	public void addAttachment(final DataSource attachment)
 	{
-		if(attachment==null)
-			throw new NullPointerException();
+		addAttachment(attachment, Disposition.ATTACHMENT);
+	}
 
+	public void addAttachment(final DataSource attachment, @Nullable final Disposition disposition)
+	{
 		//noinspection UnnecessaryThis
-		this.attachments.add(attachment);
+		this.attachments.add(new AttachmentData(attachment, disposition));
 	}
 
 	public MailingListHeaders mailingListHeaders()
@@ -246,13 +265,14 @@ public final class MailData
 					alternativePart.setHeader( "Content-Transfer-Encoding", contentTransferEncoding );
 				mixed.addBodyPart(alternativePart);
 			}
-			for(final DataSource attachment : attachments)
+			for(final AttachmentData attachment : attachments)
 			{
 				final MimeBodyPart attachPart = new MimeBodyPart();
-				attachPart.setDataHandler(new DataHandler(attachment));
-				attachPart.setDisposition(Part.ATTACHMENT);
-				final String attachmentName = attachment.getName();
-				if(attachmentName!=null)
+				attachPart.setDataHandler(new DataHandler(attachment.source));
+				if (attachment.disposition!=null)
+					attachPart.setDisposition(attachment.disposition.disposition);
+				final String attachmentName = attachment.source.getName();
+				if(attachmentName != null)
 					attachPart.setFileName(attachmentName);
 				mixed.addBodyPart(attachPart);
 			}
@@ -329,5 +349,17 @@ public final class MailData
 			result.addBodyPart(htmlPart);
 		}
 		return result;
+	}
+
+	private static final class AttachmentData
+	{
+		private final DataSource source;
+		@Nullable private final Disposition disposition;
+
+		private AttachmentData(final DataSource source, @Nullable final Disposition disposition)
+		{
+			this.source = requireNonNull(source);
+			this.disposition = disposition;
+		}
 	}
 }
