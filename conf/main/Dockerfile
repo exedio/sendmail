@@ -1,4 +1,4 @@
-FROM debian:stretch-20200607
+FROM debian:stretch-20210511
 
 ARG JDK
 RUN \
@@ -7,9 +7,10 @@ RUN \
 		${JDK}-jdk-headless && \
 	rm -rf /var/lib/apt/lists/*
 
+ARG JENKINS_OWNER
 RUN \
-	mkdir /var/dependencies-cache && \
-	chown 1001:1001 /var/dependencies-cache
+	mkdir /var/jenkins-build-survivor && \
+	chown ${JENKINS_OWNER} /var/jenkins-build-survivor
 
 LABEL purpose=jenkins
 LABEL jdk=${JDK}

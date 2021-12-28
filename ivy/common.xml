@@ -23,9 +23,9 @@
 			</filterset>
 		</copy>
 		<taskdef
-				resource="org/apache/ivy/ant/antlib.xml"
-				classpath="artifacts/ivy.jar"
-				uri="antlib:org.apache.ivy.ant" />
+			resource="org/apache/ivy/ant/antlib.xml"
+			classpath="artifacts/ivy.jar"
+			uri="antlib:org.apache.ivy.ant" />
 		<ivy:settings file="artifacts/ivysettings-replaced.xml" />
 	</target>
 
