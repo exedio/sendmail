@@ -30,7 +30,7 @@
 	</target>
 
 	<target name="resolve" depends="prepare">
-		<ivy:retrieve file="../ivy.xml" pattern="artifacts/lib/[artifact]-[type].[ext]" />
+		<ivy:retrieve pattern="artifacts/lib/[artifact]-[type].[ext]" />
 		<fixcrlf srcDir="artifacts/lib" includes="**/*-log.txt,**/*-userlog.txt" fixlast="false" />
 		<ivy:report todir="artifacts/reportraw" graph="false" />
 		<copy todir="artifacts/report">
@@ -50,14 +50,14 @@
 			<url url="https://ivyartifacts.exedio.com/resources/logo.png" />
 			<url url="https://ivyartifacts.exedio.com/resources/error.gif" />
 		</get>
-		<ivy:makepom ivyfile="../ivy.xml" pomfile="pom.xml">
+		<ivy:makepom ivyfile="ivy.xml" pomfile="pom.xml">
 			<mapping conf="default" scope="compile" />
 			<mapping conf="runtime" scope="runtime" />
 		</ivy:makepom>
 	</target>
 
 	<target name="publishlocally" depends="prepare">
-		<ivy:resolve file="../ivy.xml" />
+		<ivy:resolve />
 		<ivy:publish resolver="localrepo" pubrevision="999999999" forcedeliver="true" overwrite="true">
 			<artifacts pattern="../build/[artifact].[ext]" />
 			<artifacts pattern="../build/[artifact]-[type].[ext]" />
