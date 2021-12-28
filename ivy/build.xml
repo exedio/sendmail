@@ -4,7 +4,6 @@
 	<target name="copy" depends="resolve">
 
 		<delete dir="../lib">
-			<include name="*" />
 		</delete>
 		<copy overwrite="true" todir="../lib">
 			<firstmatchmapper>
@@ -12,7 +11,8 @@
 				<globmapper from="*-dist.tar.gz" to="*.tar.gz" />
 				<globmapper from="*" to="*" />
 			</firstmatchmapper>
-			<fileset dir="artifacts/lib"/>
+			<fileset dir="artifacts/lib">
+			</fileset>
 		</copy>
 
 	</target>
