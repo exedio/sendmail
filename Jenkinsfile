@@ -40,9 +40,6 @@ try
 					"--security-opt no-new-privileges " +
 					"--network none")
 			{
-				shSilent "java -version"
-				shSilent ant + " -version"
-
 				shSilent ant + " clean jenkins" +
 						' "-Dbuild.revision=${BUILD_NUMBER}"' +
 						' "-Dbuild.tag=' + buildTag + '"' +

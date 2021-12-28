@@ -2,6 +2,8 @@
 
 <project name="sendmail" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 
+	<echo taskname="which ant" message="${ant.version}" />
+	<echo taskname="which java" message="${java.vm.name} ${java.version}" />
 	<!--suppress AntMissingPropertiesFileInspection -->
 	<property file="local.properties" />
 	<property file="project.properties" />
