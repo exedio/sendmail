@@ -10,7 +10,7 @@
 			status="@BUILD_STATUS@">
 		<license
 				name="GNU Lesser General Public License, Version 2.1"
-				url="http://opensource.org/licenses/lgpl-license.html" />
+				url="https://opensource.org/licenses/lgpl-license.html" />
 	</info>
 	<configurations>
 		<conf name="runtime" />
