@@ -19,6 +19,7 @@
 package com.exedio.sendmail;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -496,47 +497,6 @@ public class MailSenderTest extends SendmailTest
 			);
 		}
 	}
-
-	/*private static final class MockURLDataSource implements DataSource
-	{
-		final String resource;
-		final String name;
-		final String contentType;
-
-		TestDataSource(final Class resource, final String name, final String contentType)
-		{
-			this.resource = resource.getSimpleName();
-			this.name = name;
-			this.contentType = contentType;
-
-			if(this.resource==null)
-				throw new RuntimeException();
-			if(this.name==null)
-				throw new RuntimeException();
-			if(this.contentType==null)
-				throw new RuntimeException();
-		}
-
-		public String getContentType()
-		{
-			return contentType;
-		}
-
-		public String getName()
-		{
-			return name;
-		}
-
-		public InputStream getInputStream()
-		{
-			return getClass().getResourceAsStream(resource);
-		}
-
-		public OutputStream getOutputStream()
-		{
-			throw new RuntimeException(name);
-		}
-	}*/
 
 	private static final class MockURLDataSource extends URLDataSource
 	{
@@ -1921,7 +1881,7 @@ public class MailSenderTest extends SendmailTest
 
 	protected static final byte[] bytes(final String name)
 	{
-		return bytes(MailSenderTest.class.getResourceAsStream(name));
+		return bytes(requireNonNull(MailSenderTest.class.getResourceAsStream(name), name));
 	}
 
 	protected static final byte[] bytes(final InputStream in)

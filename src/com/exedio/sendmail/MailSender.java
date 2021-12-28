@@ -290,9 +290,6 @@ public class MailSender
 					}
 					catch(final Exception e)
 					{
-						//System.err.println("-------------------------------------e"+mail);
-						//e.printStackTrace();
-						//System.err.println("-------------------------------------e"+mail);
 						mail.notifyFailed(e);
 					}
 				}
