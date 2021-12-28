@@ -19,6 +19,7 @@
 package com.exedio.sendmail;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1880,7 +1881,7 @@ public class MailSenderTest extends SendmailTest
 
 	protected static final byte[] bytes(final String name)
 	{
-		return bytes(MailSenderTest.class.getResourceAsStream(name));
+		return bytes(requireNonNull(MailSenderTest.class.getResourceAsStream(name), name));
 	}
 
 	protected static final byte[] bytes(final InputStream in)
