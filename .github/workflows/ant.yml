@@ -16,5 +16,4 @@ jobs:
       with:
         java-version: '8'
         distribution: 'adopt'
-    - run: ant -version
     - run: ant -noinput -DtestRemote=false clean jenkins
