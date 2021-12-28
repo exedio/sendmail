@@ -497,47 +497,6 @@ public class MailSenderTest extends SendmailTest
 		}
 	}
 
-	/*private static final class MockURLDataSource implements DataSource
-	{
-		final String resource;
-		final String name;
-		final String contentType;
-
-		TestDataSource(final Class resource, final String name, final String contentType)
-		{
-			this.resource = resource.getSimpleName();
-			this.name = name;
-			this.contentType = contentType;
-
-			if(this.resource==null)
-				throw new RuntimeException();
-			if(this.name==null)
-				throw new RuntimeException();
-			if(this.contentType==null)
-				throw new RuntimeException();
-		}
-
-		public String getContentType()
-		{
-			return contentType;
-		}
-
-		public String getName()
-		{
-			return name;
-		}
-
-		public InputStream getInputStream()
-		{
-			return getClass().getResourceAsStream(resource);
-		}
-
-		public OutputStream getOutputStream()
-		{
-			throw new RuntimeException(name);
-		}
-	}*/
-
 	private static final class MockURLDataSource extends URLDataSource
 	{
 		final String name;
